@@ -7,21 +7,21 @@ class MainWindow(WindowGUI):
     DRAWING = True
     STANDARD = False
 
-    def __init__(self) -> None:
+    def __init__(self, controller) -> None:
+        self.__controller = controller
+        # set initial state
         
-        # set initial state 
         self.__state = self.STANDARD
-
-        # instanciate Tk object and set the window's title and geometry
-        self.__root = tk.Tk()
-        self.__root.title("Sistema Gráfico")
-        self.__root.geometry("1280x900")
 
         # create empty wighet list
         self.__widget_list = list()
 
-    def init_window(self) -> None:
-        
+    def init_window(self,world) -> None:
+        # instanciate Tk object and set the window's title and geometry
+        self.__root = tk.Tk()
+        self.__root.title("Sistema Gráfico")
+        self.__root.geometry("1280x900")
+        self.init_widgets(world)
         self.__root.mainloop()
     
     # TODO - adicionar os widgets necessários + adicionar comandos aos botões
@@ -31,7 +31,7 @@ class MainWindow(WindowGUI):
         canvas.place(x=500, y=0)
         self.__widget_list.append(canvas)
 
-        button = tk.Button(self.__root, text="Create Object")
+        button = tk.Button(self.__root, text="Create Object", command= lambda: self.__controller.open_creation_window())
         button.place(x=0, y=0)
         self.__widget_list.append(button)
 
