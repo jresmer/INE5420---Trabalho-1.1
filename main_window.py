@@ -1,5 +1,6 @@
 import tkinter as tk
 from window_gui import WindowGUI
+from moveCanvas import MoveCanvas
 
 
 class MainWindow(WindowGUI):
@@ -22,12 +23,28 @@ class MainWindow(WindowGUI):
         self.__root.title("Sistema Gráfico")
         self.__root.geometry("1280x900")
         self.init_widgets(world)
+
+        #BIND PARA MOVER O CANVAS
+        self.__root.bind("<KeyPress-Left>", lambda _: self.__widget_list[0].change_heading(-1, 0))
+        self.__root.bind("<KeyPress-Right>", lambda _: self.__widget_list[0].change_heading(1, 0))
+        self.__root.bind("<KeyPress-Up>", lambda _: self.__widget_list[0].change_heading(0, -1))
+        self.__root.bind("<KeyPress-Down>", lambda _: self.__widget_list[0].change_heading(0, 1))
+
         self.__root.mainloop()
     
     # TODO - adicionar os widgets necessários + adicionar comandos aos botões
     def init_widgets(self, world) -> None:
         
-        canvas = tk.Canvas(master=self.__root, height=500, width=760, bd=3, relief="ridge")
+        #canvas = tk.Canvas(master=self.__root, height=500, width=760, bd=3, relief="ridge")
+
+        #TESTES PRO MOVIMENTO DO CANVAS
+        canvas = MoveCanvas(master=self.__root, height=500, width=760, bd=3, relief="ridge")
+
+        canvas.add_object(canvas.create_line(50,50,30,30,10,20,50,50))
+        canvas.add_object(canvas.create_line(100,100,300,300,100,200,100,100))
+        canvas.add_object(canvas.create_line(700,700,300,300,100,200,500,500))
+        #FIM DA PARTE DE TESTES
+
         canvas.place(x=500, y=0)
         self.__widget_list.append(canvas)
 
