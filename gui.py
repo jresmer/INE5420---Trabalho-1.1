@@ -12,6 +12,7 @@ class GUI:
         self.windows[MainWindow.__name__] = MainWindow(self)
         self.windows[ObjectCreationWindow.__name__] = ObjectCreationWindow(self)
         self.current_window = self.windows[MainWindow.__name__]
+        
         self.current_window.init_window(1)
         
 
@@ -19,6 +20,9 @@ class GUI:
         self.windows[ObjectCreationWindow.__name__] = ObjectCreationWindow(self)
         self.current_window = self.windows[ObjectCreationWindow.__name__]
         self.current_window.init_window(1)
+
+    def move_canvas(self, dx, dy):
+        self.world.move_window(dx, dy)
 
     def debug_print(self, text: str):
         print(text)
