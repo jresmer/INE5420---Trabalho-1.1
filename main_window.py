@@ -28,12 +28,14 @@ class MainWindow(WindowGUI):
 
         #TESTE, APAGAR DEPOIS
         self.__controller.world.create_point((50,50),self.__controller.windows[MainWindow.__name__].get_canvas(), )
+        self.__controller.world.create_line(((100,100),(200,200)),self.__controller.windows[MainWindow.__name__].get_canvas(), )
+        self.__controller.world.create_polygon(((200,100),(100,500),(300,300)),self.__controller.windows[MainWindow.__name__].get_canvas(), )
 
         #BIND PARA MOVER O CANVAS
-        self.__root.bind("<KeyPress-Left>", lambda _: self.__controller.move_canvas(1, 0))
-        self.__root.bind("<KeyPress-Right>", lambda _: self.__controller.move_canvas(-1, 0))
-        self.__root.bind("<KeyPress-Up>", lambda _: self.__controller.move_canvas(0, 1))
-        self.__root.bind("<KeyPress-Down>", lambda _: self.__controller.move_canvas(0, -1))
+        self.__root.bind("<KeyPress-Left>", lambda _: self.__controller.move_canvas(3, 0))
+        self.__root.bind("<KeyPress-Right>", lambda _: self.__controller.move_canvas(-3, 0))
+        self.__root.bind("<KeyPress-Up>", lambda _: self.__controller.move_canvas(0, 3))
+        self.__root.bind("<KeyPress-Down>", lambda _: self.__controller.move_canvas(0, -3))
 
         self.__root.mainloop()
     

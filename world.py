@@ -1,5 +1,7 @@
 from point import Point
+from line import Line
 from color import Color
+from polygon import Polygon
 
 class World:
     def __init__(self) -> None:
@@ -11,6 +13,16 @@ class World:
         point = Point(coord, Color.RED, "Ponto1", "", canvas)
         self.__object_list.append(point)
         point.draw(self.__viewport, self.__window)
+
+    def create_line(self, coord: tuple, canvas):
+        line = Line(coord, Color.BLUE, "Linha1", "", canvas)
+        self.__object_list.append(line)
+        line.draw(self.__viewport, self.__window)
+
+    def create_polygon(self, coord: tuple, canvas):
+        polygon = Polygon(coord, Color.BLUE, "Poligono1", "", canvas)
+        self.__object_list.append(polygon)
+        polygon.draw(self.__viewport, self.__window)
     
     def move_window(self, dx, dy):
 

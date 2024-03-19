@@ -10,7 +10,6 @@ class Point(CanvasObject):
         self.__tkinter_id = tkinter_id
         self.__canvas = canvas
 
-
     def draw(self, viewport: tuple, window: tuple) -> None:
         
         self.__canvas.delete(self.__tkinter_id)
