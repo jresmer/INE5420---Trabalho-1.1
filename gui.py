@@ -28,7 +28,7 @@ class GUI:
     def debug_print(self, text: str):
         print(text)
         
-    def create_object(self, coord: tuple, color: Color, name: str, obj_type, canvas) -> None:
+    def create_object(self, coord: tuple, color: Color, name: str, obj_type) -> None:
 
         self.world.create_object(
             coord,

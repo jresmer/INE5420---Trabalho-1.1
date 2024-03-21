@@ -1,5 +1,6 @@
 from window_gui import WindowGUI
 import tkinter as tk
+from canvas_object_manager import CanvasObjectManager
 
 
 class ObjectCreationWindow(WindowGUI):
@@ -7,7 +8,7 @@ class ObjectCreationWindow(WindowGUI):
     def __init__(self, controller) -> None:
         self.__controller = controller
         
-
+        self.__obj_man = CanvasObjectManager()
         # create empty wighet list
         self.__widgets = dict()
 
@@ -22,12 +23,24 @@ class ObjectCreationWindow(WindowGUI):
     # TODO - implementar função
     def create(self):
 
-        self.__controller.debuh_print()
+        name = self.__widgets["name txt box"].get("1.0", "end-1c")
+        coords = list(eval(self.__widgets["coord txt box"].get("1.0", "end-1c")))
+        type_ = self.__widgets["type choice box txt"].get()
+        obj_type = self.__obj_man.get_object_type(type_)
+        
+        self.__controller.create_object(
+            coords,
+            "red",
+            name,
+            obj_type
+        )
+
+        self.__root.destroy()
 
     # TODO - adicionar os widgets necessários + adicionar comandos aos botões
     def init_widgets(self, world) -> None:
 
-        button = tk.Button(self.__root, text="Create", command= lambda: self.create())
+        button = tk.Button(self.__root, text="Create", command= self.create)
         button.place(x=185, y=120)
         self.__widgets["create bt"] = button
 
@@ -56,8 +69,10 @@ class ObjectCreationWindow(WindowGUI):
         self.__widgets["coord lbl"] = label
 
         # TODO - criar gerenciamento dos tipos disponíveis e acessar lista correta de opções
-        choices = ["test-1", "test-2", "test-3"]
+        choices = self.__obj_man.get_all_object_types()
         var_str = tk.StringVar(self.__root)
         var_str.set("---")
         choice_box = tk.OptionMenu(self.__root, var_str, *choices)
         choice_box.place(x=100, y=60)
+        self.__widgets["type choice box txt"] = var_str
+        self.__widgets["type choice box"] = choice_box
