@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from color import Color
 
 
+# TODO - rever necessidade de tkinte_id ser passado por parâmetro
 class CanvasObject(ABC):
 
     def __init__(self, coord: tuple, color: Color, name: str,

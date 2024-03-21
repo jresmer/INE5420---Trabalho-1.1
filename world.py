@@ -9,6 +9,12 @@ class World:
         self.__viewport = [0,0,500,500]
         self.__window = [0,0,500,500]
 
+    def create_object(self, coord: tuple, color: Color, name: str, obj_type, canvas) -> None:
+
+        new_object = obj_type(coord, color, name, "", canvas)
+        self.__object_list.append(new_object)
+        new_object.draw(self.__viewport, self.__window)
+
     def create_point(self, coord: tuple, canvas):
         point = Point(coord, Color.RED, "Ponto1", "", canvas)
         self.__object_list.append(point)
