@@ -14,7 +14,13 @@ class CanvasObject(ABC):
         self.__tkinter_id = tkinter_id
         self.__canvas = canvas
 
+    def get_name(self):
+        return self.__name
+
     @abstractmethod
     def draw(self, viewport: tuple, window: tuple) -> None:
+        pass
 
+    @abstractmethod
+    def delete(self):
         pass

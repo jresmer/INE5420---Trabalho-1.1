@@ -14,10 +14,13 @@ class MainWindow(WindowGUI):
         self.__state = self.STANDARD
 
         # create empty wighet list
-        self.__widget_list = list()
+        self.__widget_list = dict()
+
+    def add_to_listbox(self, name):
+        self.__widget_list['list obj'].insert(tk.END,name)
 
     def get_canvas(self):
-        return self.__widget_list[0]
+        return self.__widget_list['canvas']
 
     def init_window(self,world) -> None:
         # instanciate Tk object and set the window's title and geometry
@@ -26,11 +29,6 @@ class MainWindow(WindowGUI):
         self.__root.geometry("1280x900")
         self.init_widgets(world)
 
-        #TESTE, APAGAR DEPOIS
-        self.__controller.world.create_point((50,50),self.__controller.windows[MainWindow.__name__].get_canvas(), )
-        self.__controller.world.create_line(((100,100),(200,200)),self.__controller.windows[MainWindow.__name__].get_canvas(), )
-        self.__controller.world.create_polygon(((200,100),(100,500),(300,300)),self.__controller.windows[MainWindow.__name__].get_canvas(), )
-
         #BIND PARA MOVER O CANVAS
         self.__root.bind("<KeyPress-Left>", lambda _: self.__controller.move_canvas(3, 0))
         self.__root.bind("<KeyPress-Right>", lambda _: self.__controller.move_canvas(-3, 0))
@@ -38,6 +36,11 @@ class MainWindow(WindowGUI):
         self.__root.bind("<KeyPress-Down>", lambda _: self.__controller.move_canvas(0, -3))
 
         self.__root.mainloop()
+
+    def delete_object(self):
+        active_obj_name = str(self.__widget_list['list obj'].get(tk.ACTIVE))
+        self.__controller.delete_object(active_obj_name)
+        self.__widget_list['list obj'].delete(tk.ACTIVE)
     
     # TODO - adicionar os widgets necessários + adicionar comandos aos botões
     def init_widgets(self, world) -> None:
@@ -47,16 +50,24 @@ class MainWindow(WindowGUI):
         #TESTES PRO MOVIMENTO DO CANVAS
         canvas = tk.Canvas(master=self.__root, height=500, width=760, bd=3, relief="ridge")
 
-
         canvas.place(x=500, y=0)
-        self.__widget_list.append(canvas)
+        self.__widget_list['canvas'] = canvas
 
         button = tk.Button(self.__root, text="Create Object", command= lambda: self.__controller.open_creation_window())
         button.place(x=0, y=0)
-        self.__widget_list.append(button)
+        self.__widget_list['create obj button'] = button
+
+        button = tk.Button(self.__root, text="Delete Selected Object", 
+                           command= lambda: self.delete_object())
+        button.place(x=100, y=300)
+        self.__widget_list['delete obj button'] = button
+
+        list_objects = tk.Listbox(self.__root,)
+        list_objects.place(x = 100, y = 100)
+        self.__widget_list['list obj'] = list_objects
 
         text = "Status messages will appear here!\n"
         error_message_box = tk.Label(self.__root, height=18, width=84, 
                                      bd=3, relief="ridge", text=text, justify="left")
         error_message_box.place(x=500, y=550)
-        self.__widget_list.append(error_message_box)
+        self.__widget_list['error msg box'] = error_message_box
