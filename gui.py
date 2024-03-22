@@ -16,7 +16,6 @@ class GUI:
         
         self.current_window.init_window(1)
         
-
     def open_creation_window(self):
         self.windows[ObjectCreationWindow.__name__] = ObjectCreationWindow(self)
         self.current_window = self.windows[ObjectCreationWindow.__name__]
@@ -37,3 +36,10 @@ class GUI:
             obj_type,
             self.windows[MainWindow.__name__].get_canvas()
         )
+
+        self.windows[MainWindow.__name__].add_to_listbox(self.world.get_last_object_name())
+
+    def delete_object(self, name: str):
+        self.world.delete_object(name)
+
+

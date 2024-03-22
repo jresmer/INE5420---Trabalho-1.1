@@ -4,6 +4,7 @@ from line import Line
 
 
 class Polygon(CanvasObject):
+    #TODO: Passar os atributos para classe pai e requisitar o atributo
     def __init__(self, coord: tuple, color: Color, name: str, tkinter_id: int, canvas) -> None:
         self.__coord = coord
         self.__color = color
@@ -11,6 +12,9 @@ class Polygon(CanvasObject):
         self.__tkinter_id = tkinter_id
         self.__canvas = canvas
         self.__lines = []
+
+    def get_name(self):
+        return self.__name
 
     def draw(self, viewport: tuple, window: tuple) -> None:
         

@@ -3,12 +3,16 @@ from color import Color
 
 
 class Point(CanvasObject):
+    #TODO: Passar os atributos para classe pai e requisitar o atributo
     def __init__(self, coord: tuple, color: Color, name: str, tkinter_id: int, canvas) -> None:
         self.__coord = coord
         self.__color = color
         self.__name = name
         self.__tkinter_id = tkinter_id
         self.__canvas = canvas
+
+    def get_name(self):
+        return self.__name
 
     def draw(self, viewport: tuple, window: tuple) -> None:
         
@@ -22,3 +26,6 @@ class Point(CanvasObject):
         y_vp = (y - window_ymin) * (vp_ymax - vp_ymin) / (window_ymax - window_ymin)
 
         self.__tkinter_id = self.__canvas.create_oval(x_vp - 1, y_vp - 1, x_vp + 1, y_vp + 1, fill=self.__color)
+
+    def delete(self):
+        self.__canvas.delete(self.__tkinter_id)

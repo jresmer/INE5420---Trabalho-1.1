@@ -15,20 +15,16 @@ class World:
         self.__object_list.append(new_object)
         new_object.draw(self.__viewport, self.__window)
 
-    def create_point(self, coord: tuple, canvas):
-        point = Point(coord, Color.RED, "Ponto1", "", canvas)
-        self.__object_list.append(point)
-        point.draw(self.__viewport, self.__window)
-
-    def create_line(self, coord: tuple, canvas):
-        line = Line(coord, Color.BLUE, "Linha1", "", canvas)
-        self.__object_list.append(line)
-        line.draw(self.__viewport, self.__window)
-
-    def create_polygon(self, coord: tuple, canvas):
-        polygon = Polygon(coord, Color.BLUE, "Poligono1", "", canvas)
-        self.__object_list.append(polygon)
-        polygon.draw(self.__viewport, self.__window)
+    #TODO: verificar se o obj está sendo deletado corretamente do canvas
+    #TODO: melhorar sistema de busca (talvez usando dict para object list?)
+    def delete_object(self, name):
+        for i in range(len(self.__object_list)):
+            if name == self.__object_list[i].get_name():
+                self.__object_list[i].delete()
+                obj = self.__object_list.pop(i)
+                del obj
+                print(f"Deleted: {name}")
+                return
     
     def move_window(self, dx, dy):
 
@@ -39,3 +35,6 @@ class World:
  
         for obj in self.__object_list:
             obj.draw(self.__viewport, self.__window)
+
+    def get_last_object_name(self):
+        return self.__object_list[-1].get_name()
