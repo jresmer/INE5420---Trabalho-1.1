@@ -42,4 +42,6 @@ class GUI:
     def delete_object(self, name: str):
         self.world.delete_object(name)
 
+    def zoom_window(self, pct_x: float, pct_y: float):
 
+        self.world.zoom_window(pct_x, pct_y)
