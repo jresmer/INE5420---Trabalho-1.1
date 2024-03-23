@@ -71,12 +71,12 @@ class MainWindow(WindowGUI):
     def init_operations_object(self):
 
         button = tk.Button(self.__root, text="Create Object", command= lambda: self.__controller.open_creation_window())
-        button.place(x=0, y=215)
+        button.place(x=0, y=235)
         self.__widgets['create obj button'] = button
 
         button = tk.Button(self.__root, text="Delete Selected Object", 
                             command= lambda: self.delete_object())
-        button.place(x=0, y=185)
+        button.place(x=0, y=205)
         self.__widgets['delete obj button'] = button
 
         list_objects = tk.Listbox(self.__root, width= 21)
@@ -89,51 +89,51 @@ class MainWindow(WindowGUI):
 
     def init_operations_window(self):
         
-        frame = tk.Frame(self.__root, height = 200, width = 300, relief="ridge", borderwidth=2)
-        frame.place(x=150, y = 5)
+        frame = tk.Frame(self.__root, height = 200, width = 250, relief="ridge", borderwidth=2)
+        frame.place(x=200, y = 5)
 
         label = tk.Label(frame, text = "Window Operations")
         label.place(x=0, y = 0)
         self.__widgets["title ops window lbl"] = label
 
-        button = tk.Button(frame, text="Zoom in", 
+        button = tk.Button(frame, text="Zoom in",
                            command= lambda: self.on_mousewheel(-1))
-        button.place(x=10, y=25)
+        button.place(x=10, y=35)
         self.__widgets['zoom in button'] = button
 
         button = tk.Button(frame, text="Zoom out", 
                            command= lambda: self.on_mousewheel(1))
-        button.place(x=5, y=55)
+        button.place(x=5, y=65)
         self.__widgets['zoom out button'] = button
 
         text_box = tk.Text(frame, height=1, width=4)
-        text_box.place(x=110, y=40)
+        text_box.place(x=140, y=50)
         self.__widgets["zoom txt box"] = text_box
 
         label = tk.Label(frame, text = "%")
-        label.place(x=140, y=40)
+        label.place(x=180, y=50)
         self.__widgets["percent zoom lbl"] = label
 
         label = tk.Label(frame, text = "Step")
-        label.place(x=80, y=40)
+        label.place(x=100, y=50)
         self.__widgets["zoom lbl"] = label
 
         button = tk.Button(frame, text="↑", width= 2,  
                            command= lambda : self.__controller.move_canvas(0, -3))
-        button.place(x=120, y=90)
+        button.place(x=100, y=110)
         self.__widgets['move window up button'] = button
 
         button = tk.Button(frame, text="↓", width= 2, 
                            command= lambda : self.__controller.move_canvas(0, 3))
-        button.place(x=120, y=120)
+        button.place(x=100, y=140)
         self.__widgets['move window down button'] = button
 
         button = tk.Button(frame, text="←", width= 2, 
                            command= lambda : self.__controller.move_canvas(-3, 0))
-        button.place(x=95, y=105)
+        button.place(x=55, y=125)
         self.__widgets['move window left button'] = button
 
         button = tk.Button(frame, text="→", width= 2, 
                            command= lambda : self.__controller.move_canvas(3, 0))
-        button.place(x=145, y=105)
+        button.place(x=145, y=125)
         self.__widgets['move window right button'] = button
