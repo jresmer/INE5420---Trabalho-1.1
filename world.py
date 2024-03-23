@@ -63,8 +63,8 @@ class World:
 
         if new_max_x <= new_min_x + 20 or new_max_y <= new_min_y + 20:
 
-            new_max_x, new_min_x = max_x, min_x
-            new_max_y, new_min_y = max_y, min_y
+            new_max_x, new_min_x = center_x + 20, center_x -20
+            new_max_y, new_min_y = center_y + 20, center_y - 20
 
         # set new window size
         self.__window = [new_min_x, new_min_y, new_max_x, new_max_y]
