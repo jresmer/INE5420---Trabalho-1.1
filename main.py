@@ -1,5 +1,3 @@
-from main_window import MainWindow
-from object_creation_window import ObjectCreationWindow
 from gui import GUI
 
 

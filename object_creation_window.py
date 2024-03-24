@@ -28,7 +28,6 @@ class ObjectCreationWindow(WindowGUI):
 
         self.__root.mainloop()
 
-    # TODO - implementar função
     def create(self):
 
         name = self.__widgets["name txt box"].get("1.0", "end-1c")
@@ -50,7 +49,6 @@ class ObjectCreationWindow(WindowGUI):
         except:
             self.__controller.notify_status("Coordenadas digitadas incorretamente. Reveja o formato e o tipo utilizado")
 
-    # TODO - adicionar os widgets necessários + adicionar comandos aos botões
     def init_widgets(self, world) -> None:
 
         button = tk.Button(self.__root, text="Create", command= self.create)
@@ -85,7 +83,6 @@ class ObjectCreationWindow(WindowGUI):
         label.place(x=10, y= 95)
         self.__widgets["coord lbl"] = label
 
-        # TODO - criar gerenciamento dos tipos disponíveis e acessar lista correta de opções
         choices = self.__obj_man.get_all_object_types()
         var_str = tk.StringVar(self.__root)
         var_str.set("---")

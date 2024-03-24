@@ -86,8 +86,8 @@ class World:
 
         previeous_size = (max_x - min_x) * (max_y - min_y)
         new_size = (new_max_x - new_min_x) * (new_max_y - new_min_y)
-        diff = 1 - previeous_size / new_size
-        self.__zoom -= diff
+        diff = previeous_size / new_size
+        self.__zoom *= diff
 
         # redraw canvas objects
         for obj in self.__object_list:

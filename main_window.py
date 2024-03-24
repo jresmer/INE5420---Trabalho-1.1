@@ -49,7 +49,6 @@ class MainWindow(WindowGUI):
     def notify_status(self, text: str):
         self.__widgets['error msg box'].config(text=text)
 
-    # TODO - adicionar os widgets necessários + adicionar comandos aos botões
     def init_widgets(self, world) -> None:
         
         canvas = tk.Canvas(master=self.__root, height=500, width=760, bd=3, relief="ridge")
