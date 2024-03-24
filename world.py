@@ -12,11 +12,22 @@ class World:
         self.__window = [0,0,500,500]
         self.__zoom = 1
 
-    def create_object(self, coord: tuple, color: Color, name: str, obj_type, canvas) -> None:
+    def search_object_by_name(self, name: str):
+        for obj in self.__object_list:
+            if name == obj.get_name():
+                return obj
+        return None 
 
+    def create_object(self, coord: tuple, color: Color, name: str, obj_type, canvas) -> None:
+        if self.search_object_by_name(name) != None:
+            return 2
+        
         new_object = obj_type(coord, color, name, "", canvas)
         self.__object_list.append(new_object)
+
         new_object.draw(self.__viewport, self.__window, self.__zoom)
+        return 1
+
 
     #TODO: verificar se o obj está sendo deletado corretamente do canvas
     #TODO: melhorar sistema de busca (talvez usando dict para object list?)
@@ -26,7 +37,6 @@ class World:
                 self.__object_list[i].delete()
                 obj = self.__object_list.pop(i)
                 del obj
-                print(f"Deleted: {name}")
                 return
     
     def move_window(self, dx, dy):
@@ -38,9 +48,6 @@ class World:
  
         for obj in self.__object_list:
             obj.draw(self.__viewport, self.__window, self.__zoom)
-
-    def get_last_object_name(self):
-        return self.__object_list[-1].get_name()
     
     def zoom_window(self, pct):
 

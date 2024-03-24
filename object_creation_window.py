@@ -22,9 +22,9 @@ class ObjectCreationWindow(WindowGUI):
         self.init_widgets(world)  
 
         # TODO: deletar testes realizados depois
-        # self.__controller.create_object((50,50), "blue", "Arroz", self.__obj_man.get_object_type("Point"))
-        # self.__controller.create_object(((100,100),(200,200)), "green", "Feijão", self.__obj_man.get_object_type("Line"))
-        # self.__controller.create_object(((200,100),(100,500),(300,300)), "red", "Carne", self.__obj_man.get_object_type("Polygon"))
+        self.__controller.create_object((50,50), "blue", "Arroz", self.__obj_man.get_object_type("Point"))
+        self.__controller.create_object(((100,100),(200,200)), "green", "Feijão", self.__obj_man.get_object_type("Line"))
+        self.__controller.create_object(((200,100),(100,500),(300,300)), "red", "Carne", self.__obj_man.get_object_type("Polygon"))
 
         self.__root.mainloop()
 
@@ -32,18 +32,23 @@ class ObjectCreationWindow(WindowGUI):
     def create(self):
 
         name = self.__widgets["name txt box"].get("1.0", "end-1c")
-        coords = list(eval(self.__widgets["coord txt box"].get("1.0", "end-1c")))
-        type_ = self.__widgets["type choice box txt"].get()
-        obj_type = self.__obj_man.get_object_type(type_)
-        
-        self.__controller.create_object(
-            coords,
-            "red",
-            name,
-            obj_type
-        )
+        try:
+            coords = list(eval(self.__widgets["coord txt box"].get("1.0", "end-1c")))
+    
+            type_ = self.__widgets["type choice box txt"].get()
+            obj_type = self.__obj_man.get_object_type(type_)
+            
+            self.__controller.create_object(
+                coords,
+                "red",
+                name,
+                obj_type
+            )
 
-        self.__root.destroy()
+            self.__root.destroy()
+
+        except:
+            self.__controller.notify_status("Coordenadas digitadas incorretamente. Reveja o formato e o tipo utilizado")
 
     # TODO - adicionar os widgets necessários + adicionar comandos aos botões
     def init_widgets(self, world) -> None:

@@ -35,15 +35,20 @@ class MainWindow(WindowGUI):
         self.__root.mainloop()
 
     def on_mousewheel(self, multiplier: int):
-        
-        multiplier *= int(self.__widgets["zoom txt box"].get("1.0", "end-1c"))/100
-        self.__controller.zoom_window(pct=multiplier)
+        try:
+            multiplier *= int(self.__widgets["zoom txt box"].get("1.0", "end-1c"))/100
+            self.__controller.zoom_window(pct=multiplier)
+        except:
+            self.notify_status("Erro ao utilizar o zoom. Apenas valores inteiros aceitos no Step")
 
     def delete_object(self):
         active_obj_name = str(self.__widgets['list obj'].get(tk.ACTIVE))
         self.__controller.delete_object(active_obj_name)
         self.__widgets['list obj'].delete(tk.ACTIVE)
-    
+
+    def notify_status(self, text: str):
+        self.__widgets['error msg box'].config(text=text)
+
     # TODO - adicionar os widgets necessários + adicionar comandos aos botões
     def init_widgets(self, world) -> None:
         
