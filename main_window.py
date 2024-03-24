@@ -4,14 +4,9 @@ from window_gui import WindowGUI
 
 class MainWindow(WindowGUI):
 
-    DRAWING = True
-    STANDARD = False
-
     def __init__(self, controller) -> None:
         self.__controller = controller
         # set initial state
-        
-        self.__state = self.STANDARD
 
         # create empty wighet list
         self.__widgets = dict()
