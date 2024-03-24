@@ -16,7 +16,7 @@ class Polygon(CanvasObject):
     def get_name(self):
         return self.__name
 
-    def draw(self, viewport: tuple, window: tuple) -> None:
+    def draw(self, viewport: tuple, window: tuple, zoom: float) -> None:
         
         self.delete()
 
@@ -24,7 +24,7 @@ class Polygon(CanvasObject):
 
         for (x1,y1) in self.__coord[1:]:
             line = Line(((x0,y0),(x1,y1)), self.__color, "LinhaPoligono1", "", self.__canvas)
-            line.draw(viewport, window)
+            line.draw(viewport, window, zoom)
             self.__lines.append(line)
 
             x0, y0 = x1, y1
@@ -32,7 +32,7 @@ class Polygon(CanvasObject):
         x0, y0 = self.__coord[-1]
         x1, y1 = self.__coord[0]
         line = Line(((x0,y0),(x1,y1)), self.__color, "LinhaPoligono1", "", self.__canvas)
-        line.draw(viewport, window)
+        line.draw(viewport, window, zoom)
         self.__lines.append(line)
 
     def delete(self):

@@ -3,7 +3,7 @@ from line import Line
 from color import Color
 from polygon import Polygon
 from copy import deepcopy
-from math import ceil
+from math import ceil, sqrt
 
 class World:
     def __init__(self) -> None:
@@ -16,7 +16,7 @@ class World:
 
         new_object = obj_type(coord, color, name, "", canvas)
         self.__object_list.append(new_object)
-        new_object.draw(self.__viewport, self.__window)
+        new_object.draw(self.__viewport, self.__window, self.__zoom)
 
     #TODO: verificar se o obj está sendo deletado corretamente do canvas
     #TODO: melhorar sistema de busca (talvez usando dict para object list?)
@@ -37,19 +37,20 @@ class World:
         self.__window[3] += dy
  
         for obj in self.__object_list:
-            obj.draw(self.__viewport, self.__window)
+            obj.draw(self.__viewport, self.__window, self.__zoom)
 
     def get_last_object_name(self):
         return self.__object_list[-1].get_name()
     
-    def zoom_window(self, pct_x: float, pct_y: float):
+    def zoom_window(self, pct):
 
         # recover window
         min_x, min_y, max_x, max_y = self.__window
 
         # calculate new window size
+        multiplier = sqrt(1 / (1 + pct))
+
         # calculate new x values
-        multiplier = 1 + (pct_x / 2)
         center_x = (min_x + max_x) // 2
         min_diff = int((center_x - min_x) * multiplier)
         new_min_x = center_x - min_diff
@@ -57,7 +58,6 @@ class World:
         new_max_x = max_diff + center_x
  
         # calculate new y values
-        multiplier = 1 + (pct_y / 2)
         center_y = (min_y + max_y) // 2
         min_diff = int((center_y - min_y) * multiplier)
         new_min_y = center_y - min_diff
@@ -80,8 +80,8 @@ class World:
         previeous_size = (max_x - min_x) * (max_y - min_y)
         new_size = (new_max_x - new_min_x) * (new_max_y - new_min_y)
         diff = 1 - previeous_size / new_size
-        self.__zoom += diff
+        self.__zoom -= diff
 
         # redraw canvas objects
         for obj in self.__object_list:
-            obj.draw(self.__viewport, self.__window)
+            obj.draw(self.__viewport, self.__window, self.__zoom)

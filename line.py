@@ -14,7 +14,7 @@ class Line(CanvasObject):
     def get_name(self):
         return self.__name
 
-    def draw(self, viewport: tuple, window: tuple) -> None:
+    def draw(self, viewport: tuple, window: tuple, zoom: float) -> None:
         
         self.delete()
 
@@ -27,7 +27,7 @@ class Line(CanvasObject):
         x1_vp = (x1 - window_xmin) * (vp_xmax - vp_xmin) / (window_xmax - window_xmin)
         y1_vp = (y1 - window_ymin) * (vp_ymax - vp_ymin) / (window_ymax - window_ymin)
 
-        self.__tkinter_id = self.__canvas.create_line(x0_vp, y0_vp, x1_vp, y1_vp, fill=self.__color)
+        self.__tkinter_id = self.__canvas.create_line(x0_vp, y0_vp, x1_vp, y1_vp, fill=self.__color, width=zoom)
 
     def delete(self):
         self.__canvas.delete(self.__tkinter_id)

@@ -29,17 +29,15 @@ class MainWindow(WindowGUI):
         self.__root.bind("<KeyPress-Right>", lambda _: self.__controller.move_canvas(3, 0))
         self.__root.bind("<KeyPress-Up>", lambda _: self.__controller.move_canvas(0, -3))
         self.__root.bind("<KeyPress-Down>", lambda _: self.__controller.move_canvas(0, 3))
-        self.__root.bind("<Button-4>", lambda _: self.on_mousewheel(1))
-        self.__root.bind("<Button-5>", lambda _: self.on_mousewheel(-1))
+        self.__root.bind("<Button-4>", lambda _: self.on_mousewheel(-1))
+        self.__root.bind("<Button-5>", lambda _: self.on_mousewheel(1))
 
         self.__root.mainloop()
 
     def on_mousewheel(self, multiplier: int):
+        
         multiplier *= int(self.__widgets["zoom txt box"].get("1.0", "end-1c"))/100
-        self.__controller.zoom_window(
-            pct_x= multiplier,
-            pct_y= multiplier
-        )
+        self.__controller.zoom_window(pct=multiplier)
 
     def delete_object(self):
         active_obj_name = str(self.__widgets['list obj'].get(tk.ACTIVE))
@@ -92,12 +90,12 @@ class MainWindow(WindowGUI):
         self.__widgets["title ops window lbl"] = label
 
         button = tk.Button(frame, text="Zoom in",
-                           command= lambda: self.on_mousewheel(-1))
+                           command= lambda: self.on_mousewheel(1))
         button.place(x=10, y=35)
         self.__widgets['zoom in button'] = button
 
         button = tk.Button(frame, text="Zoom out", 
-                           command= lambda: self.on_mousewheel(1))
+                           command= lambda: self.on_mousewheel(-1))
         button.place(x=5, y=65)
         self.__widgets['zoom out button'] = button
 

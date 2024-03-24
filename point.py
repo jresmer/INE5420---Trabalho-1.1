@@ -14,7 +14,7 @@ class Point(CanvasObject):
     def get_name(self):
         return self.__name
 
-    def draw(self, viewport: tuple, window: tuple) -> None:
+    def draw(self, viewport: tuple, window: tuple, zoom: float) -> None:
         
         self.__canvas.delete(self.__tkinter_id)
 
@@ -25,7 +25,9 @@ class Point(CanvasObject):
         x_vp = (x - window_xmin) * (vp_xmax - vp_xmin) / (window_xmax - window_xmin)
         y_vp = (y - window_ymin) * (vp_ymax - vp_ymin) / (window_ymax - window_ymin)
 
-        self.__tkinter_id = self.__canvas.create_oval(x_vp - 1, y_vp - 1, x_vp + 1, y_vp + 1, fill=self.__color)
+        diff = int(1 * zoom)
+
+        self.__tkinter_id = self.__canvas.create_oval(x_vp - diff, y_vp - diff, x_vp + diff, y_vp + diff, fill=self.__color)
 
     def delete(self):
         self.__canvas.delete(self.__tkinter_id)
