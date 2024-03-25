@@ -92,10 +92,6 @@ class World:
         diff = previeous_size / new_size
         self.__zoom *= diff
 
-        print("tamanho window antes: {}".format([min_x, min_y, max_x, max_y]))
-        print("tamanho da window dps: {}".format(self.__window))
-        print()
-
         # redraw canvas objects
         for obj in self.__object_list:
             obj.draw(self.__viewport, self.__window, self.__zoom)
