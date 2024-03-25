@@ -20,6 +20,7 @@ class GUI:
         self.windows[ObjectCreationWindow.__name__] = ObjectCreationWindow(self)
         self.current_window = self.windows[ObjectCreationWindow.__name__]
         self.current_window.init_window(1)
+            
 
     def move_canvas(self, dx, dy):
         self.world.move_window(dx, dy)
@@ -29,19 +30,27 @@ class GUI:
         
     def create_object(self, coord: tuple, color: Color, name: str, obj_type) -> None:
 
-        self.world.create_object(
+        status = self.world.create_object(
             coord,
             color,
             name,
             obj_type,
             self.windows[MainWindow.__name__].get_canvas()
         )
+        if status == 1:
+            self.windows[MainWindow.__name__].add_to_listbox(name)
+            self.notify_status(f"Objeto {name} criado com sucesso")
+        elif status == 2:
+            self.notify_status(f"Já existe um objeto com o nome {name}")
 
-        self.windows[MainWindow.__name__].add_to_listbox(self.world.get_last_object_name())
+    def notify_status(self, text: str):
+        self.windows[MainWindow.__name__].notify_status(text)
 
     def delete_object(self, name: str):
         self.world.delete_object(name)
+        self.notify_status(f"Objeto {name} deletado")
 
     def zoom_window(self, pct: float):
 
         self.world.zoom_window(pct)
+        self.windows[MainWindow.__name__].notify_status(f"")

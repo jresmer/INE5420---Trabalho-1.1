@@ -35,16 +35,25 @@ class MainWindow(WindowGUI):
         self.__root.mainloop()
 
     def on_mousewheel(self, multiplier: int):
-        
-        multiplier *= int(self.__widgets["zoom txt box"].get("1.0", "end-1c"))/100
-        self.__controller.zoom_window(pct=multiplier)
+        try:
+            valor_percentual = int(self.__widgets["zoom txt box"].get("1.0", "end-1c"))
+            if valor_percentual < 1 or valor_percentual > 99:
+                self.notify_status("Erro ao utilizar o zoom. O Step deve ser de 1% a 99%")
+            else:
+                multiplier *= valor_percentual/100
+                self.__controller.zoom_window(pct=multiplier)
+        except Exception as e:
+            print(e)
+            self.notify_status("Erro ao utilizar o zoom. Apenas valores inteiros aceitos no Step")
 
     def delete_object(self):
         active_obj_name = str(self.__widgets['list obj'].get(tk.ACTIVE))
         self.__controller.delete_object(active_obj_name)
         self.__widgets['list obj'].delete(tk.ACTIVE)
-    
-    # TODO - adicionar os widgets necessários + adicionar comandos aos botões
+
+    def notify_status(self, text: str):
+        self.__widgets['error msg box'].config(text=text)
+
     def init_widgets(self, world) -> None:
         
         canvas = tk.Canvas(master=self.__root, height=500, width=760, bd=3, relief="ridge")

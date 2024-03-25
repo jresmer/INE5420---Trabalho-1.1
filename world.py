@@ -12,11 +12,22 @@ class World:
         self.__window = [0,0,500,500]
         self.__zoom = 1
 
-    def create_object(self, coord: tuple, color: Color, name: str, obj_type, canvas) -> None:
+    def search_object_by_name(self, name: str):
+        for obj in self.__object_list:
+            if name == obj.get_name():
+                return obj
+        return None 
 
+    def create_object(self, coord: tuple, color: Color, name: str, obj_type, canvas) -> None:
+        if self.search_object_by_name(name) != None:
+            return 2
+        
         new_object = obj_type(coord, color, name, "", canvas)
         self.__object_list.append(new_object)
+
         new_object.draw(self.__viewport, self.__window, self.__zoom)
+        return 1
+
 
     #TODO: verificar se o obj está sendo deletado corretamente do canvas
     #TODO: melhorar sistema de busca (talvez usando dict para object list?)
@@ -26,7 +37,6 @@ class World:
                 self.__object_list[i].delete()
                 obj = self.__object_list.pop(i)
                 del obj
-                print(f"Deleted: {name}")
                 return
     
     def move_window(self, dx, dy):
@@ -38,9 +48,6 @@ class World:
  
         for obj in self.__object_list:
             obj.draw(self.__viewport, self.__window, self.__zoom)
-
-    def get_last_object_name(self):
-        return self.__object_list[-1].get_name()
     
     def zoom_window(self, pct):
 
@@ -69,8 +76,8 @@ class World:
             new_max_x, new_min_x = center_x + 10, center_x -10
             new_max_y, new_min_y = center_y + 10, center_y - 10
 
-        if new_max_x > self.__viewport[2] or new_min_x < self.__viewport[0] or \
-                new_max_y > self.__viewport[3] or new_min_y < self.__viewport[1]:
+        if new_max_x > self.__viewport[2] and new_min_x < self.__viewport[0] and \
+                new_max_y > self.__viewport[3] and new_min_y < self.__viewport[1]:
 
             new_min_x, new_min_y, new_max_x, new_max_y = deepcopy(self.__viewport)
 
@@ -79,8 +86,8 @@ class World:
 
         previeous_size = (max_x - min_x) * (max_y - min_y)
         new_size = (new_max_x - new_min_x) * (new_max_y - new_min_y)
-        diff = 1 - previeous_size / new_size
-        self.__zoom -= diff
+        diff = previeous_size / new_size
+        self.__zoom *= diff
 
         # redraw canvas objects
         for obj in self.__object_list:
