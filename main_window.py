@@ -36,12 +36,12 @@ class MainWindow(WindowGUI):
 
     def on_mousewheel(self, multiplier: int):
         try:
-            valor_percentual = int(self.__widgets["zoom txt box"].get("1.0", "end-1c"))
-            if valor_percentual < 1 or valor_percentual > 99:
-                self.notify_status("Erro ao utilizar o zoom. O Step deve ser de 1% a 99%")
-            else:
-                multiplier *= valor_percentual/100
-                self.__controller.zoom_window(pct=multiplier)
+            pct = int(self.__widgets["zoom txt box"].get("1.0", "end-1c"))
+            # if valor_percentual < 1 or valor_percentual > 99:
+            #     self.notify_status("Erro ao utilizar o zoom. O Step deve ser de 1% a 99%")
+            # else:
+            multiplier *= pct/100
+            self.__controller.zoom_window(pct=multiplier)
         except Exception as e:
             print(e)
             self.notify_status("Erro ao utilizar o zoom. Apenas valores inteiros aceitos no Step")
