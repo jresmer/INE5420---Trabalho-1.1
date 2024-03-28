@@ -43,6 +43,14 @@ class MainWindow(WindowGUI):
             print(e)
             self.notify_status("Erro ao utilizar o zoom. Apenas valores inteiros aceitos no Step")
 
+    def revolution(self):
+
+        self.__controller.revolve_object(
+            name=self.__widgets["title list obj"].get(tk.ACTIVE),
+            dx=self.__widgets["move dx obj txt box"].get("1.0", "end-1c"),
+            dy=self.__widgets["move dy obj txt box"].get("1.0", "end-1c")
+        )
+
     def delete_object(self):
         active_obj_name = str(self.__widgets['list obj'].get(tk.ACTIVE))
         self.__controller.delete_object(active_obj_name)

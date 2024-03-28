@@ -1,7 +1,4 @@
-from point import Point
-from line import Line
 from color import Color
-from polygon import Polygon
 from copy import deepcopy
 from math import ceil, sqrt
 
@@ -29,15 +26,44 @@ class World:
         return 1
 
 
-    #TODO: verificar se o obj está sendo deletado corretamente do canvas
+    
+    def __find_object(self, name: str) -> int:
+
+        for i, obj in enumerate(self.__object_list):
+
+            if name == obj.get_name():
+
+                return i
+            
+        return None
+
     #TODO: melhorar sistema de busca (talvez usando dict para object list?)
     def delete_object(self, name):
-        for i in range(len(self.__object_list)):
-            if name == self.__object_list[i].get_name():
-                self.__object_list[i].delete()
-                obj = self.__object_list.pop(i)
-                del obj
-                return
+
+        obj_index = self.__find_object(name)
+
+        if obj_index is not None:
+
+            obj = self.__object_list[obj_index]
+            obj.delete()
+            self.__object_list.pop(obj_index)
+            del obj
+
+            
+    def revolve_object(self, name: str, dx: int, dy: int) -> bool:
+
+        obj_index = self.__find_object(name)
+
+        if obj_index is None:
+
+            return False
+        
+        else:
+
+            obj = self.__object_list[obj_index]
+            m = [[dx, 0],
+                 [0, dy]]
+            obj.transform(m)
     
     def move_window(self, dx, dy):
 

@@ -18,7 +18,7 @@ class CanvasObject(ABC):
     def get_name(self):
         return self.__name
     
-    def transform(self, coordinates: list, m: np.array) -> list:
+    def transform(self, m: np.array) -> list:
 
         new_coords = list()
 

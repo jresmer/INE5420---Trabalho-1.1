@@ -43,6 +43,10 @@ class GUI:
         elif status == 2:
             self.notify_status(f"Já existe um objeto com o nome {name}")
 
+    def revolve_object(self, name: str, dx: int, dy: int):
+
+        self.world.revolve_object(name, dx, dy)
+
     def notify_status(self, text: str):
         self.windows[MainWindow.__name__].notify_status(text)
 
