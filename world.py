@@ -1,6 +1,7 @@
 from color import Color
 from copy import deepcopy
 from math import ceil, sqrt
+import numpy as np
 
 class World:
     def __init__(self) -> None:
@@ -63,6 +64,7 @@ class World:
             obj = self.__object_list[obj_index]
             m = [[dx, 0],
                  [0, dy]]
+            m = np.array(m)
             obj.transform(m)
     
     def move_window(self, dx, dy):
