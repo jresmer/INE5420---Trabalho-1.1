@@ -19,16 +19,17 @@ class CanvasObject(ABC):
     def transform(self, m: np.array) -> list:
 
         new_coords = list()
-
+        
         for coordinate in self.__coord:
 
-            np_coord = np.array(coordinate)
+
+            np_coord = np.array(coordinate + (1,))
 
             new_coord = np.matmul(np_coord, m)
-            new_coords.append(new_coord)
-        
-        print(self.__coord)
-        print(new_coords)
+            new_coord.tolist()
+            x, y, z = new_coord
+            new_coords.append((x,y))
+
         self.__coord = new_coords
     
     @abstractmethod

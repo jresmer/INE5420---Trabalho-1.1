@@ -62,8 +62,9 @@ class World:
         else:
 
             obj = self.__object_list[obj_index]
-            m = [[dx, 0],
-                 [0, dy]]
+            m = [[1, 0, 0],
+                 [0, 1, 0],
+                 [dx, dy, 1]]
             m = np.array(m)
             obj.transform(m)
             obj.draw(self.__viewport, self.__window, self.__zoom)
