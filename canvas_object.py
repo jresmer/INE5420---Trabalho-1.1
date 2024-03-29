@@ -58,3 +58,13 @@ class CanvasObject(ABC):
     
     def get_canvas(self):
         return self.__canvas
+    
+    def get_center_coord(self):
+        n = len(self.__coord)
+        sum_x = 0
+        sum_y = 0
+        for (x,y) in self.__coord:
+            sum_x += x
+            sum_y += y
+        return (sum_x/n, sum_y/n)
+        
