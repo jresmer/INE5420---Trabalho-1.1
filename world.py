@@ -1,4 +1,6 @@
+
 from color import Color
+
 from copy import deepcopy
 from math import ceil, sqrt
 import numpy as np
@@ -25,8 +27,6 @@ class World:
 
         new_object.draw(self.__viewport, self.__window, self.__zoom)
         return 1
-
-
     
     def __find_object(self, name: str) -> int:
 
@@ -66,6 +66,7 @@ class World:
                  [0, dy]]
             m = np.array(m)
             obj.transform(m)
+            obj.draw(self.__viewport, self.__window, self.__zoom)
     
     def move_window(self, dx, dy):
 

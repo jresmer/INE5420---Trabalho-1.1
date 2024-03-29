@@ -15,8 +15,6 @@ class CanvasObject(ABC):
         self.__tkinter_id = tkinter_id
         self.__canvas = canvas
 
-    def get_name(self):
-        return self.__name
     
     def transform(self, m: np.array) -> list:
 
@@ -29,6 +27,8 @@ class CanvasObject(ABC):
             new_coord = np.matmul(np_coord, m)
             new_coords.append(new_coord)
         
+        print(self.__coord)
+        print(new_coords)
         self.__coord = new_coords
     
     @abstractmethod
@@ -38,3 +38,22 @@ class CanvasObject(ABC):
     @abstractmethod
     def delete(self):
         pass
+
+
+    def get_name(self):
+        return self.__name
+    
+    def get_coord(self):
+        return self.__coord
+    
+    def get_color(self):
+        return self.__color
+    
+    def get_tkinter_id(self):
+        return self.__tkinter_id
+    
+    def set_tkinter_id(self, _tkinter_id):
+        self.__tkinter_id = _tkinter_id
+    
+    def get_canvas(self):
+        return self.__canvas
