@@ -176,8 +176,8 @@ class World:
             new_max_x, new_min_x = center_x + 10, center_x -10
             new_max_y, new_min_y = center_y + 10, center_y - 10
 
-        if new_max_x > self.__viewport[2] or new_min_x < self.__viewport[0] or \
-                new_max_y > self.__viewport[3] or new_min_y < self.__viewport[1]:
+        if new_max_x > self.__viewport[2] and new_min_x < self.__viewport[0] and \
+                new_max_y > self.__viewport[3] and new_min_y < self.__viewport[1]:
 
             new_min_x, new_min_y, new_max_x, new_max_y = deepcopy(self.__viewport)
 

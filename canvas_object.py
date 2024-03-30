@@ -40,7 +40,6 @@ class CanvasObject(ABC):
     def delete(self):
         pass
 
-
     def get_name(self):
         return self.__name
     
