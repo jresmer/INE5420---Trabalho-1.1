@@ -1,10 +1,9 @@
 from canvas_object import CanvasObject
-from color import Color
 
 
 class Line(CanvasObject):
     #TODO: Passar os atributos para classe pai e requisitar o atributo
-    def __init__(self, coord: tuple, color: Color, name: str, tkinter_id: int, canvas) -> None:
+    def __init__(self, coord: tuple, color: str, name: str, tkinter_id: int, canvas) -> None:
         super().__init__(coord, color, name, tkinter_id, canvas)
 
     def draw(self, viewport: tuple, window: tuple, zoom: float) -> None:

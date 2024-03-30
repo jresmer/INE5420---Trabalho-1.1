@@ -1,10 +1,9 @@
 from canvas_object import CanvasObject
-from color import Color
 
 
 class Point(CanvasObject):
     #TODO: Passar os atributos para classe pai e requisitar o atributo
-    def __init__(self, coord: tuple, color: Color, name: str, tkinter_id: int, canvas) -> None:
+    def __init__(self, coord: tuple, color: str, name: str, tkinter_id: int, canvas) -> None:
         coord = [(coord[0], coord[1])]
         super().__init__(coord, color, name, tkinter_id, canvas)
 

@@ -1,5 +1,4 @@
 from world import World
-from color import Color
 from object_creation_window import ObjectCreationWindow
 from main_window import MainWindow
 
@@ -28,7 +27,7 @@ class GUI:
     def debug_print(self, text: str):
         print(text)
         
-    def create_object(self, coord: tuple, color: Color, name: str, obj_type) -> None:
+    def create_object(self, coord: tuple, color: str, name: str, obj_type) -> None:
 
         status = self.world.create_object(
             coord,
