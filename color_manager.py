@@ -1,6 +1,10 @@
 class ColorManager:
     def __init__(self):
-        self.__colors = ["Red", "Blue", "Green"]
+        self.__colors = {"Red": "red", 
+                         "Blue": "blue", 
+                         "Green": "green", 
+                         "Yellow": "yellow",
+                         "Dark Blue": "blue4"}
 
 
     def get_object_color(self, name: str):
@@ -12,6 +16,7 @@ class ColorManager:
         return None
     
     def get_all_object_colors(self):
-
-        return [color.lower() for color in self.__colors]
+        colors = list(self.__colors.keys())
+        colors.sort()
+        return [color for color in colors]
     

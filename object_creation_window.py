@@ -37,12 +37,12 @@ class ObjectCreationWindow(WindowGUI):
             coords = list(eval(self.__widgets["coord txt box"].get("1.0", "end-1c")))
     
             type_ = self.__widgets["type choice box txt"].get()
-            color = self.__widgets["color choice box txt"].get()
+            tk_color = self.__color_man.get_object_color(self.__widgets["color choice box txt"].get())
             obj_type = self.__obj_man.get_object_type(type_)
             
             self.__controller.create_object(
                 coords,
-                color,
+                tk_color,
                 name,
                 obj_type
             )
