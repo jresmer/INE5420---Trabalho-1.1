@@ -1,7 +1,10 @@
+
 from color import Color
+
 from copy import deepcopy
 from math import ceil, sqrt
 import numpy as np
+from math import radians
 
 class World:
     def __init__(self) -> None:
@@ -25,8 +28,6 @@ class World:
 
         new_object.draw(self.__viewport, self.__window, self.__zoom)
         return 1
-
-
     
     def __find_object(self, name: str) -> int:
 
@@ -62,10 +63,72 @@ class World:
         else:
 
             obj = self.__object_list[obj_index]
-            m = [[dx, 0],
-                 [0, dy]]
+            m = [[1, 0, 0],
+                 [0, 1, 0],
+                 [dx, dy, 1]]
             m = np.array(m)
             obj.transform(m)
+            obj.draw(self.__viewport, self.__window, self.__zoom)
+
+    def scale_object(self, name: str, sx: int, sy: int) -> bool:
+
+        obj_index = self.__find_object(name)
+
+        if obj_index is None:
+
+            return False
+        
+        else:
+
+            obj = self.__object_list[obj_index]
+            (cx, cy) = obj.get_center_coord()
+
+            m1 = np.array([[1,   0,   0],
+                           [0,   1,   0],
+                           [-cx, -cy, 1]])
+            m2 = np.array([[sx,   0,   0],
+                           [0,   sy,   0],
+                           [0,   0,    1]])
+            m3 = np.array([[1,   0,   0],
+                           [0,   1,   0],
+                           [cx, cy,   1]])
+            
+            m = np.matmul(m1,m2)
+            m = np.matmul(m, m3)
+            obj.transform(m)
+            obj.draw(self.__viewport, self.__window, self.__zoom)
+    
+    def rotate_object(self, name: str, angle: float) -> bool:
+
+        obj_index = self.__find_object(name)
+
+        if obj_index is None:
+
+            return False
+        
+        else:
+
+            obj = self.__object_list[obj_index]
+            (cx, cy) = obj.get_center_coord()
+
+            angle = radians(angle)
+            cos_teta = np.cos(angle)
+            sen_teta = np.sin(angle)
+
+            m1 = np.array([[1,   0,   0],
+                           [0,   1,   0],
+                           [-cx, -cy, 1]])
+            m2 = np.array([[cos_teta,   -sen_teta,   0],
+                           [sen_teta,   cos_teta,   0],
+                           [0,   0,    1]])
+            m3 = np.array([[1,   0,   0],
+                           [0,   1,   0],
+                           [cx, cy,   1]])
+            
+            m = np.matmul(m1,m2)
+            m = np.matmul(m, m3)
+            obj.transform(m)
+            obj.draw(self.__viewport, self.__window, self.__zoom)
     
     def move_window(self, dx, dy):
 

@@ -15,20 +15,21 @@ class CanvasObject(ABC):
         self.__tkinter_id = tkinter_id
         self.__canvas = canvas
 
-    def get_name(self):
-        return self.__name
     
     def transform(self, m: np.array) -> list:
 
         new_coords = list()
-
+        
         for coordinate in self.__coord:
 
-            np_coord = np.array(coordinate)
+
+            np_coord = np.array(coordinate + (1,))
 
             new_coord = np.matmul(np_coord, m)
-            new_coords.append(new_coord)
-        
+            new_coord.tolist()
+            x, y, z = new_coord
+            new_coords.append((x,y))
+
         self.__coord = new_coords
     
     @abstractmethod
@@ -38,3 +39,32 @@ class CanvasObject(ABC):
     @abstractmethod
     def delete(self):
         pass
+
+
+    def get_name(self):
+        return self.__name
+    
+    def get_coord(self):
+        return self.__coord
+    
+    def get_color(self):
+        return self.__color
+    
+    def get_tkinter_id(self):
+        return self.__tkinter_id
+    
+    def set_tkinter_id(self, _tkinter_id):
+        self.__tkinter_id = _tkinter_id
+    
+    def get_canvas(self):
+        return self.__canvas
+    
+    def get_center_coord(self):
+        n = len(self.__coord)
+        sum_x = 0
+        sum_y = 0
+        for (x,y) in self.__coord:
+            sum_x += x
+            sum_y += y
+        return (sum_x/n, sum_y/n)
+        

@@ -47,6 +47,13 @@ class GUI:
 
         self.world.revolve_object(name, dx, dy)
 
+    def scale_object(self, name: str, sx: int, sy: int):
+
+        self.world.scale_object(name, sx, sy)
+
+    def rotate_object(self, name: str, angle: float):
+        self.world.rotate_object(name, angle)
+
     def notify_status(self, text: str):
         self.windows[MainWindow.__name__].notify_status(text)
 

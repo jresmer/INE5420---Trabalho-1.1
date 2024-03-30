@@ -46,9 +46,29 @@ class MainWindow(WindowGUI):
     def revolution(self):
 
         self.__controller.revolve_object(
-            name=self.__widgets["title list obj"].get(tk.ACTIVE),
-            dx=self.__widgets["move dx obj txt box"].get("1.0", "end-1c"),
-            dy=self.__widgets["move dy obj txt box"].get("1.0", "end-1c")
+            name=self.__widgets["list obj"].get(tk.ACTIVE),
+            dx=int(self.__widgets["move dx obj txt box"].get("1.0", "end-1c")),
+            dy=int(self.__widgets["move dy obj txt box"].get("1.0", "end-1c"))
+        )
+
+    def scaletion(self, up: bool):
+        if up:
+            self.__controller.scale_object(
+                name=self.__widgets["list obj"].get(tk.ACTIVE),
+                sx=int(self.__widgets["scale txt box"].get("1.0", "end-1c")),
+                sy=int(self.__widgets["scale txt box"].get("1.0", "end-1c"))
+            )
+        else:
+            self.__controller.scale_object(
+                name=self.__widgets["list obj"].get(tk.ACTIVE),
+                sx=1/int(self.__widgets["scale txt box"].get("1.0", "end-1c")),
+                sy=1/int(self.__widgets["scale txt box"].get("1.0", "end-1c"))
+            )
+
+    def rotation(self, direction: int):
+        self.__controller.rotate_object(
+            name=self.__widgets["list obj"].get(tk.ACTIVE),
+            angle=direction*float(self.__widgets["rotate obj txt box"].get("1.0", "end-1c"))
         )
 
     def delete_object(self):
@@ -158,12 +178,12 @@ class MainWindow(WindowGUI):
 
         #Rotate Part
         button = tk.Button(frame, text="⟳",
-                           command= lambda: print("Rotate obj Right"))
+                           command= lambda: self.rotation(-1))
         button.place(x=180, y=35)
         self.__widgets['rotate obj right button'] = button
 
         button = tk.Button(frame, text="⟲", 
-                           command= lambda: print("Rotate obj Left"))
+                           command= lambda: self.rotation(1))
         button.place(x=70, y=35)
         self.__widgets['rotate obj left button'] = button
 
@@ -181,12 +201,12 @@ class MainWindow(WindowGUI):
 
         #Scale part
         button = tk.Button(frame, text="+",
-                           command= lambda: print("Scale up"))
+                           command= lambda: self.scaletion(True))
         button.place(x=180, y=75)
         self.__widgets['scale up button'] = button
 
         button = tk.Button(frame, text="--", 
-                           command= lambda: print("Scale down"))
+                           command= lambda: self.scaletion(False))
         button.place(x=70, y=75)
         self.__widgets['scale down button'] = button
 
@@ -222,7 +242,7 @@ class MainWindow(WindowGUI):
         text_box.place(x=140, y=120)
         self.__widgets["move dy obj txt box"] = text_box
 
-        button = tk.Button(frame, text = "✓", command = lambda: print("Move obj"))
+        button = tk.Button(frame, text = "✓", command = lambda: self.revolution())
         button.place(x=180, y=115)
         self.__widgets["move obj button"] = button
 
