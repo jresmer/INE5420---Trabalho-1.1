@@ -44,32 +44,40 @@ class MainWindow(WindowGUI):
             self.notify_status("Erro ao utilizar o zoom. Apenas valores inteiros aceitos no Step")
 
     def revolution(self):
-
-        self.__controller.revolve_object(
-            name=self.__widgets["list obj"].get(tk.ACTIVE),
-            dx=int(self.__widgets["move dx obj txt box"].get("1.0", "end-1c")),
-            dy=int(self.__widgets["move dy obj txt box"].get("1.0", "end-1c"))
-        )
-
+        try:
+            self.__controller.revolve_object(
+                name=self.__widgets["list obj"].get(tk.ACTIVE),
+                dx=int(self.__widgets["move dx obj txt box"].get("1.0", "end-1c")),
+                dy=int(self.__widgets["move dy obj txt box"].get("1.0", "end-1c"))
+            )
+        except ValueError:
+            self.notify_status("Error: the value to dx and dy has to be a integer number")
+    
     def scaletion(self, up: bool):
-        if up:
-            self.__controller.scale_object(
-                name=self.__widgets["list obj"].get(tk.ACTIVE),
-                sx=float(self.__widgets["scale txt box"].get("1.0", "end-1c")),
-                sy=float(self.__widgets["scale txt box"].get("1.0", "end-1c"))
-            )
-        else:
-            self.__controller.scale_object(
-                name=self.__widgets["list obj"].get(tk.ACTIVE),
-                sx=1/float(self.__widgets["scale txt box"].get("1.0", "end-1c")),
-                sy=1/float(self.__widgets["scale txt box"].get("1.0", "end-1c"))
-            )
+        try:
+            if up:
+                self.__controller.scale_object(
+                    name=self.__widgets["list obj"].get(tk.ACTIVE),
+                    sx=float(self.__widgets["scale txt box"].get("1.0", "end-1c")),
+                    sy=float(self.__widgets["scale txt box"].get("1.0", "end-1c"))
+                )
+            else:
+                self.__controller.scale_object(
+                    name=self.__widgets["list obj"].get(tk.ACTIVE),
+                    sx=1/float(self.__widgets["scale txt box"].get("1.0", "end-1c")),
+                    sy=1/float(self.__widgets["scale txt box"].get("1.0", "end-1c"))
+                )
+        except ValueError:
+            self.notify_status("Error: the value to scale has to be a float")
 
     def rotation(self, direction: int):
-        self.__controller.rotate_object(
-            name=self.__widgets["list obj"].get(tk.ACTIVE),
-            angle=direction*float(self.__widgets["rotate obj txt box"].get("1.0", "end-1c"))
-        )
+        try:
+            self.__controller.rotate_object(
+                name=self.__widgets["list obj"].get(tk.ACTIVE),
+                angle=direction*float(self.__widgets["rotate obj txt box"].get("1.0", "end-1c"))
+            )
+        except ValueError:
+            self.notify_status("Error: the value to rotate has to be a float (in degrees)")
 
     def delete_object(self):
         active_obj_name = str(self.__widgets['list obj'].get(tk.ACTIVE))
