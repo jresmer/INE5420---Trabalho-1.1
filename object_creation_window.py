@@ -1,7 +1,7 @@
 from window_gui import WindowGUI
 import tkinter as tk
+from tkinter.colorchooser import askcolor
 from canvas_object_manager import CanvasObjectManager
-from color_manager import ColorManager
 
 
 class ObjectCreationWindow(WindowGUI):
@@ -10,7 +10,6 @@ class ObjectCreationWindow(WindowGUI):
         self.__controller = controller
         
         self.__obj_man = CanvasObjectManager()
-        self.__color_man = ColorManager()
 
         # create empty widget list
         self.__widgets = dict()
@@ -30,6 +29,13 @@ class ObjectCreationWindow(WindowGUI):
 
         self.__root.mainloop()
 
+    def select_color(self):
+        color = askcolor(title="Object Color Selection")
+        if color != None:
+            self.__widgets["color bt"].config(text = color[1], background = color[1])
+        else:
+            self.__widgets["color bt"].config(text = "Select Color")
+
     def create(self):
 
         name = self.__widgets["name txt box"].get("1.0", "end-1c")
@@ -37,7 +43,12 @@ class ObjectCreationWindow(WindowGUI):
             coords = list(eval(self.__widgets["coord txt box"].get("1.0", "end-1c")))
     
             type_ = self.__widgets["type choice box txt"].get()
-            tk_color = self.__color_man.get_object_color(self.__widgets["color choice box txt"].get())
+            tk_color = self.__widgets["color bt"].cget('text')
+
+            if tk_color == "Select Color": 
+                self.__controller.notify_status("Choice a object color")
+                return
+            
             obj_type = self.__obj_man.get_object_type(type_)
             
             self.__controller.create_object(
@@ -50,7 +61,7 @@ class ObjectCreationWindow(WindowGUI):
             self.__root.destroy()
 
         except:
-            self.__controller.notify_status("Coordenadas digitadas incorretamente. Reveja o formato, cor e tipo utilizado")
+            self.__controller.notify_status("Coordenadas digitadas incorretamente. Reveja o formato e tipo utilizado")
 
     def init_widgets(self, world) -> None:
 
@@ -100,11 +111,6 @@ class ObjectCreationWindow(WindowGUI):
         label.place(x=250, y= 95)
         self.__widgets["obj color lbl"] = label
 
-
-        choices = self.__color_man.get_all_object_colors()
-        var_str = tk.StringVar(self.__root)
-        var_str.set("---")
-        choice_box = tk.OptionMenu(self.__root, var_str, *choices)
-        choice_box.place(x=330, y=90)
-        self.__widgets["color choice box txt"] = var_str
-        self.__widgets["color choice box"] = choice_box
+        button = tk.Button(self.__root, text="Select Color", command= self.select_color)
+        button.place(x=330, y=95)
+        self.__widgets["color bt"] = button
