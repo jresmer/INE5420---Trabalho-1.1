@@ -39,20 +39,45 @@ class GUI:
         )
         if status == 1:
             self.windows[MainWindow.__name__].add_to_listbox(name)
-            self.notify_status(f"Objeto {name} criado com sucesso")
+            self.notify_status(f"Object name: {name} successfully created")
         elif status == 2:
-            self.notify_status(f"Já existe um objeto com o nome {name}")
+            self.notify_status(f"Name: {name} is already assigned")
 
     def revolve_object(self, name: str, dx: int, dy: int):
 
-        self.world.revolve_object(name, dx, dy)
+        success = self.world.revolve_object(name, dx, dy)
+
+        if success:
+
+            self.notify_status("Successfull transformation applied to object {}".format(name))
+
+        else:
+
+            self.notify_status("Unsucessfull transformation")
 
     def scale_object(self, name: str, sx: int, sy: int):
 
-        self.world.scale_object(name, sx, sy)
+        success = self.world.scale_object(name, sx, sy)
+
+        if success:
+
+            self.notify_status("Successfull transformation applied to object {}".format(name))
+
+        else:
+
+            self.notify_status("Unsucessfull transformation")
 
     def rotate_object(self, name: str, angle: float):
-        self.world.rotate_object(name, angle)
+
+        success = self.world.rotate_object(name, angle)
+
+        if success:
+
+            self.notify_status("Successfull transformation applied to object {}".format(name))
+
+        else:
+
+            self.notify_status("Unsucessfull transformation")
 
     def notify_status(self, text: str):
         self.windows[MainWindow.__name__].notify_status(text)

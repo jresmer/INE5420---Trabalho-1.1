@@ -55,14 +55,14 @@ class MainWindow(WindowGUI):
         if up:
             self.__controller.scale_object(
                 name=self.__widgets["list obj"].get(tk.ACTIVE),
-                sx=int(self.__widgets["scale txt box"].get("1.0", "end-1c")),
-                sy=int(self.__widgets["scale txt box"].get("1.0", "end-1c"))
+                sx=float(self.__widgets["scale txt box"].get("1.0", "end-1c")),
+                sy=float(self.__widgets["scale txt box"].get("1.0", "end-1c"))
             )
         else:
             self.__controller.scale_object(
                 name=self.__widgets["list obj"].get(tk.ACTIVE),
-                sx=1/int(self.__widgets["scale txt box"].get("1.0", "end-1c")),
-                sy=1/int(self.__widgets["scale txt box"].get("1.0", "end-1c"))
+                sx=1/float(self.__widgets["scale txt box"].get("1.0", "end-1c")),
+                sy=1/float(self.__widgets["scale txt box"].get("1.0", "end-1c"))
             )
 
     def rotation(self, direction: int):

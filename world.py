@@ -70,6 +70,8 @@ class World:
             obj.transform(m)
             obj.draw(self.__viewport, self.__window, self.__zoom)
 
+            return True
+
     def scale_object(self, name: str, sx: int, sy: int) -> bool:
 
         obj_index = self.__find_object(name)
@@ -97,6 +99,8 @@ class World:
             m = np.matmul(m, m3)
             obj.transform(m)
             obj.draw(self.__viewport, self.__window, self.__zoom)
+
+            return True
     
     def rotate_object(self, name: str, angle: float) -> bool:
 
@@ -129,6 +133,8 @@ class World:
             m = np.matmul(m, m3)
             obj.transform(m)
             obj.draw(self.__viewport, self.__window, self.__zoom)
+
+            return True
     
     def move_window(self, dx, dy):
 
