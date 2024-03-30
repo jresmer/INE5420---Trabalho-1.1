@@ -32,9 +32,10 @@ class ObjectCreationWindow(WindowGUI):
     def select_color(self):
         color = askcolor(title="Object Color Selection")
         if color != None:
-            self.__widgets["color bt"].config(text = color[1], background = color[1])
+            self.__widgets["selected color"].config(background = color[1])
         else:
-            self.__widgets["color bt"].config(text = "Select Color")
+            self.__controller.notify_status("None color selected. Considering red")
+            self.__widgets["selected color"].config(background = "red")
 
     def create(self):
 
@@ -43,11 +44,7 @@ class ObjectCreationWindow(WindowGUI):
             coords = list(eval(self.__widgets["coord txt box"].get("1.0", "end-1c")))
     
             type_ = self.__widgets["type choice box txt"].get()
-            tk_color = self.__widgets["color bt"].cget('text')
-
-            if tk_color == "Select Color": 
-                self.__controller.notify_status("Choice a object color")
-                return
+            tk_color = self.__widgets["selected color"].cget('background')
             
             obj_type = self.__obj_man.get_object_type(type_)
             
@@ -114,3 +111,7 @@ class ObjectCreationWindow(WindowGUI):
         button = tk.Button(self.__root, text="Select Color", command= self.select_color)
         button.place(x=330, y=95)
         self.__widgets["color bt"] = button
+
+        label = tk.Label(self.__root, background= "red", width=2)
+        label.place(x=420, y=95)
+        self.__widgets["selected color"] = label
