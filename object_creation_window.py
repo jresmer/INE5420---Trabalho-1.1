@@ -31,11 +31,7 @@ class ObjectCreationWindow(WindowGUI):
 
     def select_color(self):
         color = askcolor(title="Object Color Selection")
-        if color != None:
-            self.__widgets["selected color"].config(background = color[1])
-        else:
-            self.__controller.notify_status("None color selected. Considering red")
-            self.__widgets["selected color"].config(background = "red")
+        self.__widgets["selected color"].config(background = color[1])
 
     def create(self):
 
