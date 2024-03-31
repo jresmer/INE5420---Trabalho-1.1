@@ -18,7 +18,7 @@ class ObjectCreationWindow(WindowGUI):
         # instanciate Tk object and set the window's title and geometry
         self.__root = tk.Tk()
         self.__root.title("Sistema Gráfico")
-        self.__root.geometry("500x150") 
+        self.__root.geometry("500x200") 
 
         self.init_widgets(world)  
 
@@ -59,11 +59,11 @@ class ObjectCreationWindow(WindowGUI):
     def init_widgets(self, world) -> None:
 
         button = tk.Button(self.__root, text="Create", command= self.create)
-        button.place(x=185, y=120)
+        button.place(x=185, y=150)
         self.__widgets["create bt"] = button
 
         button = tk.Button(self.__root, text="Cancel", command= self.__root.destroy)
-        button.place(x=260, y=120)
+        button.place(x=260, y=150)
         self.__widgets["cancel bt"] = button
 
         label = tk.Label(self.__root, text="Object name:")
@@ -101,11 +101,11 @@ class ObjectCreationWindow(WindowGUI):
 
         #Object color choice
         label = tk.Label(self.__root, text="Object color:")
-        label.place(x=250, y= 95)
+        label.place(x=210, y= 95)
         self.__widgets["obj color lbl"] = label
 
         button = tk.Button(self.__root, text="Select Color", command= self.select_color)
-        button.place(x=330, y=95)
+        button.place(x=300, y=90)
         self.__widgets["color bt"] = button
 
         label = tk.Label(self.__root, background= "red", width=2)
