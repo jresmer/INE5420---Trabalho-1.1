@@ -83,7 +83,7 @@ class GUI:
 
     def delete_object(self, name: str):
         self.world.delete_object(name)
-        self.notify_status(f"Objeto {name} deletado")
+        self.notify_status(f"Object name: {name} deleted")
 
     def zoom_window(self, pct: float):
 

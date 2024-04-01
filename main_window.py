@@ -41,7 +41,7 @@ class MainWindow(WindowGUI):
             self.__controller.zoom_window(pct=multiplier)
         except Exception as e:
             print(e)
-            self.notify_status("Erro ao utilizar o zoom. Apenas valores inteiros aceitos no Step")
+            self.notify_status("Value error for zoom functionality - value should be an integer")
 
     def revolution(self):
         try:
@@ -51,7 +51,7 @@ class MainWindow(WindowGUI):
                 dy=int(self.__widgets["move dy obj txt box"].get("1.0", "end-1c"))
             )
         except ValueError:
-            self.notify_status("Error: the value to dx and dy has to be a integer number")
+            self.notify_status("Error: the value to dx and dy has to be an integer number")
     
     def scaletion(self, up: bool):
         try:
