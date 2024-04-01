@@ -1,6 +1,3 @@
-
-from color import Color
-
 from copy import deepcopy
 from math import ceil, sqrt
 import numpy as np
@@ -19,7 +16,7 @@ class World:
                 return obj
         return None 
 
-    def create_object(self, coord: tuple, color: Color, name: str, obj_type, canvas) -> None:
+    def create_object(self, coord: tuple, color: str, name: str, obj_type, canvas) -> None:
         if self.search_object_by_name(name) != None:
             return 2
         

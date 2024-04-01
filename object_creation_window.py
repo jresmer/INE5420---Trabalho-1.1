@@ -1,5 +1,6 @@
 from window_gui import WindowGUI
 import tkinter as tk
+from tkinter.colorchooser import askcolor
 from canvas_object_manager import CanvasObjectManager
 
 
@@ -17,7 +18,7 @@ class ObjectCreationWindow(WindowGUI):
         # instanciate Tk object and set the window's title and geometry
         self.__root = tk.Tk()
         self.__root.title("Sistema Gráfico")
-        self.__root.geometry("500x150") 
+        self.__root.geometry("500x200") 
 
         self.init_widgets(world)  
 
@@ -28,6 +29,10 @@ class ObjectCreationWindow(WindowGUI):
 
         self.__root.mainloop()
 
+    def select_color(self):
+        color = askcolor(title="Object Color Selection")
+        self.__widgets["selected color"].config(background = color[1])
+
     def create(self):
 
         name = self.__widgets["name txt box"].get("1.0", "end-1c")
@@ -35,11 +40,13 @@ class ObjectCreationWindow(WindowGUI):
             coords = list(eval(self.__widgets["coord txt box"].get("1.0", "end-1c")))
     
             type_ = self.__widgets["type choice box txt"].get()
+            tk_color = self.__widgets["selected color"].cget('background')
+            
             obj_type = self.__obj_man.get_object_type(type_)
             
             self.__controller.create_object(
                 coords,
-                "red",
+                tk_color,
                 name,
                 obj_type
             )
@@ -47,16 +54,16 @@ class ObjectCreationWindow(WindowGUI):
             self.__root.destroy()
 
         except:
-            self.__controller.notify_status("Coordenadas digitadas incorretamente. Reveja o formato e o tipo utilizado")
+            self.__controller.notify_status("Coordenadas digitadas incorretamente. Reveja o formato e tipo utilizado")
 
     def init_widgets(self, world) -> None:
 
         button = tk.Button(self.__root, text="Create", command= self.create)
-        button.place(x=185, y=120)
+        button.place(x=185, y=150)
         self.__widgets["create bt"] = button
 
         button = tk.Button(self.__root, text="Cancel", command= self.__root.destroy)
-        button.place(x=260, y=120)
+        button.place(x=260, y=150)
         self.__widgets["cancel bt"] = button
 
         label = tk.Label(self.__root, text="Object name:")
@@ -79,9 +86,10 @@ class ObjectCreationWindow(WindowGUI):
         label.place(x=100, y= 60)
         self.__widgets["coord form"] = label
 
+        #Object type choice
         label = tk.Label(self.__root, text="Object type:")
         label.place(x=10, y= 95)
-        self.__widgets["coord lbl"] = label
+        self.__widgets["obj type lbl"] = label
 
         choices = self.__obj_man.get_all_object_types()
         var_str = tk.StringVar(self.__root)
@@ -90,3 +98,16 @@ class ObjectCreationWindow(WindowGUI):
         choice_box.place(x=100, y=90)
         self.__widgets["type choice box txt"] = var_str
         self.__widgets["type choice box"] = choice_box
+
+        #Object color choice
+        label = tk.Label(self.__root, text="Object color:")
+        label.place(x=210, y= 95)
+        self.__widgets["obj color lbl"] = label
+
+        button = tk.Button(self.__root, text="Select Color", command= self.select_color)
+        button.place(x=300, y=90)
+        self.__widgets["color bt"] = button
+
+        label = tk.Label(self.__root, background= "red", width=2)
+        label.place(x=420, y=95)
+        self.__widgets["selected color"] = label

@@ -1,12 +1,11 @@
 from abc import ABC, abstractmethod
-from color import Color
 import numpy as np
 
 
 # TODO - rever necessidade de tkinte_id ser passado por parâmetro
 class CanvasObject(ABC):
 
-    def __init__(self, coord: tuple, color: Color, name: str,
+    def __init__(self, coord: tuple, color: str, name: str,
                     tkinter_id: int, canvas) -> None:
         
         self.__coord = coord
