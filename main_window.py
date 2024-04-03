@@ -43,9 +43,9 @@ class MainWindow(WindowGUI):
             print(e)
             self.notify_status("Value error for zoom functionality - value should be an integer")
 
-    def revolution(self):
+    def translate(self):
         try:
-            self.__controller.revolve_object(
+            self.__controller.translate_object(
                 name=self.__widgets["list obj"].get(tk.ACTIVE),
                 dx=int(self.__widgets["move dx obj txt box"].get("1.0", "end-1c")),
                 dy=int(self.__widgets["move dy obj txt box"].get("1.0", "end-1c"))
@@ -250,7 +250,7 @@ class MainWindow(WindowGUI):
         text_box.place(x=140, y=120)
         self.__widgets["move dy obj txt box"] = text_box
 
-        button = tk.Button(frame, text = "✓", command = lambda: self.revolution())
+        button = tk.Button(frame, text = "✓", command = lambda: self.translate())
         button.place(x=180, y=115)
         self.__widgets["move obj button"] = button
 

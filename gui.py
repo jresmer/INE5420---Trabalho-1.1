@@ -42,9 +42,9 @@ class GUI:
         elif status == 2:
             self.notify_status(f"Name: {name} is already assigned")
 
-    def revolve_object(self, name: str, dx: int, dy: int):
+    def translate_object(self, name: str, dx: int, dy: int):
 
-        success = self.world.revolve_object(name, dx, dy)
+        success = self.world.translate_object(name, dx, dy)
 
         if success:
 

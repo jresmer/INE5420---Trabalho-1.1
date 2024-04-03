@@ -49,7 +49,7 @@ class World:
             del obj
 
             
-    def revolve_object(self, name: str, dx: int, dy: int) -> bool:
+    def translate_object(self, name: str, dx: int, dy: int) -> bool:
 
         obj_index = self.__find_object(name)
 
