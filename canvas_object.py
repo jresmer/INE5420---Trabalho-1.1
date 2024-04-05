@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 import numpy as np
+from utils import Utils
 
 
 # TODO - rever necessidade de tkinte_id ser passado por parâmetro
@@ -21,13 +22,8 @@ class CanvasObject(ABC):
         
         for coordinate in self.__coord:
 
-
-            np_coord = np.array(coordinate + (1,))
-
-            new_coord = np.matmul(np_coord, m)
-            new_coord.tolist()
-            x, y, z = new_coord
-            new_coords.append((x,y))
+            new_coord = Utils.transform(coordinate, m)
+            new_coords.append(new_coord)
 
         self.__coord = new_coords
     
