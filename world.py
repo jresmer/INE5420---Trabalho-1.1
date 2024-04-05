@@ -1,12 +1,14 @@
 from copy import deepcopy
 from math import ceil, sqrt
 from utils import Utils
+from window_coord_controller import WindowCoordController
 
 class World:
     def __init__(self) -> None:
         self.__object_list = []
         self.__viewport = [0,0,500,500]
-        self.__window = [0,0,500,500]
+        self.__window = WindowCoordController()
+        # self.__window = [0,0,500,500]
         self.__zoom = 1
 
     def search_object_by_name(self, name: str):
@@ -21,6 +23,7 @@ class World:
         
         new_object = obj_type(coord, color, name, "", canvas)
         self.__object_list.append(new_object)
+        self.__window.add_obj(new_object.get_name(), new_object.get_coord())
 
         new_object.draw(self.__viewport, self.__window, self.__zoom)
         return 1
@@ -61,6 +64,7 @@ class World:
             obj = self.__object_list[obj_index]
             m = Utils.gen_translation_matrix(dx, dy)
             obj.transform(m)
+            self.__window.att_obj(name, obj.get_coord())
             obj.draw(self.__viewport, self.__window, self.__zoom)
 
             return True
@@ -85,6 +89,7 @@ class World:
                 cy=cy
             )
             obj.transform(m)
+            self.__window.att_obj(name, obj.get_coord())
             obj.draw(self.__viewport, self.__window, self.__zoom)
 
             return True
@@ -108,63 +113,73 @@ class World:
                 cy=cy
             )
             obj.transform(m)
+            self.__window.att_obj(name, obj.get_coord())
             obj.draw(self.__viewport, self.__window, self.__zoom)
 
             return True
     
     def move_window(self, dx, dy):
 
-        self.__window[0] += dx
-        self.__window[1] += dy
-        self.__window[2] += dx
-        self.__window[3] += dy
- 
+        objs = {obj.get_name(): obj.get_coord() for obj in self.__object_list}
+        self.__window.move(dx, dy, objs)
+        # self.__window[0] += dx
+        # self.__window[1] += dy
+        # self.__window[2] += dx
+        # self.__window[3] += dy
+    
         for obj in self.__object_list:
             obj.draw(self.__viewport, self.__window, self.__zoom)
-    
+
     def zoom_window(self, pct):
-
-        # recover window
-        min_x, min_y, max_x, max_y = self.__window
-
-        # calculate new window size
-        if pct < 0:
-            multiplier = sqrt(1 * (1 + abs(pct)))
-        else:
-            multiplier = sqrt(1 / (1 + pct))
-
-        # calculate new x values
-        center_x = (min_x + max_x) // 2
-        min_diff = int((center_x - min_x) * multiplier)
-        new_min_x = center_x - min_diff
-        max_diff = ceil((max_x - center_x) * multiplier)
-        new_max_x = max_diff + center_x
- 
-        # calculate new y values
-        center_y = (min_y + max_y) // 2
-        min_diff = int((center_y - min_y) * multiplier)
-        new_min_y = center_y - min_diff
-        max_diff = ceil((max_y - center_y) * multiplier)
-        new_max_y = max_diff + center_y
-
-        if new_max_x <= new_min_x + 20 or new_max_y <= new_min_y + 20:
-
-            new_max_x, new_min_x = center_x + 10, center_x -10
-            new_max_y, new_min_y = center_y + 10, center_y - 10
-
-        if new_max_x > self.__viewport[2] and new_min_x < self.__viewport[0] and \
-                new_max_y > self.__viewport[3] and new_min_y < self.__viewport[1]:
-
-            new_min_x, new_min_y, new_max_x, new_max_y = deepcopy(self.__viewport)
-
-        # set new window size
-        self.__window = [new_min_x, new_min_y, new_max_x, new_max_y]
-
-        previeous_size = (max_x - min_x) * (max_y - min_y)
-        new_size = (new_max_x - new_min_x) * (new_max_y - new_min_y)
-        diff = previeous_size / new_size
-        self.__zoom *= diff
-
+        objs = {obj.get_name(): obj.get_coord() for obj in self.__object_list}
+        self.__window.scale(pct, objs)
         # redraw canvas objects
         for obj in self.__object_list:
             obj.draw(self.__viewport, self.__window, self.__zoom)
+
+    # def zoom_window(self, pct):
+
+    #     # recover window
+    #     min_x, min_y, max_x, max_y = self.__window
+
+    #     # calculate new window size
+    #     if pct < 0:
+    #         multiplier = sqrt(1 * (1 + abs(pct)))
+    #     else:
+    #         multiplier = sqrt(1 / (1 + pct))
+
+    #     # calculate new x values
+    #     center_x = (min_x + max_x) // 2
+    #     min_diff = int((center_x - min_x) * multiplier)
+    #     new_min_x = center_x - min_diff
+    #     max_diff = ceil((max_x - center_x) * multiplier)
+    #     new_max_x = max_diff + center_x
+ 
+    #     # calculate new y values
+    #     center_y = (min_y + max_y) // 2
+    #     min_diff = int((center_y - min_y) * multiplier)
+    #     new_min_y = center_y - min_diff
+    #     max_diff = ceil((max_y - center_y) * multiplier)
+    #     new_max_y = max_diff + center_y
+
+    #     if new_max_x <= new_min_x + 20 or new_max_y <= new_min_y + 20:
+
+    #         new_max_x, new_min_x = center_x + 10, center_x -10
+    #         new_max_y, new_min_y = center_y + 10, center_y - 10
+
+    #     if new_max_x > self.__viewport[2] and new_min_x < self.__viewport[0] and \
+    #             new_max_y > self.__viewport[3] and new_min_y < self.__viewport[1]:
+
+    #         new_min_x, new_min_y, new_max_x, new_max_y = deepcopy(self.__viewport)
+
+    #     # set new window size
+    #     self.__window = [new_min_x, new_min_y, new_max_x, new_max_y]
+
+    #     previeous_size = (max_x - min_x) * (max_y - min_y)
+    #     new_size = (new_max_x - new_min_x) * (new_max_y - new_min_y)
+    #     diff = previeous_size / new_size
+    #     self.__zoom *= diff
+
+    #     # redraw canvas objects
+    #     for obj in self.__object_list:
+    #         obj.draw(self.__viewport, self.__window, self.__zoom)

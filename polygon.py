@@ -12,22 +12,31 @@ class Polygon(CanvasObject):
         
         self.delete()
 
-        x0, y0 = self.get_coord()[0]
+        window_xmin, window_ymin, window_xmax, window_ymax = [-1,-1,1,1]
+        vp_xmin, vp_ymin, vp_xmax, vp_ymax = viewport
+        x0, y0 = window.get_coords()[self.get_name()][0]
+        tkinter_ids = []
 
-        for (x1,y1) in self.get_coord()[1:]:
-            line = Line(((x0,y0),(x1,y1)), self.get_color(), "Linha", "", self.get_canvas())
-            line.draw(viewport, window, zoom)
-            self.__lines.append(line)
+        for (x1,y1) in window.get_coords()[self.get_name()][1:]:
+            x0_vp = (x0 - window_xmin) * (vp_xmax - vp_xmin) / (window_xmax - window_xmin)
+            y0_vp = (y0 - window_ymin) * (vp_ymax - vp_ymin) / (window_ymax - window_ymin)
+            x1_vp = (x1 - window_xmin) * (vp_xmax - vp_xmin) / (window_xmax - window_xmin)
+            y1_vp = (y1 - window_ymin) * (vp_ymax - vp_ymin) / (window_ymax - window_ymin)
+
+            tkinter_ids.append(self.get_canvas().create_line(x0_vp, y0_vp, x1_vp, y1_vp, fill=self.get_color(), width=zoom))
 
             x0, y0 = x1, y1
 
-        x0, y0 = self.get_coord()[-1]
-        x1, y1 = self.get_coord()[0]
-        line = Line(((x0,y0),(x1,y1)), self.get_color(), "Linha", "", self.get_canvas())
-        line.draw(viewport, window, zoom)
-        self.__lines.append(line)
+        x0, y0 = window.get_coords()[self.get_name()][-1]
+        x1, y1 = window.get_coords()[self.get_name()][0]
+        x0_vp = (x0 - window_xmin) * (vp_xmax - vp_xmin) / (window_xmax - window_xmin)
+        y0_vp = (y0 - window_ymin) * (vp_ymax - vp_ymin) / (window_ymax - window_ymin)
+        x1_vp = (x1 - window_xmin) * (vp_xmax - vp_xmin) / (window_xmax - window_xmin)
+        y1_vp = (y1 - window_ymin) * (vp_ymax - vp_ymin) / (window_ymax - window_ymin)
+
+        tkinter_ids.append(self.get_canvas().create_line(x0_vp, y0_vp, x1_vp, y1_vp, fill=self.get_color(), width=zoom))
+        self.set_tkinter_id(tkinter_ids)
 
     def delete(self):
-        for line in self.__lines:
-            line.delete()
-        self.__lines = []
+        for line in self.get_tkinter_id():
+            self.get_canvas().delete(line)

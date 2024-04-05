@@ -11,13 +11,13 @@ class Point(CanvasObject):
         
         self.delete()
 
-        window_xmin, window_ymin, window_xmax, window_ymax = window
+        window_xmin, window_ymin, window_xmax, window_ymax = [-1,-1,1,1]
         vp_xmin, vp_ymin, vp_xmax, vp_ymax = viewport
-        [(x, y)] = self.get_coord()
+        [(x, y)] = window.get_coords()[self.get_name()]
 
         x_vp = (x - window_xmin) * (vp_xmax - vp_xmin) / (window_xmax - window_xmin)
         y_vp = (y - window_ymin) * (vp_ymax - vp_ymin) / (window_ymax - window_ymin)
-
+  
         diff = int(1 * zoom)
 
         new_tkinter_id = self.get_canvas().create_oval(x_vp - diff, y_vp - diff, x_vp + diff, y_vp + diff, fill=self.get_color())
