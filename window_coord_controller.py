@@ -69,10 +69,16 @@ class WindowCoordController:
     def add_obj(self, name: str, coords: tuple) -> bool:
 
         if name not in self.__obj_coordinates.keys():
+
+            new_coords = list()
         
             # converts coordinates to the window appropriate format
-            coords = self.__world_to_normalized(coords)
-            self.__obj_coordinates[name] = coords
+            for coord in coords:
+
+                new_coord = self.__world_to_normalized(coords)
+                new_coords.append(new_coord)
+
+            self.__obj_coordinates[name] = new_coords
 
             return True
 
@@ -91,9 +97,14 @@ class WindowCoordController:
 
         for name in objs.keys():
 
-            coord = objs[name]
-            coord = self.__world_to_normalized(coord)
-            self.__obj_coordinates[name] = coord
+            coords = objs[name]
+            new_coords = list()
+
+            for coord in coords:
+                new_coord = self.__world_to_normalized(coord)
+                new_coords.append(new_coord)
+
+            self.__obj_coordinates[name] = coords
         
         return self.__obj_coordinates
 
@@ -115,9 +126,14 @@ class WindowCoordController:
 
         for name in objs.keys():
 
-            coord = objs[name]
-            coord = self.__world_to_normalized(coord)
-            self.__obj_coordinates[name] = coord
+            coords = objs[name]
+            new_coords = list()
+
+            for coord in coords:
+                new_coord = self.__world_to_normalized(coord)
+                new_coords.append(new_coord)
+
+            self.__obj_coordinates[name] = coords
         
         return self.__obj_coordinates
 
@@ -138,8 +154,13 @@ class WindowCoordController:
 
         for name in objs.keys():
 
-            coord = objs[name]
-            coord = self.__world_to_normalized(coord)
-            self.__obj_coordinates[name] = coord
+            coords = objs[name]
+            new_coords = list()
+
+            for coord in coords:
+                new_coord = self.__world_to_normalized(coord)
+                new_coords.append(new_coord)
+
+            self.__obj_coordinates[name] = coords
         
         return self.__obj_coordinates
