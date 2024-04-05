@@ -10,14 +10,15 @@ class WindowCoordController:
         self.__vup = vup
         self.__u = u
         self.__obj_coordinates = dict()
+
+    @staticmethod
+    def __mag(v: tuple) -> float:
+
+        vx, vy = v
+        return np.sqrt(vx ** 2 + vy ** 2)
     
     # converts world coordinates (x, y) to normalized coordinates
     def __world_to_normalized(self, coord: tuple) -> tuple:
-
-        def mag(v: tuple) -> float:
-
-            vx, vy = v
-            return np.sqrt(vx ** 2 + vy ** 2)
 
         # translate coord in (-Wcx, -Wcy)
         dx, dy = self.__origin
@@ -46,13 +47,13 @@ class WindowCoordController:
         coord = Utils.transform(coord, m)
 
         # normalize coord
-        y_max = mag(self.__vup)
-        x_max = mag(self.__u)
+        y_max = self.__mag(self.__vup)
+        x_max = self.__mag(self.__u)
         x, y = coord
         x_diff = x + x_max
         y_diff = y + y_max
-        new_x = x / (2 * x_max)
-        new_y = y / (2* y_max)
+        new_x = x_diff / (2 * x_max)
+        new_y = y_diff / (2* y_max)
         
         return new_x, new_y
 
@@ -83,14 +84,62 @@ class WindowCoordController:
 
         return self.__obj_coordinates
     
-    def move(self, dx: int, dy: int) -> list:
+    def move(self, dx: int, dy: int, objs: dict) -> dict:
 
-        ...
+        m = Utils.gen_translation_matrix(dx, dy)
+        self.__origin = Utils.transform(self.__origin, m)
 
-    def rotate(self, angle: float) -> list:
+        for name in objs.keys():
 
-        ...
+            coord = objs[name]
+            coord = self.__world_to_normalized(coord)
+            self.__obj_coordinates[name] = coord
+        
+        return self.__obj_coordinates
 
-    def scale(self, pct: float) -> list:
+    def rotate(self, angle: float, objs: dict) -> dict:
 
-        ...
+        # calculate new vup and u values (rotating them)
+        magnitude_v = self.__mag(self.__vup)
+        magnitude_u = self.__mag(self.__u)
+        vupx, vupy = self.__vup
+        current_angle_v = np.arctan(vupy / vupx)
+        ux, uy = self.__u
+        current_angle_u = np.arctan(uy / ux)
+        new_angle_v = current_angle_v + angle
+        new_angle_u = current_angle_u + angle
+        self.__vup = (np.sin(new_angle_v) * magnitude_v,
+                      np.cos(new_angle_v) * magnitude_v)
+        self.__u = (np.sin(new_angle_u) * magnitude_u,
+                      np.cos(new_angle_u) * magnitude_u)
+
+        for name in objs.keys():
+
+            coord = objs[name]
+            coord = self.__world_to_normalized(coord)
+            self.__obj_coordinates[name] = coord
+        
+        return self.__obj_coordinates
+
+    def scale(self, multiplier: float, objs: dict) -> dict:
+
+        # calculate new vup and u values (rescaling them)
+        multiplier = np.sqrt(multiplier)
+        magnitude_v = self.__mag(self.__vup) * multiplier
+        magnitude_u = self.__mag(self.__u) * multiplier
+        vupx, vupy = self.__vup
+        angle_v = np.arctan(vupy / vupx)
+        ux, uy = self.__u
+        angle_u = np.arctan(uy / ux)
+        self.__vup = (np.sin(angle_v) * magnitude_v,
+                      np.cos(angle_v) * magnitude_v)
+        self.__u = (np.sin(angle_u) * magnitude_u,
+                      np.cos(angle_u) * magnitude_u)
+
+        for name in objs.keys():
+
+            coord = objs[name]
+            coord = self.__world_to_normalized(coord)
+            self.__obj_coordinates[name] = coord
+        
+        return self.__obj_coordinates
