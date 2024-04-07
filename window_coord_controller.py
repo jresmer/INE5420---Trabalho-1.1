@@ -125,9 +125,9 @@ class WindowCoordController:
         magnitude_v = self.__mag(self.__vup)
         magnitude_u = self.__mag(self.__u)
         vupx, vupy = self.__vup
-        current_angle_v = np.arctan(vupy / vupx)
+        current_angle_v = np.arctan(vupx / vupy) if vupy != 0 else 0
         ux, uy = self.__u
-        current_angle_u = np.arctan(uy / ux)
+        current_angle_u = np.arctan(ux / uy) if uy != 0 else 0
         new_angle_v = current_angle_v + angle
         new_angle_u = current_angle_u + angle
         self.__vup = (np.sin(new_angle_v) * magnitude_v,
@@ -146,7 +146,6 @@ class WindowCoordController:
 
         # calculate new vup and u values (rescaling them)
         multiplier = np.sqrt(1/(1 + multiplier)) if multiplier >= 0 else np.sqrt(1 + abs(multiplier))
-        print(multiplier)
         magnitude_v = self.__mag(self.__vup) * multiplier
         magnitude_u = self.__mag(self.__u) * multiplier
         vupx, vupy = self.__vup
@@ -157,8 +156,6 @@ class WindowCoordController:
                       np.cos(angle_v) * magnitude_v)
         self.__u = (np.sin(angle_u) * magnitude_u,
                       np.cos(angle_u) * magnitude_u)
-        print(self.__vup)
-        print(self.__u)
 
         for name in objs.keys():
 

@@ -85,7 +85,10 @@ class GUI:
         self.world.delete_object(name)
         self.notify_status(f"Object name: {name} deleted")
 
-    def zoom_window(self, pct: float):
+    def rotate_window(self, angle: float):
+        self.world.rotate_window(angle)
+        self.windows[MainWindow.__name__].notify_status(f"")
 
+    def zoom_window(self, pct: float):
         self.world.zoom_window(pct)
         self.windows[MainWindow.__name__].notify_status(f"")
