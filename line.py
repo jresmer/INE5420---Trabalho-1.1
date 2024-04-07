@@ -10,9 +10,9 @@ class Line(CanvasObject):
         
         self.delete()
 
-        window_xmin, window_ymin, window_xmax, window_ymax = window
+        window_xmin, window_ymin, window_xmax, window_ymax = [-1,-1,1,1]
         vp_xmin, vp_ymin, vp_xmax, vp_ymax = viewport
-        (x0, y0), (x1, y1) = self.get_coord()
+        (x0, y0), (x1, y1) = window.get_coords()[self.get_name()]
 
         x0_vp = (x0 - window_xmin) * (vp_xmax - vp_xmin) / (window_xmax - window_xmin)
         y0_vp = (y0 - window_ymin) * (vp_ymax - vp_ymin) / (window_ymax - window_ymin)

@@ -25,10 +25,10 @@ class MainWindow(WindowGUI):
         self.init_widgets(world)
 
         #BIND PARA MOVER O CANVAS
-        self.__root.bind("<KeyPress-Left>", lambda _: self.__controller.move_canvas(-3, 0))
-        self.__root.bind("<KeyPress-Right>", lambda _: self.__controller.move_canvas(3, 0))
-        self.__root.bind("<KeyPress-Up>", lambda _: self.__controller.move_canvas(0, -3))
-        self.__root.bind("<KeyPress-Down>", lambda _: self.__controller.move_canvas(0, 3))
+        self.__root.bind("<KeyPress-Left>", lambda _: self.__controller.move_canvas(3, 0))
+        self.__root.bind("<KeyPress-Right>", lambda _: self.__controller.move_canvas(-3, 0))
+        self.__root.bind("<KeyPress-Up>", lambda _: self.__controller.move_canvas(0, 3))
+        self.__root.bind("<KeyPress-Down>", lambda _: self.__controller.move_canvas(0, -3))
         self.__root.bind("<Button-4>", lambda _: self.on_mousewheel(-1))
         self.__root.bind("<Button-5>", lambda _: self.on_mousewheel(1))
 
@@ -50,7 +50,7 @@ class MainWindow(WindowGUI):
                 dx=int(self.__widgets["move dx obj txt box"].get("1.0", "end-1c")),
                 dy=int(self.__widgets["move dy obj txt box"].get("1.0", "end-1c"))
             )
-        except ValueError:
+        except ValueError as e:
             self.notify_status("Error: the value to dx and dy has to be an integer number")
     
     def scaletion(self, up: bool):
@@ -67,7 +67,7 @@ class MainWindow(WindowGUI):
                     sx=1/float(self.__widgets["scale txt box"].get("1.0", "end-1c")),
                     sy=1/float(self.__widgets["scale txt box"].get("1.0", "end-1c"))
                 )
-        except ValueError:
+        except ValueError as e:
             self.notify_status("Error: the value to scale has to be a float")
 
     def rotation(self, direction: int):
@@ -76,7 +76,7 @@ class MainWindow(WindowGUI):
                 name=self.__widgets["list obj"].get(tk.ACTIVE),
                 angle=direction*float(self.__widgets["rotate obj txt box"].get("1.0", "end-1c"))
             )
-        except ValueError:
+        except ValueError as e:
             self.notify_status("Error: the value to rotate has to be a float (in degrees)")
 
     def delete_object(self):

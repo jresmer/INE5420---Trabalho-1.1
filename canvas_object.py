@@ -22,8 +22,8 @@ class CanvasObject(ABC):
         
         for coordinate in self.__coord:
 
-            new_coord = Utils.transform(coordinate, m)
-            new_coords.append(new_coord)
+            coords = tuple(Utils.transform(coordinate, m))
+            new_coords.append(coords)
 
         self.__coord = new_coords
     
