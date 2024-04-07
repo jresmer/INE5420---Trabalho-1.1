@@ -1,5 +1,4 @@
 from canvas_object import CanvasObject
-from line import Line
 
 
 class Polygon(CanvasObject):

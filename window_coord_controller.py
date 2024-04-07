@@ -4,7 +4,7 @@ import numpy as np
 
 class WindowCoordController:
 
-    def __init__(self, p: tuple=(-250, -250), vup: tuple=(0, 250), u: tuple=(250, 0)) -> None:
+    def __init__(self, p: tuple=(250, 250), vup: tuple=(0, 250), u: tuple=(250, 0)) -> None:
 
         self.__origin = p
         self.__vup = vup
@@ -21,22 +21,23 @@ class WindowCoordController:
     def __world_to_normalized(self, coord: tuple) -> tuple:
         # translate coord in (-Wcx, -Wcy)
         dx, dy = self.__origin
-        m = Utils.gen_translation_matrix(dx, dy)
+        m = Utils.gen_translation_matrix(-dx, -dy)
         coord = tuple(Utils.transform(coord, m))
     
 
         # rotate coord in -θ(Y, vup)
         vupx, vupy = self.__vup
 
-        sig_vupx = 1 if vupx >= 0 else -1
-        sig_vupy = 1 if vupy >= 0 else -1
+        # sig_vupx = 1 if vupx >= 0 else -1
+        # sig_vupy = 1 if vupy >= 0 else -1
         
-        try:
+        if vupy != 0:
             alpha = np.arctan(vupx/vupy)
-        except:
+        else:
             alpha = 0
+
         # with the magic of math
-        # theta = np.pi * 3 / 4 + (np.pi / 4) * sig_vupx + (vupx/vupy) * alpha
+        # theta = np.pi * 3 / 4 + (np.pi / 4) * sig_vupx + (sig_vupx/sig_vupy) * alpha
         # with if / else:
         theta = 0
         if vupx > 0 and vupy > 0:
@@ -58,10 +59,8 @@ class WindowCoordController:
         y_max = self.__mag(self.__vup)
         x_max = self.__mag(self.__u)
         x, y = coord
-        x_diff = x + x_max
-        y_diff = y + y_max
-        new_x = x_diff / (2 * x_max)
-        new_y = y_diff / (2* y_max)
+        new_x = x / (x_max)
+        new_y = y / (y_max)
         
         return (new_x, new_y)
 
