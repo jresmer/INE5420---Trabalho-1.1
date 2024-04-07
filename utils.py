@@ -59,3 +59,29 @@ class Utils:
         coord = np.matmul(coord, m)
         coord.tolist()
         return coord[:-1]
+
+    @staticmethod
+    def get_angle(vector: tuple) -> float:
+        x,y = vector
+        if x != 0 and y != 0:
+            alpha = np.arctan(abs(x)/abs(y))
+        elif x != 0 and y == 0:
+            alpha = np.pi/2
+        else:
+            alpha = 0
+
+        theta = 0
+        if x != 0 and y == 0:
+            theta = np.pi/2 if y > 0 else 3*np.pi/2
+        elif x == 0 and y < 0:
+            theta = np.pi
+
+        elif x > 0 and y > 0:
+            theta = alpha
+        elif x < 0 and y > 0:
+            theta = -alpha
+        elif x > 0 and y < 0:
+            theta = np.pi - alpha
+        elif x < 0 and y < 0:
+            theta = np.pi + alpha
+        return theta
