@@ -59,3 +59,14 @@ class Utils:
         coord = np.matmul(coord, m)
         coord.tolist()
         return coord[:-1]
+
+    @staticmethod
+    def calc_center(coords: tuple):
+
+        n = len(coords)
+        sum_x = 0
+        sum_y = 0
+        for (x,y) in coords:
+            sum_x += x
+            sum_y += y
+        return (sum_x/n, sum_y/n)

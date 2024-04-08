@@ -18,59 +18,24 @@ class WindowCoordController:
         return np.sqrt(vx ** 2 + vy ** 2)
     
     # converts world coordinates (x, y) to normalized coordinates
-    def __world_to_normalized(self, coord: tuple) -> tuple:
+    def __world_to_normalized(self, coord: tuple, center: tuple) -> tuple:
         # translate coord in (-Wcx, -Wcy)
         dx, dy = self.__origin
         m = Utils.gen_translation_matrix(-dx, -dy)
         coord = tuple(Utils.transform(coord, m))
-    
+
+        print(coord)
 
         # rotate coord in -θ(Y, vup)
-        vupx, vupy = self.__vup
-
-        # sig_vupx = 1 if vupx >= 0 else -1
-        # sig_vupy = 1 if vupy >= 0 else -1
-        
-        # if vupx != 0 and vupy != 0:
-        #     alpha = np.arctan(vupx/vupy)
-        # elif vupx == 0 and vupy != 0:
-        #     if vupy > 0:
-        #         alpha = np.pi/2
-        #     else:
-        #         alpha = 3*np.pi/2
-        # elif vupx != 0 and vupy == 0:
-        #     if vupx > 0:
-        #         alpha = 0
-        #     else:
-        #         alpha = np.pi
-        # else:
-        #     alpha = 0
-        # if vupx != 0 and vupy != 0:
-        #     alpha = np.arctan(abs(vupx)/abs(vupy))
-        # elif vupx == 0 and vupy != 0:
-        #     alpha = np.pi/2
-        # else:
-        #     alpha = 0
-
-        # # with the magic of math
-        # # theta = np.pi * 3 / 4 + (np.pi / 4) * sig_vupx + (sig_vupx/sig_vupy) * alpha
-        # # with if / else:
-        # theta = 0
-        # if vupx > 0 and vupy > 0:
-        #     theta = alpha
-        # elif vupx > 0 and vupy < 0:
-        #     theta = -alpha
-        # elif vupx < 0 and vupy > 0:
-        #     theta = np.pi - alpha
-        # elif vupx < 0 and vupy < 0:
-        #     theta = np.pi + alpha
         theta = self.get_angle(self.__vup)
         m = Utils.gen_rotation_matrix(
             angle=np.degrees(-theta),
-            cx=dx,
-            cy=dy
+            cx=center[0],
+            cy=center[1]
         )
         coord = tuple(Utils.transform(coord, m))
+
+        print(coord)
 
         # normalize coord
         y_max = self.__mag(self.__vup)
@@ -103,9 +68,11 @@ class WindowCoordController:
     def change_coords(self, name: str, coords: tuple) -> None:
         new_coords = list()
         
+        center = Utils.calc_center(coords)
+
         # converts coordinates to the window appropriate format
         for coord in coords:
-            new_coord = self.__world_to_normalized(coord)
+            new_coord = self.__world_to_normalized(coord, center)
             new_coords.append(new_coord)
 
         self.__obj_coordinates[name] = new_coords

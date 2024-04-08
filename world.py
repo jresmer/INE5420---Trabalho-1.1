@@ -7,8 +7,12 @@ from obj_descriptor import OBJDescriptor
 class World:
     def __init__(self) -> None:
         self.__object_list = []
-        self.__viewport = [0,0,500,500]
-        self.__window = WindowCoordController()
+        self.__viewport = [0,0,700,500]
+        self.__window = WindowCoordController(
+            p=(350,250),
+            vup=(0,250),
+            u=(350, 0)
+        )
         # self.__window = [0,0,500,500]
         self.__zoom = 1
 
