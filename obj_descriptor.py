@@ -23,7 +23,8 @@ class OBJDescriptor:
 
                     coord.append(1)
             
-            x, y, z = coord
+            x, y = coord
+            z = 0
             coord_data = "v {} {} {}\n".format(x, y, z)
             data += coord_data
 
@@ -40,5 +41,5 @@ class OBJDescriptor:
 
     @staticmethod
     def wavefront_to_obj(path: str) -> tuple:
-
+        
         ...

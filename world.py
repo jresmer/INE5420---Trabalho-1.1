@@ -2,6 +2,7 @@ from copy import deepcopy
 from math import ceil, sqrt
 from utils import Utils
 from window_coord_controller import WindowCoordController
+from obj_descriptor import OBJDescriptor
 
 class World:
     def __init__(self) -> None:
@@ -137,3 +138,11 @@ class World:
         # redraw canvas objects
         for obj in self.__object_list:
             obj.draw(self.__viewport, self.__window, self.__zoom)
+
+    def save(self, filepath: str) -> bool:
+        if len(self.__object_list) == 0:
+            return False
+        OBJDescriptor.obj_to_wavefront(self.__object_list[0], filepath, True)
+        for obj in self.__object_list[1:]:
+            OBJDescriptor.obj_to_wavefront(obj, filepath, False)
+        return True

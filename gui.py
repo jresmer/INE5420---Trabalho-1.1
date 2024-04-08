@@ -92,3 +92,15 @@ class GUI:
     def zoom_window(self, pct: float):
         self.world.zoom_window(pct)
         self.windows[MainWindow.__name__].notify_status(f"")
+
+    def save_world(self, filepath: str):
+        if self.world.save(filepath):
+            self.notify_status(f"World saved on {filepath}")
+        else:
+            self.notify_status(f"World not saved. It doesn't have objects to save")
+
+    def load_world(self, filepath: str):
+        if self.world.load(filepath):
+            self.notify_status(f"World {filepath} loaded")
+        else:
+            self.notify_status(f"World not loaded")
