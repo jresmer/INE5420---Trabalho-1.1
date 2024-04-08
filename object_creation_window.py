@@ -23,9 +23,9 @@ class ObjectCreationWindow(WindowGUI):
         self.init_widgets(world)  
 
         # TODO: deletar testes realizados depois
-        # self.__controller.create_object(list(eval("(50,50)")), "blue", "Arroz", self.__obj_man.get_object_type("Point"))
-        # self.__controller.create_object(list(eval("(100,100),(200,200)")), "green", "Feijão", self.__obj_man.get_object_type("Line"))
-        # self.__controller.create_object(list(eval("(200,100),(100,500),(300,300)")), "red", "Carne", self.__obj_man.get_object_type("Polygon"))
+        self.__controller.create_object(list(eval("(50,50)")), "blue", "Arroz", self.__obj_man.get_object_type("Point"))
+        self.__controller.create_object(list(eval("(100,100),(200,200)")), "green", "Feijão", self.__obj_man.get_object_type("Line"))
+        self.__controller.create_object(list(eval("(200,100),(100,500),(300,300)")), "red", "Carne", self.__obj_man.get_object_type("Polygon"))
 
         self.__root.mainloop()
 
