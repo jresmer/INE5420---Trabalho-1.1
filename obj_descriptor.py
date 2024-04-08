@@ -1,4 +1,5 @@
 from canvas_object import CanvasObject
+from canvas_object_manager import CanvasObjectManager
 
 
 class OBJDescriptor:
@@ -12,19 +13,19 @@ class OBJDescriptor:
         color = obj.get_color()
 
         data = "o {}\n".format(name)
+        data += "t {}\n".format(obj.__class__.__name__)
         data += "c {}\n".format(color)
         aux_data = ""
 
         for i, coord in enumerate(coords):
+            coord = list(coord)
+            if len(coord) < 3:
 
-            if len(coord) > 3:
-
-                while len(coord) > 3:
+                while len(coord) < 3:
 
                     coord.append(1)
             
-            x, y = coord
-            z = 0
+            x, y, z = coord
             coord_data = "v {} {} {}\n".format(x, y, z)
             data += coord_data
 

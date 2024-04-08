@@ -46,7 +46,7 @@ class MainWindow(WindowGUI):
 
     def save_file(self):
         filepath = filedialog.asksaveasfilename(initialfile= "wavefront", defaultextension=".obj", initialdir = "/INE5420--TRABALHO-1.1",
-                                                 title = "Select wavefront .obj file")
+                                                 title = "Saving world")
         self.__controller.save_world(filepath)
 
     def load_file(self):
