@@ -53,20 +53,22 @@ class Utils:
         return m
     
     @staticmethod
+    def gen_simple_rotation_matrix(angle: float) -> np.array:
+
+        angle = np.radians(angle)
+        cos_teta = np.cos(angle)
+        sen_teta = np.sin(angle)
+
+        m = np.array([[cos_teta,   -sen_teta,   0],
+                        [sen_teta,   cos_teta,   0],
+                        [0,   0,    1]])
+        
+        return m
+    
+    @staticmethod
     def transform(coord: tuple, m: np.array) -> list:
 
         coord = np.array(coord + (1,))
         coord = np.matmul(coord, m)
         coord.tolist()
         return coord[:-1]
-
-    @staticmethod
-    def calc_center(coords: tuple):
-
-        n = len(coords)
-        sum_x = 0
-        sum_y = 0
-        for (x,y) in coords:
-            sum_x += x
-            sum_y += y
-        return (sum_x/n, sum_y/n)
