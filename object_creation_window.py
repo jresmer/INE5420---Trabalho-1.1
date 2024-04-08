@@ -38,7 +38,7 @@ class ObjectCreationWindow(WindowGUI):
         name = self.__widgets["name txt box"].get("1.0", "end-1c")
         try:
             coords = list(eval(self.__widgets["coord txt box"].get("1.0", "end-1c")))
-    
+
             type_ = self.__widgets["type choice box txt"].get()
             tk_color = self.__widgets["selected color"].cget('background')
             

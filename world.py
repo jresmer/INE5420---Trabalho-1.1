@@ -159,12 +159,14 @@ class World:
             objs = OBJDescriptor.wavefront_to_obj(filepath, canvas)
             self.__object_list = objs
 
+            names = list()
             for object_ in self.__object_list:
 
                 self.__window.add_obj(object_.get_name(), object_.get_coord())
+                names.append(object_.get_name())
                 object_.draw(self.__viewport, self.__window.get_coords()[object_.get_name()], self.__zoom)
 
-            return True
+            return names
         except Exception as e:
             print(e)
             return False

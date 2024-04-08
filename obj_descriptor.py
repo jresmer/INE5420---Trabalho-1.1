@@ -19,15 +19,23 @@ class OBJDescriptor:
 
         else:
 
+            aux = ""
+
             with open(path, "rt") as file:
 
                 data = iter(file)
                 row = next(data)
+                aux = file.read()
             
             row = row[1:]
             n = int(row.strip())
             n += 1
             data = "n {}\n".format(n) 
+            with open(path, "wt") as file:
+
+                file.write(data + aux)
+
+            data = ""
 
         data += "o {}\n".format(name)
         data += "t {}\n".format(obj.__class__.__name__)
@@ -49,7 +57,7 @@ class OBJDescriptor:
             next_coord = i + 2 if i + 2 < len(coords) else 1
             aux_data += "| {} {}\n".format(i + 1, next_coord)
 
-        data += aux_data + "\n"
+        data += aux_data
 
         # writes on the respective file
         mode = "wt" if overwrite else "at"
@@ -80,21 +88,23 @@ class OBJDescriptor:
                 obj_type = canvas_manager.get_object_type(obj_type)
                 row = next(data)
                 obj_color = row[1:].strip()
-                obj_coords = list()
+                obj_coords = ""
 
                 row = next(data)
+
                 first_letter = row[0]
                 while first_letter == "v":
 
                     x, y, z = row[2:].split(" ")
                     x, y = int(x), int(y)
-                    coord = (x, y)
+                    coord = "({}, {}),".format(x, y)
 
-                    obj_coords.append(coord)
+                    obj_coords += coord
 
                     row = next(data)
                     first_letter = row[0]
 
+                obj_coords = list(eval(obj_coords[:-1]))
                 canvas_object = obj_type(obj_coords, obj_color, obj_name, "", canvas)
                 objects.append(canvas_object)
 

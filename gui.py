@@ -100,7 +100,10 @@ class GUI:
             self.notify_status(f"World not saved. It doesn't have objects to save")
 
     def load_world(self, filepath: str):
-        if self.world.load(filepath, self.windows[MainWindow.__name__].get_canvas()):
+        names = self.world.load(filepath, self.windows[MainWindow.__name__].get_canvas())
+        if names:
             self.notify_status(f"World {filepath} loaded")
+            for name in names:
+                self.windows[MainWindow.__name__].add_to_listbox(name)
         else:
             self.notify_status(f"World not loaded")
