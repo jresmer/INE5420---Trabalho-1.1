@@ -7,13 +7,13 @@ class Point(CanvasObject):
         coord = [(coord[0], coord[1])]
         super().__init__(coord, color, name, tkinter_id, canvas)
 
-    def draw(self, viewport: tuple, window: tuple, zoom: float) -> None:
+    def draw(self, viewport: tuple, window_coords: tuple, zoom: float) -> None:
         
         self.delete()
 
         window_xmin, window_ymin, window_xmax, window_ymax = [-1,-1,1,1]
         vp_xmin, vp_ymin, vp_xmax, vp_ymax = viewport
-        [(x, y)] = window.get_coords()[self.get_name()]
+        [(x, y)] = window_coords
 
         x_vp = (x - window_xmin) * (vp_xmax - vp_xmin) / (window_xmax - window_xmin)
         y_vp = (1 - (y - window_ymin)/(window_ymax - window_ymin)) * (vp_ymax - vp_ymin)

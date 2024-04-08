@@ -30,7 +30,7 @@ class World:
         self.__object_list.append(new_object)
         self.__window.add_obj(new_object.get_name(), new_object.get_coord())
 
-        new_object.draw(self.__viewport, self.__window, self.__zoom)
+        new_object.draw(self.__viewport, self.__window.get_coords()[name], self.__zoom)
         return 1
     
     def __find_object(self, name: str) -> int:
@@ -68,7 +68,7 @@ class World:
             m = Utils.gen_translation_matrix(dx, dy)
             obj.transform(m)
             self.__window.att_obj(name, obj.get_coord())
-            obj.draw(self.__viewport, self.__window, self.__zoom)
+            obj.draw(self.__viewport, self.__window.get_coords()[name], self.__zoom)
 
             return True
 
@@ -93,7 +93,7 @@ class World:
             )
             obj.transform(m)
             self.__window.att_obj(name, obj.get_coord())
-            obj.draw(self.__viewport, self.__window, self.__zoom)
+            obj.draw(self.__viewport, self.__window.get_coords()[name], self.__zoom)
 
             return True
     
@@ -117,7 +117,7 @@ class World:
             )
             obj.transform(m)
             self.__window.att_obj(name, obj.get_coord())
-            obj.draw(self.__viewport, self.__window, self.__zoom)
+            obj.draw(self.__viewport, self.__window.get_coords()[name], self.__zoom)
 
             return True
     
@@ -127,21 +127,21 @@ class World:
         self.__window.move(dx, dy, objs)
     
         for obj in self.__object_list:
-            obj.draw(self.__viewport, self.__window, self.__zoom)
+            obj.draw(self.__viewport, self.__window.get_coords()[obj.get_name()], self.__zoom)
 
     def zoom_window(self, pct):
         objs = {obj.get_name(): obj.get_coord() for obj in self.__object_list}
         self.__window.scale(pct, objs)
         # redraw canvas objects
         for obj in self.__object_list:
-            obj.draw(self.__viewport, self.__window, self.__zoom)
+            obj.draw(self.__viewport, self.__window.get_coords()[obj.get_name()], self.__zoom)
 
     def rotate_window(self, angle: float):
         objs = {obj.get_name(): obj.get_coord() for obj in self.__object_list}
         self.__window.rotate(angle, objs)
         # redraw canvas objects
         for obj in self.__object_list:
-            obj.draw(self.__viewport, self.__window, self.__zoom)
+            obj.draw(self.__viewport, self.__window.get_coords()[obj.get_name()], self.__zoom)
 
     def save(self, filepath: str) -> bool:
         if len(self.__object_list) == 0:
@@ -150,3 +150,21 @@ class World:
         for obj in self.__object_list[1:]:
             OBJDescriptor.obj_to_wavefront(obj, filepath, False)
         return True
+    
+    def load(self, filepath: str, canvas) -> bool:
+
+        try:
+            for object_ in self.__object_list:
+                self.delete_object(object_)
+            objs = OBJDescriptor.wavefront_to_obj(filepath, canvas)
+            self.__object_list = objs
+
+            for object_ in self.__object_list:
+
+                self.__window.add_obj(object_.get_name(), object_.get_coord())
+                object_.draw(self.__viewport, self.__window.get_coords()[object_.get_name()], self.__zoom)
+
+            return True
+        except Exception as e:
+            print(e)
+            return False

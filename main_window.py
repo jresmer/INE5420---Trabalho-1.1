@@ -52,7 +52,7 @@ class MainWindow(WindowGUI):
     def load_file(self):
         filepath = filedialog.askopenfilename(initialdir = "/INE5420--TRABALHO-1.1",
                                                  title = "Select wavefront .obj file")
-        print(filepath)
+        self.__controller.load_world(filepath)
 
     def translate(self):
         try:

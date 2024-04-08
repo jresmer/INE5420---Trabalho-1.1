@@ -62,36 +62,40 @@ class OBJDescriptor:
         
         data = ""
         objects = list()
+        canvas_manager = CanvasObjectManager()
 
         with open(path, "rt") as file:
 
-            data = file.read()
-
-        row = next(data)
-        n = int(row[1:].strip())
-
-        for _ in range(n):
+            data = iter(file)
 
             row = next(data)
-            obj_name = row[1:].strip()
-            row = next(data)
-            obj_type = row[1:].strip()
-            obj_type = CanvasObjectManager.get_object_type(obj_type)
-            row = next(data)
-            obj_color = row[1:].strip()
-            obj_coords = list()
+            n = int(row[1:].strip())
 
-            row = next(data)
-            first_letter = row[0]
-            while first_letter == "v":
+            for _ in range(n):
 
-                x, y, z = row[2:].split(" ")
-                x, y = int(x), int(y)
-                coord = (x, y)
+                row = next(data)
+                obj_name = row[1:].strip()
+                row = next(data)
+                obj_type = row[1:].strip()
+                obj_type = canvas_manager.get_object_type(obj_type)
+                row = next(data)
+                obj_color = row[1:].strip()
+                obj_coords = list()
 
-                obj_coords.append(coord)
+                row = next(data)
+                first_letter = row[0]
+                while first_letter == "v":
 
-            canvas_object = obj_type(obj_coords, obj_color, obj_name, "", canvas)
-            objects.append(canvas_object)
+                    x, y, z = row[2:].split(" ")
+                    x, y = int(x), int(y)
+                    coord = (x, y)
+
+                    obj_coords.append(coord)
+
+                    row = next(data)
+                    first_letter = row[0]
+
+                canvas_object = obj_type(obj_coords, obj_color, obj_name, "", canvas)
+                objects.append(canvas_object)
 
         return objects
