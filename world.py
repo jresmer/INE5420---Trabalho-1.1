@@ -153,7 +153,7 @@ class World:
     
     def load(self, filepath: str, canvas) -> bool:
 
-        try:
+        # try:
             for object_ in self.__object_list:
                 self.delete_object(object_)
             objs = OBJDescriptor.wavefront_to_obj(filepath, canvas)
@@ -167,6 +167,6 @@ class World:
                 object_.draw(self.__viewport, self.__window.get_coords()[object_.get_name()], self.__zoom)
 
             return names
-        except Exception as e:
-            print(e)
-            return False
+        # except Exception as e:
+        #     print(e)
+        #     return False

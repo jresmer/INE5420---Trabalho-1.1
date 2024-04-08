@@ -103,8 +103,11 @@ class OBJDescriptor:
 
                     row = next(data)
                     first_letter = row[0]
-
+                
+                counter = len(list(eval(obj_coords)))
                 obj_coords = list(eval(obj_coords[:-1]))
+                for _ in range(counter - 1):
+                    next(data)
                 canvas_object = obj_type(obj_coords, obj_color, obj_name, "", canvas)
                 objects.append(canvas_object)
 
