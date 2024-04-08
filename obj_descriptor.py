@@ -15,7 +15,7 @@ class OBJDescriptor:
         data = ""
         if overwrite:
 
-            data = "n 1"
+            data = "n 1\n"
 
         else:
 
@@ -27,7 +27,7 @@ class OBJDescriptor:
             row = row[1:]
             n = int(row.strip())
             n += 1
-            data = "n {}".format(n) 
+            data = "n {}\n".format(n) 
 
         data += "o {}\n".format(name)
         data += "t {}\n".format(obj.__class__.__name__)
