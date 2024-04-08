@@ -2,6 +2,7 @@ from copy import deepcopy
 from math import ceil, sqrt
 from utils import Utils
 from window_coord_controller import WindowCoordController
+from obj_descriptor import OBJDescriptor
 
 class World:
     def __init__(self) -> None:
@@ -38,7 +39,6 @@ class World:
             
         return None
 
-    #TODO: melhorar sistema de busca (talvez usando dict para object list?)
     def delete_object(self, name):
 
         obj_index = self.__find_object(name)
@@ -50,7 +50,6 @@ class World:
             self.__object_list.pop(obj_index)
             del obj
 
-            
     def translate_object(self, name: str, dx: int, dy: int) -> bool:
 
         obj_index = self.__find_object(name)
@@ -122,10 +121,6 @@ class World:
 
         objs = {obj.get_name(): obj.get_coord() for obj in self.__object_list}
         self.__window.move(dx, dy, objs)
-        # self.__window[0] += dx
-        # self.__window[1] += dy
-        # self.__window[2] += dx
-        # self.__window[3] += dy
     
         for obj in self.__object_list:
             obj.draw(self.__viewport, self.__window, self.__zoom)
@@ -137,49 +132,17 @@ class World:
         for obj in self.__object_list:
             obj.draw(self.__viewport, self.__window, self.__zoom)
 
-    # def zoom_window(self, pct):
+    def rotate_window(self, angle: float):
+        objs = {obj.get_name(): obj.get_coord() for obj in self.__object_list}
+        self.__window.rotate(angle, objs)
+        # redraw canvas objects
+        for obj in self.__object_list:
+            obj.draw(self.__viewport, self.__window, self.__zoom)
 
-    #     # recover window
-    #     min_x, min_y, max_x, max_y = self.__window
-
-    #     # calculate new window size
-    #     if pct < 0:
-    #         multiplier = sqrt(1 * (1 + abs(pct)))
-    #     else:
-    #         multiplier = sqrt(1 / (1 + pct))
-
-    #     # calculate new x values
-    #     center_x = (min_x + max_x) // 2
-    #     min_diff = int((center_x - min_x) * multiplier)
-    #     new_min_x = center_x - min_diff
-    #     max_diff = ceil((max_x - center_x) * multiplier)
-    #     new_max_x = max_diff + center_x
- 
-    #     # calculate new y values
-    #     center_y = (min_y + max_y) // 2
-    #     min_diff = int((center_y - min_y) * multiplier)
-    #     new_min_y = center_y - min_diff
-    #     max_diff = ceil((max_y - center_y) * multiplier)
-    #     new_max_y = max_diff + center_y
-
-    #     if new_max_x <= new_min_x + 20 or new_max_y <= new_min_y + 20:
-
-    #         new_max_x, new_min_x = center_x + 10, center_x -10
-    #         new_max_y, new_min_y = center_y + 10, center_y - 10
-
-    #     if new_max_x > self.__viewport[2] and new_min_x < self.__viewport[0] and \
-    #             new_max_y > self.__viewport[3] and new_min_y < self.__viewport[1]:
-
-    #         new_min_x, new_min_y, new_max_x, new_max_y = deepcopy(self.__viewport)
-
-    #     # set new window size
-    #     self.__window = [new_min_x, new_min_y, new_max_x, new_max_y]
-
-    #     previeous_size = (max_x - min_x) * (max_y - min_y)
-    #     new_size = (new_max_x - new_min_x) * (new_max_y - new_min_y)
-    #     diff = previeous_size / new_size
-    #     self.__zoom *= diff
-
-    #     # redraw canvas objects
-    #     for obj in self.__object_list:
-    #         obj.draw(self.__viewport, self.__window, self.__zoom)
+    def save(self, filepath: str) -> bool:
+        if len(self.__object_list) == 0:
+            return False
+        OBJDescriptor.obj_to_wavefront(self.__object_list[0], filepath, True)
+        for obj in self.__object_list[1:]:
+            OBJDescriptor.obj_to_wavefront(obj, filepath, False)
+        return True

@@ -1,4 +1,5 @@
 from canvas_object import CanvasObject
+from canvas_object_manager import CanvasObjectManager
 
 
 class OBJDescriptor:
@@ -12,14 +13,15 @@ class OBJDescriptor:
         color = obj.get_color()
 
         data = "o {}\n".format(name)
+        data += "t {}\n".format(obj.__class__.__name__)
         data += "c {}\n".format(color)
         aux_data = ""
 
         for i, coord in enumerate(coords):
+            coord = list(coord)
+            if len(coord) < 3:
 
-            if len(coord) > 3:
-
-                while len(coord) > 3:
+                while len(coord) < 3:
 
                     coord.append(1)
             
@@ -40,5 +42,5 @@ class OBJDescriptor:
 
     @staticmethod
     def wavefront_to_obj(path: str) -> tuple:
-
+        
         ...

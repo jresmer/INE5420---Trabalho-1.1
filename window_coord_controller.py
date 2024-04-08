@@ -31,25 +31,42 @@ class WindowCoordController:
         # sig_vupx = 1 if vupx >= 0 else -1
         # sig_vupy = 1 if vupy >= 0 else -1
         
-        if vupy != 0:
-            alpha = np.arctan(vupx/vupy)
-        else:
-            alpha = 0
+        # if vupx != 0 and vupy != 0:
+        #     alpha = np.arctan(vupx/vupy)
+        # elif vupx == 0 and vupy != 0:
+        #     if vupy > 0:
+        #         alpha = np.pi/2
+        #     else:
+        #         alpha = 3*np.pi/2
+        # elif vupx != 0 and vupy == 0:
+        #     if vupx > 0:
+        #         alpha = 0
+        #     else:
+        #         alpha = np.pi
+        # else:
+        #     alpha = 0
+        # if vupx != 0 and vupy != 0:
+        #     alpha = np.arctan(abs(vupx)/abs(vupy))
+        # elif vupx == 0 and vupy != 0:
+        #     alpha = np.pi/2
+        # else:
+        #     alpha = 0
 
-        # with the magic of math
-        # theta = np.pi * 3 / 4 + (np.pi / 4) * sig_vupx + (sig_vupx/sig_vupy) * alpha
-        # with if / else:
-        theta = 0
-        if vupx > 0 and vupy > 0:
-            theta = np.pi + alpha
-        elif vupx > 0 and vupy < 0:
-            theta = np.pi - alpha
-        elif vupx < 0 and vupy > 0:
-            theta = np.pi / 2 - alpha
-        elif vupx < 0 and vupy < 0:
-            theta = np.pi / 2 + alpha
+        # # with the magic of math
+        # # theta = np.pi * 3 / 4 + (np.pi / 4) * sig_vupx + (sig_vupx/sig_vupy) * alpha
+        # # with if / else:
+        # theta = 0
+        # if vupx > 0 and vupy > 0:
+        #     theta = alpha
+        # elif vupx > 0 and vupy < 0:
+        #     theta = -alpha
+        # elif vupx < 0 and vupy > 0:
+        #     theta = np.pi - alpha
+        # elif vupx < 0 and vupy < 0:
+        #     theta = np.pi + alpha
+        theta = self.get_angle(self.__vup)
         m = Utils.gen_rotation_matrix(
-            angle=theta,
+            angle=np.degrees(-theta),
             cx=dx,
             cy=dy
         )
@@ -107,8 +124,37 @@ class WindowCoordController:
 
         return self.__obj_coordinates
     
-    def move(self, dx: int, dy: int, objs: dict) -> dict:
+    def get_angle(self, vector: tuple) -> float:
+        x,y = vector
+        if x != 0 and y != 0:
+            alpha = np.arctan(abs(x)/abs(y))
+        elif x != 0 and y == 0:
+            alpha = np.pi/2
+        else:
+            alpha = 0
 
+        theta = 0
+        if x != 0 and y == 0:
+            theta = np.pi/2 if y > 0 else 3*np.pi/2
+        elif x == 0 and y < 0:
+            theta = np.pi
+
+        elif x > 0 and y > 0:
+            theta = alpha
+        elif x < 0 and y > 0:
+            theta = -alpha
+        elif x > 0 and y < 0:
+            theta = np.pi - alpha
+        elif x < 0 and y < 0:
+            theta = np.pi + alpha
+        return theta
+    
+    def move(self, dx: int, dy: int, objs: dict) -> dict:
+        #TESTE
+        angle_vup = self.get_angle(self.__vup)
+        m = Utils.gen_rotation_matrix(np.degrees(angle_vup), 0, 0)
+        dx, dy = Utils.transform((dx,dy), m)
+        #FIM DO TESTE
         m = Utils.gen_translation_matrix(dx, dy)
         self.__origin = tuple(Utils.transform(self.__origin, m))
 
@@ -122,12 +168,15 @@ class WindowCoordController:
     def rotate(self, angle: float, objs: dict) -> dict:
 
         # calculate new vup and u values (rotating them)
+        angle = np.radians(angle)
         magnitude_v = self.__mag(self.__vup)
         magnitude_u = self.__mag(self.__u)
-        vupx, vupy = self.__vup
-        current_angle_v = np.arctan(vupy / vupx)
+        
+        current_angle_v = self.get_angle(self.__vup)
+
         ux, uy = self.__u
-        current_angle_u = np.arctan(uy / ux)
+        current_angle_u = self.get_angle(self.__u)
+    
         new_angle_v = current_angle_v + angle
         new_angle_u = current_angle_u + angle
         self.__vup = (np.sin(new_angle_v) * magnitude_v,
@@ -146,19 +195,16 @@ class WindowCoordController:
 
         # calculate new vup and u values (rescaling them)
         multiplier = np.sqrt(1/(1 + multiplier)) if multiplier >= 0 else np.sqrt(1 + abs(multiplier))
-        print(multiplier)
         magnitude_v = self.__mag(self.__vup) * multiplier
         magnitude_u = self.__mag(self.__u) * multiplier
         vupx, vupy = self.__vup
-        angle_v = np.arctan(vupx / vupy) if vupy != 0 else 0
+        angle_v = self.get_angle(self.__vup)
         ux, uy = self.__u
-        angle_u = np.arctan(ux / uy) if uy != 0 else 0
+        angle_u = self.get_angle(self.__vup)
         self.__vup = (np.sin(angle_v) * magnitude_v,
                       np.cos(angle_v) * magnitude_v)
         self.__u = (np.sin(angle_u) * magnitude_u,
                       np.cos(angle_u) * magnitude_u)
-        print(self.__vup)
-        print(self.__u)
 
         for name in objs.keys():
 
