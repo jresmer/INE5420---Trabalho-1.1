@@ -64,7 +64,7 @@ class WindowCoordController:
         #     theta = np.pi - alpha
         # elif vupx < 0 and vupy < 0:
         #     theta = np.pi + alpha
-        theta = Utils.get_angle(self.__vup)
+        theta = self.get_angle(self.__vup)
         m = Utils.gen_rotation_matrix(
             angle=np.degrees(-theta),
             cx=dx,
@@ -124,8 +124,37 @@ class WindowCoordController:
 
         return self.__obj_coordinates
     
-    def move(self, dx: int, dy: int, objs: dict) -> dict:
+    def get_angle(self, vector: tuple) -> float:
+        x,y = vector
+        if x != 0 and y != 0:
+            alpha = np.arctan(abs(x)/abs(y))
+        elif x != 0 and y == 0:
+            alpha = np.pi/2
+        else:
+            alpha = 0
 
+        theta = 0
+        if x != 0 and y == 0:
+            theta = np.pi/2 if y > 0 else 3*np.pi/2
+        elif x == 0 and y < 0:
+            theta = np.pi
+
+        elif x > 0 and y > 0:
+            theta = alpha
+        elif x < 0 and y > 0:
+            theta = -alpha
+        elif x > 0 and y < 0:
+            theta = np.pi - alpha
+        elif x < 0 and y < 0:
+            theta = np.pi + alpha
+        return theta
+    
+    def move(self, dx: int, dy: int, objs: dict) -> dict:
+        #TESTE
+        angle_vup = self.get_angle(self.__vup)
+        m = Utils.gen_rotation_matrix(np.degrees(angle_vup), 0, 0)
+        dx, dy = Utils.transform((dx,dy), m)
+        #FIM DO TESTE
         m = Utils.gen_translation_matrix(dx, dy)
         self.__origin = tuple(Utils.transform(self.__origin, m))
 
@@ -143,10 +172,10 @@ class WindowCoordController:
         magnitude_v = self.__mag(self.__vup)
         magnitude_u = self.__mag(self.__u)
         
-        current_angle_v = Utils.get_angle(self.__vup)
+        current_angle_v = self.get_angle(self.__vup)
 
         ux, uy = self.__u
-        current_angle_u = Utils.get_angle(self.__u)
+        current_angle_u = self.get_angle(self.__u)
     
         new_angle_v = current_angle_v + angle
         new_angle_u = current_angle_u + angle
@@ -169,9 +198,9 @@ class WindowCoordController:
         magnitude_v = self.__mag(self.__vup) * multiplier
         magnitude_u = self.__mag(self.__u) * multiplier
         vupx, vupy = self.__vup
-        angle_v = Utils.get_angle(self.__vup)
+        angle_v = self.get_angle(self.__vup)
         ux, uy = self.__u
-        angle_u = Utils.get_angle(self.__vup)
+        angle_u = self.get_angle(self.__vup)
         self.__vup = (np.sin(angle_v) * magnitude_v,
                       np.cos(angle_v) * magnitude_v)
         self.__u = (np.sin(angle_u) * magnitude_u,
