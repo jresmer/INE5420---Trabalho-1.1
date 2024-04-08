@@ -28,8 +28,8 @@ class MainWindow(WindowGUI):
         #BIND PARA MOVER O CANVAS
         self.__root.bind("<KeyPress-Left>", lambda _: self.__controller.move_canvas(-3, 0))
         self.__root.bind("<KeyPress-Right>", lambda _: self.__controller.move_canvas(3, 0))
-        self.__root.bind("<KeyPress-Up>", lambda _: self.__controller.move_canvas(0, -3))
-        self.__root.bind("<KeyPress-Down>", lambda _: self.__controller.move_canvas(0, 3))
+        self.__root.bind("<KeyPress-Up>", lambda _: self.__controller.move_canvas(0, 3))
+        self.__root.bind("<KeyPress-Down>", lambda _: self.__controller.move_canvas(0, -3))
         self.__root.bind("<Button-4>", lambda _: self.on_mousewheel(-1))
         self.__root.bind("<Button-5>", lambda _: self.on_mousewheel(1))
 
@@ -203,12 +203,12 @@ class MainWindow(WindowGUI):
 
         #Move Window Part
         button = tk.Button(frame, text="↑", width= 2,  
-                           command= lambda : self.__controller.move_canvas(0, -3))
+                           command= lambda : self.__controller.move_canvas(0, 3))
         button.place(x=100, y=120)
         self.__widgets['move window up button'] = button
 
         button = tk.Button(frame, text="↓", width= 2, 
-                           command= lambda : self.__controller.move_canvas(0, 3))
+                           command= lambda : self.__controller.move_canvas(0, -3))
         button.place(x=100, y=150)
         self.__widgets['move window down button'] = button
 
@@ -233,12 +233,12 @@ class MainWindow(WindowGUI):
 
         #Rotate Part
         button = tk.Button(frame, text="⟳",
-                           command= lambda: self.rotation(-1))
+                           command= lambda: self.rotation(1))
         button.place(x=180, y=35)
         self.__widgets['rotate obj right button'] = button
 
         button = tk.Button(frame, text="⟲", 
-                           command= lambda: self.rotation(1))
+                           command= lambda: self.rotation(-1))
         button.place(x=70, y=35)
         self.__widgets['rotate obj left button'] = button
 
