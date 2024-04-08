@@ -21,9 +21,9 @@ class OBJDescriptor:
 
             with open(path, "rt") as file:
 
-                data = file.read()
+                data = iter(file)
+                row = next(data)
             
-            row = next(data)
             row = row[1:]
             n = int(row.strip())
             n += 1
