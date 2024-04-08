@@ -11,7 +11,7 @@ class World:
         self.__window = WindowCoordController(
             p=(380,250),
             vup=(0,250),
-            u=(350, 0)
+            u=(380, 0)
         )
         # self.__window = [0,0,500,500]
         self.__zoom = 1

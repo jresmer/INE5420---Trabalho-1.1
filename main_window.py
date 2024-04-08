@@ -179,12 +179,12 @@ class MainWindow(WindowGUI):
 
         #Rotate Window Part
         button = tk.Button(frame, text="⟳",
-                           command= lambda: self.rotate_window(1))
+                           command= lambda: self.rotate_window(-1))
         button.place(x=180, y=75)
         self.__widgets['rotate window right button'] = button
 
         button = tk.Button(frame, text="⟲", 
-                           command= lambda: self.rotate_window(-1))
+                           command= lambda: self.rotate_window(1))
         button.place(x=70, y=75)
         self.__widgets['rotate window left button'] = button
 
