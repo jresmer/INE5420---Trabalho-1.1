@@ -1,6 +1,81 @@
 import numpy as np
 
 
+class Clippling:
+
+    @staticmethod
+    def point_clipping(bounderies: tuple, coordinates: tuple) -> bool:
+
+        x_min, y_min, x_max, y_max = bounderies
+        x, y = coordinates
+
+        return x_min < x and x < x_max and y_min < y and y < y_max
+    
+    @staticmethod
+    def cohen_sutherland(bounderies: tuple, coordinates: tuple) -> tuple:
+
+        x_min, y_min, x_max, y_max = bounderies
+        rc = [[0, 0, 0, 0],
+              [0, 0, 0, 0]]
+        i = 0
+        for x, y in coordinates:
+
+            if x < x_min: rc[i][3] = 1
+            if x > x_max: rc[i][2] = 1
+            if y < y_min: rc[i][1] = 1
+            if y > y_max: rc[i][0] = 1
+
+            i += 1
+
+        # RC0 & RC1 <> [0 0 0 0]
+        rc1_rc2 = any([a and b for a, b in zip(rc[0], rc[1])])
+
+        # line is totally visible: RC0 = RC1 = [0 0 0 0]
+        if rc[0] == rc[1] and not any(rc[0]):
+
+            return coordinates
+        # line is totally out of window: RC0 & RC1 <> [0 0 0 0]
+        elif rc1_rc2:
+
+            return None
+        # line is partially visible: RC0 <> RC1, RC0 & RC1 = [0 0 0 0]
+        elif rc[0] != rc[1] and not rc1_rc2:
+            
+            for i in range(2):
+
+                x, y = coordinates[i]
+
+                x1, y1 = coordinates[0] if i == 1 else coordinates[1]
+                x_diff = x - x1
+                y_diff = y - y1
+                m = y_diff / x_diff
+
+                # if Pi is to the left of the window
+                if x < x_min:
+                    
+                    x = x_min
+                    y = m * (x_min - x) + y
+                # if Pi is to the right of the window
+                elif x_max < x:
+
+                    x = x_max
+                    y = m * (x_max - x) + y
+                
+                # if Pi is to the below of the window
+                if y < y_min:
+                    
+                    y = y_min
+                    x = x + 1/m * (y_min - y)
+                # if Pi is to the above of the window
+                elif y_max < y:
+
+                    y = y_max
+                    x = x + 1/m * (y_max - y)
+
+                coordinates[i] = (x, y)
+
+            return coordinates
+                    
 class Utils:
 
     @staticmethod
