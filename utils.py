@@ -52,25 +52,24 @@ class Clippling:
 
                 # if Pi is to the left of the window
                 if x < x_min:
-                    
-                    x = x_min
                     y = m * (x_min - x) + y
+                    x = x_min
+                    
                 # if Pi is to the right of the window
                 elif x_max < x:
-
-                    x = x_max
                     y = m * (x_max - x) + y
-                
+                    x = x_max
+                    
                 # if Pi is to the below of the window
                 if y < y_min:
-                    
-                    y = y_min
                     x = x + 1/m * (y_min - y)
+                    y = y_min
+                    
                 # if Pi is to the above of the window
                 elif y_max < y:
-
-                    y = y_max
                     x = x + 1/m * (y_max - y)
+                    y = y_max
+                    
 
                 coordinates[i] = (x, y)
 
