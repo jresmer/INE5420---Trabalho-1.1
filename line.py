@@ -1,5 +1,5 @@
 from canvas_object import CanvasObject
-from utils import Clippling
+from utils import Clipping
 
 
 class Line(CanvasObject):
@@ -13,7 +13,7 @@ class Line(CanvasObject):
     
         window_xmin, window_ymin, window_xmax, window_ymax = [-1,-1,1,1]
         vp_xmin, vp_ymin, vp_xmax, vp_ymax = viewport
-        new_coords = Clippling.cohen_sutherland([-1,-1,1,1],window_coords)
+        new_coords = Clipping.cohen_sutherland([-1,-1,1,1],window_coords)
         if new_coords == None:
             return
         

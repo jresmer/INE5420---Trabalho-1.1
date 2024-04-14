@@ -112,7 +112,7 @@ class World:
             if arbitrary_point == None:
                 (cx, cy) = obj.get_center_coord()
             else:
-                (cx, cy) = (arbitrary_point, arbitrary_point)
+                (cx, cy) = arbitrary_point
 
             m = Utils.gen_rotation_matrix(
                 angle=angle,
