@@ -66,9 +66,9 @@ class GUI:
 
             self.notify_status("Unsucessfull transformation")
 
-    def rotate_object(self, name: str, angle: float):
+    def rotate_object(self, name: str, angle: float, arbitrary: tuple):
 
-        success = self.world.rotate_object(name, angle)
+        success = self.world.rotate_object(name, angle, arbitrary)
 
         if success:
 

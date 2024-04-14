@@ -97,7 +97,7 @@ class World:
 
             return True
     
-    def rotate_object(self, name: str, angle: float) -> bool:
+    def rotate_object(self, name: str, angle: float, arbitrary_point: tuple) -> bool:
 
         obj_index = self.__find_object(name)
 
@@ -108,7 +108,11 @@ class World:
         else:
 
             obj = self.__object_list[obj_index]
-            (cx, cy) = obj.get_center_coord()
+
+            if arbitrary_point == None:
+                (cx, cy) = obj.get_center_coord()
+            else:
+                (cx, cy) = (arbitrary_point, arbitrary_point)
 
             m = Utils.gen_rotation_matrix(
                 angle=angle,

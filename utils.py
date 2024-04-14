@@ -52,30 +52,66 @@ class Clippling:
 
                 # if Pi is to the left of the window
                 if x < x_min:
-                    
-                    x = x_min
                     y = m * (x_min - x) + y
+                    x = x_min
+                    
                 # if Pi is to the right of the window
                 elif x_max < x:
-
-                    x = x_max
                     y = m * (x_max - x) + y
-                
+                    x = x_max
+                    
                 # if Pi is to the below of the window
                 if y < y_min:
-                    
-                    y = y_min
                     x = x + 1/m * (y_min - y)
+                    y = y_min
+                    
                 # if Pi is to the above of the window
                 elif y_max < y:
-
-                    y = y_max
                     x = x + 1/m * (y_max - y)
+                    y = y_max
+                    
 
                 coordinates[i] = (x, y)
 
             return coordinates
-                    
+
+    @staticmethod
+    def liang_barsky(bounderies: tuple, coordinates: tuple) -> tuple:
+        (x1,y1), (x2,y2) = coordinates
+        x_min,y_min, x_max,y_max = bounderies
+
+        dx = x2 - x1
+        dy = y2 - y1
+        p = [-dx, dx, -dy, dy]
+        q = [x1 - x_min, x_max - x1, y1 - y_min, y_max - y1]
+        t_enter = 0.0
+        t_exit = 1.0
+
+        for i in range(4):
+            if p[i] == 0:  # Check if line is parallel to the clipping boundary
+                if q[i] < 0:
+                    return None  # Line is outside and parallel, so completely discarded
+            else:
+                t = q[i] / p[i]
+                if p[i] < 0:
+                    if t > t_enter:
+                        t_enter = t
+                else:
+                    if t < t_exit:
+                        t_exit = t
+
+        if t_enter > t_exit:
+            return None  # Line is completely outside
+
+        x1_clip = x1 + t_enter * dx
+        y1_clip = y1 + t_enter * dy
+        x2_clip = x1 + t_exit * dx
+        y2_clip = y1 + t_exit * dy
+
+        return (x1_clip, y1_clip), (x2_clip, y2_clip)
+
+
+
 class Utils:
 
     @staticmethod
