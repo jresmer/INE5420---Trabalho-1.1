@@ -89,13 +89,35 @@ class MainWindow(WindowGUI):
         except ValueError as e:
             self.notify_status("Error: the value to rotate has to be a float (in degrees)")
 
-    def rotation(self, direction: int):
+    def rotation(self, direction: int, mode: int):
+        #Mode 0: Object Center
+        #Mode 1: World Origin
+        #Mode 2: Arbitrary Point
         try:
-            self.__controller.rotate_object(
-                name=self.__widgets["list obj"].get(tk.ACTIVE),
-                angle=direction*float(self.__widgets["rotate obj txt box"].get("1.0", "end-1c"))
-            )
+            if mode == 0:
+                self.__controller.rotate_object(
+                    name=self.__widgets["list obj"].get(tk.ACTIVE),
+                    angle=direction*float(self.__widgets["rotate obj txt box"].get("1.0", "end-1c")),
+                    arbitrary = None
+                )
+            elif mode == 1:
+                self.__controller.rotate_object(
+                    name=self.__widgets["list obj"].get(tk.ACTIVE),
+                    angle=direction*float(self.__widgets["rotate obj txt box"].get("1.0", "end-1c")),
+                    mode = mode,
+                    arbitrary = (0,0)
+                )
+            else:
+                x = int(self.__widgets["rotate arbitrary x obj txt box"].get("1.0", "end-1c"))
+                y = int(self.__widgets["rotate arbitrary obj txt box"].get("1.0", "end-1c"))
+                self.__controller.rotate_object(
+                    name=self.__widgets["list obj"].get(tk.ACTIVE),
+                    angle=direction*float(self.__widgets["rotate obj txt box"].get("1.0", "end-1c")),
+                    mode = mode,
+                    arbitrary = (x,y)
+                )
         except ValueError as e:
+            print(e)
             self.notify_status("Error: the value to rotate has to be a float (in degrees)")
 
     def delete_object(self):
@@ -231,14 +253,16 @@ class MainWindow(WindowGUI):
         label.place(x=0, y = 0)
         self.__widgets["title ops obj lbl"] = label
 
-        #Rotate Part
+    #Rotate Part
+
+        #Center Object Rotation
         button = tk.Button(frame, text="⟳",
-                           command= lambda: self.rotation(1))
+                           command= lambda: self.rotation(1, 0))
         button.place(x=180, y=35)
         self.__widgets['rotate obj right button'] = button
 
         button = tk.Button(frame, text="⟲", 
-                           command= lambda: self.rotation(-1))
+                           command= lambda: self.rotation(-1, 0))
         button.place(x=70, y=35)
         self.__widgets['rotate obj left button'] = button
 
@@ -254,56 +278,104 @@ class MainWindow(WindowGUI):
         label.place(x=5, y=40)
         self.__widgets["rotate obj lbl"] = label
 
-        #Scale part
-        button = tk.Button(frame, text="+",
-                           command= lambda: self.scaletion(True))
-        button.place(x=180, y=75)
-        self.__widgets['scale up button'] = button
+        #World Origin Rotation
+        button = tk.Button(frame, text="⟳",
+                           command= lambda: self.rotation(1, 1))
+        button.place(x=180, y=70)
+        self.__widgets['rotate obj right button'] = button
 
-        button = tk.Button(frame, text="--", 
-                           command= lambda: self.scaletion(False))
-        button.place(x=70, y=75)
-        self.__widgets['scale down button'] = button
+        button = tk.Button(frame, text="⟲", 
+                           command= lambda: self.rotation(-1, 1))
+        button.place(x=70, y=70)
+        self.__widgets['rotate obj left button'] = button
+        label = tk.Label(frame, text = "Move")
+        label.place(x=5, y=70)
+        self.__widgets["move obj lbl"] = label
 
-        text_box = tk.Text(frame, height=1, width=4)
-        text_box.place(x=120, y=75)
-        self.__widgets["scale txt box"] = text_box
 
+        #Arbitrary Point Rotation
+
+        #x
         label = tk.Label(frame, text = "x")
-        label.place(x=160, y=75)
-        self.__widgets["x simbol lbl"] = label
-
-        label = tk.Label(frame, text = "Scale")
-        label.place(x=5, y=80)
-        self.__widgets["scale obj lbl"] = label
-    
-        #Move part
-
-        #dx
-        label = tk.Label(frame, text = "dx")
         label.place(x=60, y=120)
-        self.__widgets["move dx obj lbl"] = label
+        self.__widgets["rotate arbitrary x obj lbl"] = label
 
         text_box = tk.Text(frame, height=1, width=4)
         text_box.place(x=80, y=120)
-        self.__widgets["move dx obj txt box"] = text_box
+        self.__widgets["rotate arbitrary x obj txt box"] = text_box
 
-        #dy
-        label = tk.Label(frame, text = "dy")
+        #y
+        label = tk.Label(frame, text = "y")
         label.place(x=120, y=120)
-        self.__widgets["move dy obj lbl"] = label
+        self.__widgets["rotate arbitrary y obj lbl"] = label
 
         text_box = tk.Text(frame, height=1, width=4)
         text_box.place(x=140, y=120)
-        self.__widgets["move dy obj txt box"] = text_box
+        self.__widgets["rotate arbitrary y obj txt box"] = text_box
 
-        button = tk.Button(frame, text = "✓", command = lambda: self.translate())
-        button.place(x=180, y=115)
-        self.__widgets["move obj button"] = button
+        button = tk.Button(frame, text="⟳",
+                           command= lambda: self.rotation(1, 2))
+        button.place(x=180, y=120)
+        self.__widgets['rotate arbitrary obj right button'] = button
 
+        button = tk.Button(frame, text="⟲", 
+                           command= lambda: self.rotation(-1, 2))
+        button.place(x=70, y=120)
+        self.__widgets['rotate arbitrary obj left button'] = button
         label = tk.Label(frame, text = "Move")
         label.place(x=5, y=120)
         self.__widgets["move obj lbl"] = label
+
+        # #Scale part
+        # button = tk.Button(frame, text="+",
+        #                    command= lambda: self.scaletion(True))
+        # button.place(x=180, y=75)
+        # self.__widgets['scale up button'] = button
+
+        # button = tk.Button(frame, text="--", 
+        #                    command= lambda: self.scaletion(False))
+        # button.place(x=70, y=75)
+        # self.__widgets['scale down button'] = button
+
+        # text_box = tk.Text(frame, height=1, width=4)
+        # text_box.place(x=120, y=75)
+        # self.__widgets["scale txt box"] = text_box
+
+        # label = tk.Label(frame, text = "x")
+        # label.place(x=160, y=75)
+        # self.__widgets["x simbol lbl"] = label
+
+        # label = tk.Label(frame, text = "Scale")
+        # label.place(x=5, y=80)
+        # self.__widgets["scale obj lbl"] = label
+    
+        # #Move part
+
+        # #dx
+        # label = tk.Label(frame, text = "dx")
+        # label.place(x=60, y=120)
+        # self.__widgets["move dx obj lbl"] = label
+
+        # text_box = tk.Text(frame, height=1, width=4)
+        # text_box.place(x=80, y=120)
+        # self.__widgets["move dx obj txt box"] = text_box
+
+        # #dy
+        # label = tk.Label(frame, text = "dy")
+        # label.place(x=120, y=120)
+        # self.__widgets["move dy obj lbl"] = label
+
+        # text_box = tk.Text(frame, height=1, width=4)
+        # text_box.place(x=140, y=120)
+        # self.__widgets["move dy obj txt box"] = text_box
+
+        # button = tk.Button(frame, text = "✓", command = lambda: self.translate())
+        # button.place(x=180, y=115)
+        # self.__widgets["move obj button"] = button
+
+        # label = tk.Label(frame, text = "Move")
+        # label.place(x=5, y=120)
+        # self.__widgets["move obj lbl"] = label
         
     def init_operations_world(self):
         frame = tk.Frame(self.__root, height = 100, width = 250, relief="ridge", borderwidth=2)
