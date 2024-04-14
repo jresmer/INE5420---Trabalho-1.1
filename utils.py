@@ -75,7 +75,44 @@ class Clippling:
                 coordinates[i] = (x, y)
 
             return coordinates
-                    
+
+    @staticmethod
+    def liang_barsky(bounderies: tuple, coordinates: tuple) -> tuple:
+        (x1,y1), (x2,y2) = coordinates
+        x_min,y_min, x_max,y_max = bounderies
+
+        dx = x2 - x1
+        dy = y2 - y1
+        p = [-dx, dx, -dy, dy]
+        q = [x1 - x_min, x_max - x1, y1 - y_min, y_max - y1]
+        t_enter = 0.0
+        t_exit = 1.0
+
+        for i in range(4):
+            if p[i] == 0:  # Check if line is parallel to the clipping boundary
+                if q[i] < 0:
+                    return None  # Line is outside and parallel, so completely discarded
+            else:
+                t = q[i] / p[i]
+                if p[i] < 0:
+                    if t > t_enter:
+                        t_enter = t
+                else:
+                    if t < t_exit:
+                        t_exit = t
+
+        if t_enter > t_exit:
+            return None  # Line is completely outside
+
+        x1_clip = x1 + t_enter * dx
+        y1_clip = y1 + t_enter * dy
+        x2_clip = x1 + t_exit * dx
+        y2_clip = y1 + t_exit * dy
+
+        return (x1_clip, y1_clip), (x2_clip, y2_clip)
+
+
+
 class Utils:
 
     @staticmethod
