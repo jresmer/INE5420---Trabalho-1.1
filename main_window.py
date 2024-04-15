@@ -126,7 +126,11 @@ class MainWindow(WindowGUI):
 
     def init_widgets(self, world) -> None:
         
-        canvas = tk.Canvas(master=self.__root, height=500, width=760, bd=3, relief="ridge")
+        canvas = tk.Canvas(master=self.__root, height=500, width=760, bg="white",relief="ridge")
+        canvas.create_line(10,10,10,490)
+        canvas.create_line(10,490,750,490)
+        canvas.create_line(750,490,750,10)
+        canvas.create_line(750,10,10,10)
         canvas.place(x=500, y=0)
         self.__widgets['canvas'] = canvas
 
