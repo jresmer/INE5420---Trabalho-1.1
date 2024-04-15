@@ -9,7 +9,7 @@ class World:
         self.__object_list = []
         self.__viewport = [10,10,750,490]
         self.__window = WindowCoordController(
-            p=(380,250),
+            p=(370,240),
             vup=(0,240),
             u=(370, 0)
         )
