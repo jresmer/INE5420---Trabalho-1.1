@@ -198,7 +198,6 @@ class Clipping:
                     break
 
                 i = i + 1 if i + 1 < len(clipped_pol) else 0
-            i = i + 1 if i + 1 < len(clipped_pol) else 0
             # iterate through clipped pol untill an exiting intersection is found
             v = list()
             exiting_point = None
