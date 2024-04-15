@@ -7,11 +7,11 @@ from obj_descriptor import OBJDescriptor
 class World:
     def __init__(self) -> None:
         self.__object_list = []
-        self.__viewport = [0,0,760,500]
+        self.__viewport = [10,10,750,490]
         self.__window = WindowCoordController(
             p=(380,250),
-            vup=(0,250),
-            u=(380, 0)
+            vup=(0,240),
+            u=(370, 0)
         )
         # self.__window = [0,0,500,500]
         self.__zoom = 1
@@ -25,7 +25,7 @@ class World:
     def create_object(self, coord: tuple, color: str, name: str, obj_type, canvas) -> None:
         if self.search_object_by_name(name) != None:
             return 2
-        
+
         new_object = obj_type(coord, color, name, "", canvas)
         self.__object_list.append(new_object)
         self.__window.add_obj(new_object.get_name(), new_object.get_coord())
@@ -129,7 +129,7 @@ class World:
 
         objs = {obj.get_name(): obj.get_coord() for obj in self.__object_list}
         self.__window.move(dx, dy, objs)
-    
+
         for obj in self.__object_list:
             obj.draw(self.__viewport, self.__window.get_coords()[obj.get_name()], self.__zoom)
 

@@ -2,6 +2,7 @@ from world import World
 from object_creation_window import ObjectCreationWindow
 from main_window import MainWindow
 
+
 class GUI:
     def __init__(self):
         self.current_window = None
