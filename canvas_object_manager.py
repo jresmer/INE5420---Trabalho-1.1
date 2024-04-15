@@ -1,4 +1,5 @@
 from canvas_object import CanvasObject
+from wireframe import Wireframe
 from polygon import Polygon
 from point import Point
 from line import Line
