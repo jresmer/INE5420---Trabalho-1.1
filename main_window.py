@@ -401,7 +401,7 @@ class MainWindow(WindowGUI):
         
 
         frame = tk.Frame(self.__root, height = 100, width = 150, relief="ridge", borderwidth=2)
-        frame.place(x=10, y=600)
+        frame.place(x=10, y=300)
 
         label = tk.Label(frame, text = "Line Clipping")
         label.place(x=0, y = 0)
@@ -409,7 +409,7 @@ class MainWindow(WindowGUI):
 
         v = tk.StringVar(frame, "1")
         self.__widgets["var line clipping"] = v
-        (x,y) = 25,25
+        (x,y) = 15,25
         for (text, value) in clippings.items(): 
             tk.Radiobutton(master = frame, text = text, variable = v, indicatoron=0,
                 value = value, command=lambda: self.change_clipping()).place(x=x,y=y)
