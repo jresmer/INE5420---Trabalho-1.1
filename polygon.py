@@ -12,14 +12,22 @@ class Polygon(CanvasObject):
 
         window_xmin, window_ymin, window_xmax, window_ymax = [-1,-1,1,1]
         vp_xmin, vp_ymin, vp_xmax, vp_ymax = viewport
-        # polygons = Clipping.weiler_atherton([-1,-1,1,1], window_coords)
+
+        outside_points = []
+        for (x,y) in window_coords:
+            outside_points.append(not Clipping.point_clipping([-1,-1,1,1], (x,y)))
+        
+        if all(outside_points):
+            return
+
+        new_window_coords = Clipping.adapted_weiler_atherton([-1,-1,1,1], window_coords)
         coords_vp = []
         tkinter_ids = []
 
-        # if polygons == []:  polygons = [window_coords]
+        if new_window_coords == []:
+            new_window_coords = window_coords
 
-        # for window_coords in polygons:
-        for (x,y) in window_coords:
+        for (x,y) in new_window_coords:
 
             x_vp = vp_xmin + (x - window_xmin) * (vp_xmax - vp_xmin) / (window_xmax - window_xmin)
             y_vp = vp_ymin + (1 - (y - window_ymin)/(window_ymax - window_ymin)) * (vp_ymax - vp_ymin)

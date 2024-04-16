@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import filedialog
 from window_gui import WindowGUI
-
+from utils import Clipping
 
 class MainWindow(WindowGUI):
 
@@ -147,6 +147,8 @@ class MainWindow(WindowGUI):
         self.init_operations_object()
 
         self.init_operations_world()
+
+        self.init_change_clipping()
     
     def init_list_object(self):
 
@@ -389,4 +391,28 @@ class MainWindow(WindowGUI):
         button.place(x=10, y=35)
         self.__widgets['rotate obj right button'] = button
 
+    def change_clipping(self):
+        v = self.__widgets["var line clipping"]
+        Clipping.instance().change_line_clipping(v.get())
+        self.__controller.move_canvas(0,0)
+
+    def init_change_clipping(self):
+        clippings = Clipping.instance().get_all_line_clippings()
+        
+
+        frame = tk.Frame(self.__root, height = 100, width = 150, relief="ridge", borderwidth=2)
+        frame.place(x=10, y=600)
+
+        label = tk.Label(frame, text = "Line Clipping")
+        label.place(x=0, y = 0)
+
+
+        v = tk.StringVar(frame, "1")
+        self.__widgets["var line clipping"] = v
+        (x,y) = 25,25
+        for (text, value) in clippings.items(): 
+            tk.Radiobutton(master = frame, text = text, variable = v, indicatoron=0,
+                value = value, command=lambda: self.change_clipping()).place(x=x,y=y)
+            y += 25
+            
 

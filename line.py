@@ -14,7 +14,8 @@ class Line(CanvasObject):
         window_xmin, window_ymin, window_xmax, window_ymax = [-1,-1,1,1]
         vp_xmin, vp_ymin, vp_xmax, vp_ymax = viewport
 
-        new_coords = Clipping.liang_barsky([-1,-1,1,1],window_coords)
+
+        new_coords = Clipping.instance().line_clipping([-1,-1,1,1],window_coords)
 
         if new_coords == None:
             return
