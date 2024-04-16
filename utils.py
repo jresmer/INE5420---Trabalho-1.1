@@ -262,6 +262,7 @@ class Clipping(SingletonMeta):
         clipping_pol = [("p", (x_min, y_min)), ("p", (x_min, y_max)),
                         ("p", (x_max, y_max)), ("p", (x_max, y_min))]
         clipped_pol = list()
+        coord_inside_pol = [False] * len(coordinates)
 
         # 1. List intersection points i1, i2...
         # 2. Label intersections as entering and exiting
@@ -279,6 +280,7 @@ class Clipping(SingletonMeta):
                 possible_intersections = []
 
             elif possible_intersections == checking_coord_pair:
+                coord_inside_pol[i] = True
                 continue
 
             first = True
@@ -310,6 +312,9 @@ class Clipping(SingletonMeta):
 
                         intersections.append(("exiting", (x1, y1)))
                         clipped_pol.append(("exiting", (x1, y1)))
+
+        if all(coord_inside_pol):
+            return coordinates
 
         # 3. Create clipped polygon and clipping polygon lists
         for type_, coord in intersections:

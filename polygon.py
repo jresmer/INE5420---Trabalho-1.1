@@ -14,18 +14,13 @@ class Polygon(CanvasObject):
         vp_xmin, vp_ymin, vp_xmax, vp_ymax = viewport
 
         outside_points = []
-        for (x,y) in window_coords:
-            outside_points.append(not Clipping.point_clipping([-1,-1,1,1], (x,y)))
-        
-        if all(outside_points):
-            return
 
         new_window_coords = Clipping.adapted_weiler_atherton([-1,-1,1,1], window_coords)
         coords_vp = []
         tkinter_ids = []
 
         if new_window_coords == []:
-            new_window_coords = window_coords
+            return
 
         for (x,y) in new_window_coords:
 
