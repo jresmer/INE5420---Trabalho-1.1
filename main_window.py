@@ -45,12 +45,12 @@ class MainWindow(WindowGUI):
             self.notify_status("Value error for zoom functionality - value should be an integer")
 
     def save_file(self):
-        filepath = filedialog.asksaveasfilename(initialfile= "wavefront", defaultextension=".obj", initialdir = "/INE5420--TRABALHO-1.1",
+        filepath = filedialog.asksaveasfilename(initialfile= "wavefront", defaultextension=".obj", initialdir = "/",
                                                  title = "Saving world")
         self.__controller.save_world(filepath)
 
     def load_file(self):
-        filepath = filedialog.askopenfilename(initialdir = "/INE5420--TRABALHO-1.1",
+        filepath = filedialog.askopenfilename(initialdir = "/",
                                                  title = "Select wavefront .obj file")
         self.__controller.load_world(filepath)
 
