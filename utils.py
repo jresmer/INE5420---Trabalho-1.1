@@ -1,8 +1,25 @@
 import numpy as np
 from copy import deepcopy
+from singleton_meta import SingletonMeta
 
 
-class Clipping:
+class Clipping(SingletonMeta):
+    def __init__(self):
+        self.__point_clipping = self.point_clipping
+        self.__line_clipping = self.liang_barsky
+        self.__polygon_clipping = self.weiler_atherton
+
+    def get_all_line_clippings(self):
+        return {"Liang-Barsky": "Liang-Barsky", "Cohen-Sutherland": "Cohen-Sutherland"}
+    
+    def line_clipping(self, bounderies, coordinates):
+        return self.__line_clipping(bounderies, coordinates)
+
+    def change_line_clipping(self, algorithm):
+        if algorithm == "Liang-Barsky":
+            self.__line_clipping = Clipping.liang_barsky
+        else:
+            self.__line_clipping = Clipping.cohen_sutherland
 
     @staticmethod
     def point_clipping(boundaries: tuple, coordinates: tuple) -> bool:
@@ -48,7 +65,7 @@ class Clipping:
                 x1, y1 = coordinates[0] if i == 1 else coordinates[1]
                 x_diff = x - x1
                 y_diff = y - y1
-                m = y_diff / x_diff
+                m = y_diff / x_diff if x_diff != 0 else 0
 
                 # if Pi is to the left of the window
                 if x < x_min:
@@ -60,12 +77,12 @@ class Clipping:
                     x = x_max
                 # if Pi is to the below of the window
                 if y < y_min:
-                    x = x + 1/m * (y_min - y)
+                    x = x + 1/m * (y_min - y) if m != 0 else x
                     y = y_min
                     
                 # if Pi is to the above of the window
                 elif y_max < y:
-                    x = x + 1/m * (y_max - y)
+                    x = x + 1/m * (y_max - y) if m != 0 else x
                     y = y_max
 
                 coordinates[i] = (x, y)
@@ -255,13 +272,20 @@ class Clipping:
             clipped_pol.append(("p", coordinates[i]))
             j = i+1 if i+1 < len(coordinates) else 0
             coord_pair = [coordinates[i], coordinates[j]]
+            checking_coord_pair = deepcopy(coord_pair)
             possible_intersections = Clipping.cohen_sutherland(bounderies, coord_pair)
+
             if possible_intersections is None:
                 possible_intersections = []
+
+            elif possible_intersections == checking_coord_pair:
+                continue
+
             first = True
             # checks if coordinate is an intersection
             for x1, y1 in possible_intersections:
-
+                if (x1,y1) in checking_coord_pair:
+                    continue
                 # if (x1, y1) is an intersections
                 if x1 == x_min or x1 == x_max \
                     or y1 == y_min or y1 == y_max:
@@ -318,7 +342,7 @@ class Clipping:
         entering_point = None
         exiting_point = None
         # find an initial exiting point
-        while True:
+        while intersections:
 
             type_, c = clipped_pol[i]
 

@@ -25,9 +25,6 @@ class GUI:
     def move_canvas(self, dx, dy):
         self.world.move_window(dx, dy)
 
-    def debug_print(self, text: str):
-        print(text)
-        
     def create_object(self, coord: tuple, color: str, name: str, obj_type) -> None:
 
         status = self.world.create_object(
