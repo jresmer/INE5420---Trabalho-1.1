@@ -41,18 +41,23 @@ class MainWindow(WindowGUI):
             multiplier *= pct/100
             self.__controller.zoom_window(pct=multiplier)
         except Exception as e:
-            print(e)
             self.notify_status("Value error for zoom functionality - value should be an integer")
 
     def save_file(self):
-        filepath = filedialog.asksaveasfilename(initialfile= "wavefront", defaultextension=".obj", initialdir = "/",
-                                                 title = "Saving world")
-        self.__controller.save_world(filepath)
+        try:
+            filepath = filedialog.asksaveasfilename(initialfile= "wavefront", defaultextension=".obj", initialdir = "/",
+                                                        title = "Saving world")
+            self.__controller.save_world(filepath)
+        except:
+            self.notify_status(f"World not saved. It doesn't have objects to save or save canceled by user")
 
     def load_file(self):
-        filepath = filedialog.askopenfilename(initialdir = "/",
-                                                 title = "Select wavefront .obj file")
-        self.__controller.load_world(filepath)
+        try:
+            filepath = filedialog.askopenfilename(initialdir = "/",
+                                                    title = "Select wavefront .obj file")
+            self.__controller.load_world(filepath)
+        except:
+            self.notify_status(f"World not loaded")
 
     def translate(self):
         try:

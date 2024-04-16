@@ -95,7 +95,7 @@ class GUI:
         if self.world.save(filepath):
             self.notify_status(f"World saved on {filepath}")
         else:
-            self.notify_status(f"World not saved. It doesn't have objects to save")
+            self.notify_status(f"World not saved. It doesn't have objects to save or save canceled by user")
 
     def load_world(self, filepath: str):
         names = self.world.load(filepath, self.windows[MainWindow.__name__].get_canvas())
