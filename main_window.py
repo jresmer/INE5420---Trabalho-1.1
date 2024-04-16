@@ -41,18 +41,23 @@ class MainWindow(WindowGUI):
             multiplier *= pct/100
             self.__controller.zoom_window(pct=multiplier)
         except Exception as e:
-            print(e)
             self.notify_status("Value error for zoom functionality - value should be an integer")
 
     def save_file(self):
-        filepath = filedialog.asksaveasfilename(initialfile= "wavefront", defaultextension=".obj", initialdir = "/INE5420--TRABALHO-1.1",
-                                                 title = "Saving world")
-        self.__controller.save_world(filepath)
+        try:
+            filepath = filedialog.asksaveasfilename(initialfile= "wavefront", defaultextension=".obj", initialdir = "/",
+                                                        title = "Saving world")
+            self.__controller.save_world(filepath)
+        except:
+            self.notify_status(f"World not saved. It doesn't have objects to save or save canceled by user")
 
     def load_file(self):
-        filepath = filedialog.askopenfilename(initialdir = "/INE5420--TRABALHO-1.1",
-                                                 title = "Select wavefront .obj file")
-        self.__controller.load_world(filepath)
+        try:
+            filepath = filedialog.askopenfilename(initialdir = "/",
+                                                    title = "Select wavefront .obj file")
+            self.__controller.load_world(filepath)
+        except:
+            self.notify_status(f"World not loaded")
 
     def translate(self):
         try:
@@ -401,7 +406,7 @@ class MainWindow(WindowGUI):
         
 
         frame = tk.Frame(self.__root, height = 100, width = 150, relief="ridge", borderwidth=2)
-        frame.place(x=10, y=600)
+        frame.place(x=10, y=300)
 
         label = tk.Label(frame, text = "Line Clipping")
         label.place(x=0, y = 0)
@@ -409,7 +414,7 @@ class MainWindow(WindowGUI):
 
         v = tk.StringVar(frame, "1")
         self.__widgets["var line clipping"] = v
-        (x,y) = 25,25
+        (x,y) = 15,25
         for (text, value) in clippings.items(): 
             tk.Radiobutton(master = frame, text = text, variable = v, indicatoron=0,
                 value = value, command=lambda: self.change_clipping()).place(x=x,y=y)
