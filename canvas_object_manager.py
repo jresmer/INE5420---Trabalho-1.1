@@ -3,6 +3,7 @@ from wireframe import Wireframe
 from polygon import Polygon
 from point import Point
 from line import Line
+from bezier_curve import BezierCurve
 
 class CanvasObjectManager:
 

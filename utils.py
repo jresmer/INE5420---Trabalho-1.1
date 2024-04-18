@@ -7,7 +7,7 @@ class Clipping(SingletonMeta):
     def __init__(self):
         self.__point_clipping = self.point_clipping
         self.__line_clipping = self.liang_barsky
-        self.__polygon_clipping = self.weiler_atherton
+        self.__polygon_clipping = self.adapted_weiler_atherton
 
     def get_all_line_clippings(self):
         return {"Liang-Barsky": "Liang-Barsky", "Cohen-Sutherland": "Cohen-Sutherland"}
@@ -332,6 +332,16 @@ class Utils:
 
         return m
     
+    @staticmethod
+    def get_bezier_coeficients(ps: list):
+        m = np.array([[-1, 3, -3, 1],
+                      [3, -6, 3, 0],
+                      [-3, 3, 0, 0],
+                      [1, 0, 0, 0]])
+        
+        p1, p2, p3, p4 = ps
+        return np.matmul([p1,p2,p3,p4], m)
+
     @staticmethod
     def gen_simple_rotation_matrix(angle: float) -> np.array:
 
