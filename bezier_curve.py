@@ -2,6 +2,7 @@ from canvas_object import CanvasObject
 from utils import Clipping, Utils
 import tkinter as tk
 import sympy as sp
+import numpy as np
 
 class BezierCurve(CanvasObject):
 
@@ -59,55 +60,52 @@ class BezierCurve(CanvasObject):
         ay,by,cy,dy = Utils.get_bezier_coeficients([p1[1], p2[1], p3[1], p4[1]])
 
         #Teste para pontos de intersecção
-        t = sp.Symbol('t', real = True)
+        # t = sp.Symbol('t', real = True)
         print("\n\n")
-        print("T interceptando vp_xmin")
-        for i in sp.solve(ax*t**3 + bx*t**2 + cx*t + dx - vp_xmin,t):
-            x = ax*i**3 + bx*i**2 + cx*i + dx
-            y = ay*i**3 + by*i**2 + cy*i + dy
+        # print("T interceptando vp_xmin")
+        # for i in sp.solve(ax*t**3 + bx*t**2 + cx*t + dx - vp_xmin,t):
+        #     x = ax*i**3 + bx*i**2 + cx*i + dx
+        #     y = ay*i**3 + by*i**2 + cy*i + dy
             
-            if i >= 0 and i <= 1 and y <= vp_ymax and y >= vp_ymin:
-                print(x,y)
-                print(i)
-        print()
-        print("T interceptando vp_xmax")
-        for i in sp.solve(ax*t**3 + bx*t**2 + cx*t + dx - vp_xmax,t):
-            x = ax*i**3 + bx*i**2 + cx*i + dx
-            y = ay*i**3 + by*i**2 + cy*i + dy
+        #     if i.is_real and i >= 0 and i <= 1 and y <= vp_ymax and y >= vp_ymin:
+        #         print(x,y)
+        #         print(i)
+        # print()
+        # print("T interceptando vp_xmax")
+        # for i in sp.solve(ax*t**3 + bx*t**2 + cx*t + dx - vp_xmax,t):
+        #     x = ax*i**3 + bx*i**2 + cx*i + dx
+        #     y = ay*i**3 + by*i**2 + cy*i + dy
             
-            if i >= 0 and i <= 1 and y <= vp_ymax and y >= vp_ymin:
-                print(x,y)
-                print(i)
-        print()
-
-        print("T interceptando vp_ymin")
-        result = sp.solve(ay*t**3 + by*t**2 + cy*t + dy - vp_ymin,t)
-        print(result)
-        for i in result:
-            x = ax*i**3 + bx*i**2 + cx*i + dx
-            y = ay*i**3 + by*i**2 + cy*i + dy
-            
-            if i >= 0 and i <= 1 and x <= vp_xmax and x >= vp_xmin:
-                print(x,y)
-                print(i)
+        #     if i.is_real and i >= 0 and i <= 1 and y <= vp_ymax and y >= vp_ymin:
+        #         print(x,y)
+        #         print(i)
+        # print()
+        # print("T interceptando vp_ymin")
+        # result = sp.solveset(ay*t**3 + by*t**2 + cy*t + dy - vp_ymin,t)
+        # print(result)
+        # for i in result:
+        #     x = ax*i**3 + bx*i**2 + cx*i + dx
+        #     y = ay*i**3 + by*i**2 + cy*i + dy
+        #     if i.is_real and i >= 0 and i <= 1 and x <= vp_xmax and x >= vp_xmin:
+        #         print(x,y)
+        #         print(i)
         
-        print()
-
-        print("T interceptando vp_ymax")
-        result = sp.solve(ay*t**3 + by*t**2 + cy*t + dy - vp_ymax,t)
-        print(result)
-        for i in result:
-            x = ax*i**3 + bx*i**2 + cx*i + dx
-            y = ay*i**3 + by*i**2 + cy*i + dy
+        # print()
+        # print("T interceptando vp_ymax")
+        # result = sp.solveset(ay*t**3 + by*t**2 + cy*t + dy - vp_ymax,t)
+        # print(result)
+        # for i in result:
+        #     x = ax*i**3 + bx*i**2 + cx*i + dx
+        #     y = ay*i**3 + by*i**2 + cy*i + dy
             
-            if i >= 0 and i <= 1 and x <= vp_xmax and x >= vp_xmin:
-                print(x,y)
-                print(i)
-        print()
+        #     if i.is_real and i >= 0 and i <= 1 and x <= vp_xmax and x >= vp_xmin:
+        #         print(x,y)
+        #         print(i)
+        # print()
 
         coords = []
 
-        t_to_be_calculated = [i*0.04 for i in range(25)]
+        t_to_be_calculated = [i*0.004 for i in range(251)]
 
         for t in t_to_be_calculated:
 

@@ -340,7 +340,7 @@ class Utils:
                       [1, 0, 0, 0]])
         
         p1, p2, p3, p4 = ps
-        return np.matmul([p1,p2,p3,p4], m)
+        return np.matmul(m, [p1,p2,p3,p4])
 
     @staticmethod
     def gen_simple_rotation_matrix(angle: float) -> np.array:
