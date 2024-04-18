@@ -125,9 +125,9 @@ class Clipping(SingletonMeta):
         return (x1_clip, y1_clip), (x2_clip, y2_clip)
     
     @staticmethod
-    def adapted_weiler_atherton(bounderies: tuple, coordinates: tuple) -> tuple:
+    def adapted_weiler_atherton(boundaries: tuple, coordinates: tuple) -> tuple:
     
-        x_min, y_min, x_max, y_max = bounderies
+        x_min, y_min, x_max, y_max = boundaries
         clipping_pol = [("p", (x_min, y_min)), ("p", (x_min, y_max)),
                         ("p", (x_max, y_max)), ("p", (x_max, y_min))]
         clipped_pol = list()
@@ -143,7 +143,7 @@ class Clipping(SingletonMeta):
             j = i+1 if i+1 < len(coordinates) else 0
             coord_pair = [coordinates[i], coordinates[j]]
             checking_coord_pair = deepcopy(coord_pair)
-            possible_intersections = Clipping.cohen_sutherland(bounderies, coord_pair)
+            possible_intersections = Clipping.cohen_sutherland(boundaries, coord_pair)
 
             if possible_intersections is None:
                 possible_intersections = []
@@ -278,7 +278,8 @@ class Clipping(SingletonMeta):
     @staticmethod
     def curve_clipping(boundaries: tuple, coordinates: tuple) -> tuple:
 
-        ...
+        x_min,y_min, x_max,y_max = boundaries
+
 
 class Utils:
 

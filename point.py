@@ -19,8 +19,6 @@ class Point(CanvasObject):
         if not Clipping.point_clipping([-1,-1,1,1], (x,y)):
             return 
         
-        
-
         x_vp = vp_xmin + (x - window_xmin) * (vp_xmax - vp_xmin) / (window_xmax - window_xmin)
         y_vp = vp_ymin + (1 - (y - window_ymin)/(window_ymax - window_ymin)) * (vp_ymax - vp_ymin)
   

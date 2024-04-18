@@ -14,7 +14,6 @@ class CanvasObject(ABC):
         self.__name = name
         self.__tkinter_id = tkinter_id
         self.__canvas = canvas
-
     
     def transform(self, m: np.array) -> list:
 
