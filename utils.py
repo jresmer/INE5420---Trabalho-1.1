@@ -324,7 +324,7 @@ class Clipping(SingletonMeta):
 
         coords = []
 
-        number_of_ts = 200
+        number_of_ts = 1000
         range_t = 1/number_of_ts
 
         #Checking if start drawing
@@ -337,9 +337,9 @@ class Clipping(SingletonMeta):
             
             if draw:
                 segment_coords = []
-                lim_if = int(t_intercept[i]*number_of_ts)
-                lim_sup = int(t_intercept[i+1]*number_of_ts)
-                t_to_be_calculated = [x*range_t for x in range(lim_if, lim_sup+1)]
+                lim_if = int(t_intercept[i]*number_of_ts) + 1
+                lim_sup = int(t_intercept[i+1]*number_of_ts) - 1
+                t_to_be_calculated = [t_intercept[i]] + [x*range_t for x in range(lim_if, lim_sup+1)] + [t_intercept[i+1]]
 
                 for t in t_to_be_calculated:
 

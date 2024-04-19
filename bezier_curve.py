@@ -26,38 +26,38 @@ class BezierCurve(CanvasObject):
             window_coords[i] = (x, y)
    
         #Verificando casca
-        p1, p2, p3, p4 = window_coords
+        # p1, p2, p3, p4 = window_coords
 
-        min_y = vp_ymax+1
-        max_y = -1
-        min_x = vp_xmax + 1
-        max_x = -1
-        for (x,y) in [p1,p2,p3,p4]:
-            if x < min_x:
-                min_x = x
-            elif x > max_x:
-                max_x = x 
+        # min_y = vp_ymax+1
+        # max_y = -1
+        # min_x = vp_xmax + 1
+        # max_x = -1
+        # for (x,y) in [p1,p2,p3,p4]:
+        #     if x < min_x:
+        #         min_x = x
+        #     elif x > max_x:
+        #         max_x = x 
 
-            if y < min_y:
-                min_y = y
-            elif y > max_y:
-                max_y = y  
+        #     if y < min_y:
+        #         min_y = y
+        #     elif y > max_y:
+        #         max_y = y  
         
-        coords_casca = [(min_x, min_y), (min_x, max_y), (max_x, max_y), (max_x,min_y)]
+        # coords_casca = [(min_x, min_y), (min_x, max_y), (max_x, max_y), (max_x,min_y)]
 
-        casca_inside = []
-        for (x,y) in coords_casca:
-            casca_inside.append(Clipping.point_clipping(viewport, (x,y)))
+        # casca_inside = []
+        # for (x,y) in coords_casca:
+        #     casca_inside.append(Clipping.point_clipping(viewport, (x,y)))
         
         # if not any(casca_inside):
         #     print(casca_inside)
         #     return
-        
 
         #Clippings
+
         coords = Clipping.curve_clipping(viewport, window_coords)
         
-        all_inside = all(casca_inside)
+        # all_inside = all(casca_inside)
 
         # drawing curve
         tkinter_ids = []
@@ -66,12 +66,6 @@ class BezierCurve(CanvasObject):
             for i in range(0, len(segment) - 1):
                 x0, y0 = segment[i]
                 x1, y1 = segment[i+1]
-
-                #TODO: Avaliar necessidade dessa checagem, talvez já fazer isso dentro do curve_clipping?
-                if i + 1 == len(segment) - 1 or i == 0:
-                    new_coords = Clipping.liang_barsky(viewport, [(x0,y0), (x1,y1)])
-                    if new_coords != None:
-                        (x0,y0),(x1,y1) = new_coords
 
                 tk_id = self.get_canvas().create_line(x0, y0, x1, y1, fill=self.get_color())
                 tkinter_ids.append(tk_id)
