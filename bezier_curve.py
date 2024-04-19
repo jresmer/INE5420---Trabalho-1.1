@@ -53,79 +53,26 @@ class BezierCurve(CanvasObject):
         #     print(casca_inside)
         #     return
         
-        # calculating points between p1 and p4
-        # TODO - determinar número de pontos a serem desenhados
 
-        ax,bx,cx,dx = Utils.get_bezier_coeficients([p1[0], p2[0], p3[0], p4[0]])
-        ay,by,cy,dy = Utils.get_bezier_coeficients([p1[1], p2[1], p3[1], p4[1]])
-
-        #Teste para pontos de intersecção
-        # t = sp.Symbol('t', real = True)
-        print("\n\n")
-        # print("T interceptando vp_xmin")
-        # for i in sp.solve(ax*t**3 + bx*t**2 + cx*t + dx - vp_xmin,t):
-        #     x = ax*i**3 + bx*i**2 + cx*i + dx
-        #     y = ay*i**3 + by*i**2 + cy*i + dy
-            
-        #     if i.is_real and i >= 0 and i <= 1 and y <= vp_ymax and y >= vp_ymin:
-        #         print(x,y)
-        #         print(i)
-        # print()
-        # print("T interceptando vp_xmax")
-        # for i in sp.solve(ax*t**3 + bx*t**2 + cx*t + dx - vp_xmax,t):
-        #     x = ax*i**3 + bx*i**2 + cx*i + dx
-        #     y = ay*i**3 + by*i**2 + cy*i + dy
-            
-        #     if i.is_real and i >= 0 and i <= 1 and y <= vp_ymax and y >= vp_ymin:
-        #         print(x,y)
-        #         print(i)
-        # print()
-        # print("T interceptando vp_ymin")
-        # result = sp.solveset(ay*t**3 + by*t**2 + cy*t + dy - vp_ymin,t)
-        # print(result)
-        # for i in result:
-        #     x = ax*i**3 + bx*i**2 + cx*i + dx
-        #     y = ay*i**3 + by*i**2 + cy*i + dy
-        #     if i.is_real and i >= 0 and i <= 1 and x <= vp_xmax and x >= vp_xmin:
-        #         print(x,y)
-        #         print(i)
-        
-        # print()
-        # print("T interceptando vp_ymax")
-        # result = sp.solveset(ay*t**3 + by*t**2 + cy*t + dy - vp_ymax,t)
-        # print(result)
-        # for i in result:
-        #     x = ax*i**3 + bx*i**2 + cx*i + dx
-        #     y = ay*i**3 + by*i**2 + cy*i + dy
-            
-        #     if i.is_real and i >= 0 and i <= 1 and x <= vp_xmax and x >= vp_xmin:
-        #         print(x,y)
-        #         print(i)
-        # print()
-
-        coords = []
-
-        t_to_be_calculated = [i*0.004 for i in range(251)]
-
-        for t in t_to_be_calculated:
-
-            t_square = t*t
-            t_cubic = t_square*t
-            x = ax*t_cubic + bx*t_square + cx*t + dx
-            y = ay*t_cubic + by*t_square + cy*t + dy
-
-            coords.append((x,y))
+        #Clippings
+        coords = Clipping.curve_clipping(viewport, window_coords)
         
         all_inside = all(casca_inside)
 
         # drawing curve
         tkinter_ids = []
 
-        for i in range(0, len(coords) - 1):
-            x0, y0 = coords[i]
-            x1, y1 = coords[i+1]
+        for segment in coords:
+            for i in range(0, len(segment) - 1):
+                x0, y0 = segment[i]
+                x1, y1 = segment[i+1]
 
-            if all_inside or Clipping.point_clipping(viewport, (x0,y0)):
+                #TODO: Avaliar necessidade dessa checagem, talvez já fazer isso dentro do curve_clipping?
+                if i + 1 == len(segment) - 1 or i == 0:
+                    new_coords = Clipping.liang_barsky(viewport, [(x0,y0), (x1,y1)])
+                    if new_coords != None:
+                        (x0,y0),(x1,y1) = new_coords
+
                 tk_id = self.get_canvas().create_line(x0, y0, x1, y1, fill=self.get_color())
                 tkinter_ids.append(tk_id)
 
