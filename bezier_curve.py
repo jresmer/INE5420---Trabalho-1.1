@@ -7,6 +7,23 @@ import numpy as np
 class BezierCurve(CanvasObject):
 
     def __init__(self, coord: tuple, color: str, name: str, tkinter_id: int, canvas) -> None:
+        # length of coord list is not multiple of 4
+        if len(coord) % 4:
+            pass
+        for i in range(4, len(coord), 4):
+            # P3P4 vector
+            x0, y0 = coord[i-2]
+            x1, y1 = coord[i-1]
+            v0 = (x1-x0, y1-y0)
+            # P4P5 vector
+            x0, y0 = coord[i]
+            x1, y1 = coord[i+1]
+            v1 = (x1-x0, y1-y0)
+            # verify condition: P3P4 = k.P4P5
+            if (v1[0] % v0[0] and v0[0] % v1[0]) or \
+                (v1[1] % v0[1] and v0[1] % v1[1]):
+                coord = coord[:i]
+                break
         super().__init__(coord, color, name, tkinter_id, canvas)
 
     def draw(self, viewport: tuple, window_coords: tuple, zoom: float) -> None:
