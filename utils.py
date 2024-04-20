@@ -1,4 +1,5 @@
 import numpy as np
+import sympy as sp
 from copy import deepcopy
 from singleton_meta import SingletonMeta
 
@@ -7,7 +8,7 @@ class Clipping(SingletonMeta):
     def __init__(self):
         self.__point_clipping = self.point_clipping
         self.__line_clipping = self.liang_barsky
-        self.__polygon_clipping = self.weiler_atherton
+        self.__polygon_clipping = self.adapted_weiler_atherton
 
     def get_all_line_clippings(self):
         return {"Liang-Barsky": "Liang-Barsky", "Cohen-Sutherland": "Cohen-Sutherland"}
@@ -277,8 +278,81 @@ class Clipping(SingletonMeta):
     
     @staticmethod
     def curve_clipping(boundaries: tuple, coordinates: tuple) -> tuple:
+        p1,p2,p3,p4 = coordinates
 
-        x_min,y_min, x_max,y_max = boundaries
+        ax,bx,cx,dx = Utils.get_bezier_coeficients([p1[0], p2[0], p3[0], p4[0]])
+        ay,by,cy,dy = Utils.get_bezier_coeficients([p1[1], p2[1], p3[1], p4[1]])
+
+        x_min, y_min, x_max, y_max = boundaries
+
+        #Find intersections
+        t = sp.Symbol('t', real = True)
+        t_intercept = set()
+        for i in sp.solveset(ax*t**3 + bx*t**2 + cx*t + dx - x_min,t):
+            x = ax*i**3 + bx*i**2 + cx*i + dx
+            y = ay*i**3 + by*i**2 + cy*i + dy
+            
+            if i.is_real and i >= 0 and i <= 1 and y <= y_max and y >= y_min:
+                t_intercept.add(i)
+
+        for i in sp.solveset(ax*t**3 + bx*t**2 + cx*t + dx - x_max,t):
+            x = ax*i**3 + bx*i**2 + cx*i + dx
+            y = ay*i**3 + by*i**2 + cy*i + dy
+            
+            if i.is_real and i >= 0 and i <= 1 and y <= y_max and y >= y_min:
+                t_intercept.add(i)
+
+        result = sp.solveset(ay*t**3 + by*t**2 + cy*t + dy - y_min,t)
+        for i in result:
+            x = ax*i**3 + bx*i**2 + cx*i + dx
+            y = ay*i**3 + by*i**2 + cy*i + dy
+            if i.is_real and i >= 0 and i <= 1 and x <= x_max and x >= x_min:
+                t_intercept.add(i)
+        
+        result = sp.solveset(ay*t**3 + by*t**2 + cy*t + dy - y_max,t)
+        for i in result:
+            x = ax*i**3 + bx*i**2 + cx*i + dx
+            y = ay*i**3 + by*i**2 + cy*i + dy
+            
+            if i.is_real and i >= 0 and i <= 1 and x <= x_max and x >= x_min:
+                t_intercept.add(i)
+
+        t_intercept.add(0)
+        t_intercept.add(1)
+        t_intercept = list(t_intercept)
+        t_intercept.sort()
+
+        coords = []
+
+        number_of_ts = 1000
+        range_t = 1/number_of_ts
+
+        #Checking if start drawing
+        draw = False
+        if x_min <= p1[0] and p1[0] <= x_max and y_min <= p1[1] and p1[1] <= y_max:
+            draw = True
+
+        #Calculate t for each segment
+        for i in range(len(t_intercept)-1):
+            
+            if draw:
+                segment_coords = []
+                lim_if = int(t_intercept[i]*number_of_ts) + 1
+                lim_sup = int(t_intercept[i+1]*number_of_ts) - 1
+                t_to_be_calculated = [t_intercept[i]] + [x*range_t for x in range(lim_if, lim_sup+1)] + [t_intercept[i+1]]
+
+                for t in t_to_be_calculated:
+
+                    t_square = t*t
+                    t_cubic = t_square*t
+                    x = ax*t_cubic + bx*t_square + cx*t + dx
+                    y = ay*t_cubic + by*t_square + cy*t + dy
+
+                    segment_coords.append((x,y))
+                coords.append(segment_coords)
+            draw = not draw
+
+        return coords
 
 
 class Utils:
@@ -332,6 +406,16 @@ class Utils:
 
         return m
     
+    @staticmethod
+    def get_bezier_coeficients(ps: list):
+        m = np.array([[-1, 3, -3, 1],
+                      [3, -6, 3, 0],
+                      [-3, 3, 0, 0],
+                      [1, 0, 0, 0]])
+        
+        p1, p2, p3, p4 = ps
+        return np.matmul(m, [p1,p2,p3,p4])
+
     @staticmethod
     def gen_simple_rotation_matrix(angle: float) -> np.array:
 

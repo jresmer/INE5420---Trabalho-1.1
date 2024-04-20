@@ -1,6 +1,8 @@
 from canvas_object import CanvasObject
-from utils import Clipping
-
+from utils import Clipping, Utils
+import tkinter as tk
+import sympy as sp
+import numpy as np
 
 class BezierCurve(CanvasObject):
 
@@ -17,39 +19,56 @@ class BezierCurve(CanvasObject):
         vp_xmin, vp_ymin, vp_xmax, vp_ymax = viewport
         for i in range((len(window_coords))):
              
-             x, y = window_coords[i]
-             x = (x - window_xmin) * (vp_xmax - vp_xmin) / (window_xmax - window_xmin)
-             y = (1 - (y - window_ymin)/(window_ymax - window_ymin)) * (vp_ymax - vp_ymin)
-             window_coords[i] = (x, y)
+            x, y = window_coords[i]
 
-        # clipping the curve   
-        new_window_coords = Clipping.line_clipping([-1, -1, 1, 1], coords)
-        if len(new_window_coords) == 0:
-            return
+            x = vp_xmin +(x - window_xmin) * (vp_xmax - vp_xmin) / (window_xmax - window_xmin)
+            y = vp_ymin + (1 - (y - window_ymin)/(window_ymax - window_ymin)) * (vp_ymax - vp_ymin)
+            window_coords[i] = (x, y)
+   
+        #Verificando casca
+        # p1, p2, p3, p4 = window_coords
 
-        # calculating points between p1 and p4
-        # TODO - determinar número de pontos a serem desenhados
-        coords = []
-        p1, p2, p3, p4 = window_coords
-        t_to_be_calculated = list()
-        for t in t_to_be_calculated:
+        # min_y = vp_ymax+1
+        # max_y = -1
+        # min_x = vp_xmax + 1
+        # max_x = -1
+        # for (x,y) in [p1,p2,p3,p4]:
+        #     if x < min_x:
+        #         min_x = x
+        #     elif x > max_x:
+        #         max_x = x 
 
-            p = [0, 0]
-            for i in range(len(p)):
-
-                p[i] = p1[i] * (-1*t**3 + 3*t**2 - 3*t + 1) + p2[i] * (3*t**3 - 6*t**2 + 3*t) \
-                    + p3[i] * (-3*t**3 + 3*t**2) + p4[i] * (t**3)
-                
-            coords.append(p)
+        #     if y < min_y:
+        #         min_y = y
+        #     elif y > max_y:
+        #         max_y = y  
         
+        # coords_casca = [(min_x, min_y), (min_x, max_y), (max_x, max_y), (max_x,min_y)]
+
+        # casca_inside = []
+        # for (x,y) in coords_casca:
+        #     casca_inside.append(Clipping.point_clipping(viewport, (x,y)))
+        
+        # if not any(casca_inside):
+        #     print(casca_inside)
+        #     return
+
+        #Clippings
+
+        coords = Clipping.curve_clipping(viewport, window_coords)
+        
+        # all_inside = all(casca_inside)
+
         # drawing curve
         tkinter_ids = []
-        for i in range(0, len(coords) - 1):
-            x0, y0 = coords[i]
-            x1, y1 = coords[i+1]
-            
-            tk_id = self.get_canvas().create_line(x0, y0, x1, y1, fill="green")
-            tkinter_ids.append(tk_id)
+
+        for segment in coords:
+            for i in range(0, len(segment) - 1):
+                x0, y0 = segment[i]
+                x1, y1 = segment[i+1]
+
+                tk_id = self.get_canvas().create_line(x0, y0, x1, y1, fill=self.get_color())
+                tkinter_ids.append(tk_id)
 
         self.set_tkinter_id(tkinter_ids)
 
