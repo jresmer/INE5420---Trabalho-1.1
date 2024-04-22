@@ -283,11 +283,12 @@ class Clipping(SingletonMeta):
         ay,by,cy,dy = coeficients_y
         x_min, y_min, x_max, y_max = boundaries
 
+
         #Verificando casca
-        min_y = y_max+1
-        max_y = -1
+        min_y = y_max + 1
+        max_y = y_min - 1
         min_x = x_max + 1
-        max_x = -1
+        max_x = x_min - 1
         for (x,y) in [p1,p2,p3,p4]:
             if x < min_x:
                 min_x = x
@@ -310,8 +311,8 @@ class Clipping(SingletonMeta):
             return [0,1]
         
         #If all points outside, dont have to draw
-        if not any(casca_inside):
-            return []
+        # if not any(casca_inside):
+        #     return []
     
         #Find intersections
         t = sp.Symbol('t', real = True)

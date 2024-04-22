@@ -8,7 +8,9 @@ class CanvasObject(ABC):
 
     def __init__(self, coord: tuple, color: str, name: str,
                     tkinter_id: int, canvas) -> None:
-        
+        if len(coord) == 0:
+            self.set_invalid()
+
         self.__coord = coord
         self.__color = color
         self.__name = name
@@ -66,5 +68,5 @@ class CanvasObject(ABC):
     def valid(self):
         return self.__valid
     
-    def __set_invalid(self):
+    def set_invalid(self):
         self.__valid = False
