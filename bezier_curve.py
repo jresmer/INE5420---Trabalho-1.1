@@ -15,13 +15,14 @@ class BezierCurve(CanvasObject):
             x0, y0 = coord[i-2]
             x1, y1 = coord[i-1]
             v0 = (x1-x0, y1-y0)
+            m0 = v0[1]/v0[0]
             # P4P5 vector
             x0, y0 = coord[i]
             x1, y1 = coord[i+1]
             v1 = (x1-x0, y1-y0)
+            m1 = v1[1]/v1[0]
             # verify condition: P3P4 = k.P4P5
-            if (v1[0] % v0[0] and v0[0] % v1[0]) or \
-                (v1[1] % v0[1] and v0[1] % v1[1]) or (x0,y0) != (x1,y1):
+            if (m1 % m0 and m0 % m1) or coord[i-1] != coord[i]:
                 self.set_invalid()
                 break
 
