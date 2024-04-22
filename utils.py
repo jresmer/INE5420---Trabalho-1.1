@@ -300,19 +300,22 @@ class Clipping(SingletonMeta):
             elif y > max_y:
                 max_y = y  
         
-        coords_casca = [(min_x, min_y), (min_x, max_y), (max_x, max_y), (max_x,min_y)]
+        coords_casca = [[(min_x, min_y), (min_x, max_y)], 
+                        [(min_x, max_y), (max_x, max_y)] ,
+                        [(max_x, max_y), (max_x,min_y)], 
+                        [(max_x,min_y), (min_x, min_y)]]
 
         casca_inside = []
-        for (x,y) in coords_casca:
-            casca_inside.append(Clipping.point_clipping(boundaries, (x,y)))
+        for line in coords_casca:
+            casca_inside.append(Clipping.cohen_sutherland(boundaries, line) != None)
 
         #If all points inside viewport, there are no intersections to calculate
         if all(casca_inside):
             return [0,1]
         
         #If all points outside, dont have to draw
-        # if not any(casca_inside):
-        #     return []
+        if not any(casca_inside):
+            return []
     
         #Find intersections
         t = sp.Symbol('t', real = True)
