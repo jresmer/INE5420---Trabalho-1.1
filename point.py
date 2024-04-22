@@ -4,7 +4,7 @@ from utils import Clipping
 class Point(CanvasObject):
     #TODO: Passar os atributos para classe pai e requisitar o atributo
     def __init__(self, coord: tuple, color: str, name: str, tkinter_id: int, canvas) -> None:
-        if len(coord) > 2 or len(coord) < 0:
+        if len(coord) > 2 or len(coord) == 0:
             self.__set_invalid()
         else:
             coord = [(coord[0], coord[1])]
