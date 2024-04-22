@@ -7,7 +7,7 @@ class BezierCurve(CanvasObject):
     def __init__(self, coord: tuple, color: str, name: str, tkinter_id: int, canvas) -> None:
         # length of coord list is not multiple of 4
         if len(coord) % 4:
-            pass
+            self.__set_invalid()
         for i in range(4, len(coord), 4):
             # P3P4 vector
             x0, y0 = coord[i-2]
@@ -20,7 +20,7 @@ class BezierCurve(CanvasObject):
             # verify condition: P3P4 = k.P4P5
             if (v1[0] % v0[0] and v0[0] % v1[0]) or \
                 (v1[1] % v0[1] and v0[1] % v1[1]):
-                coord = coord[:i]
+                self.__set_invalid()
                 break
         super().__init__(coord, color, name, tkinter_id, canvas)
 

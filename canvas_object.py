@@ -14,6 +14,7 @@ class CanvasObject(ABC):
         self.__name = name
         self.__tkinter_id = tkinter_id
         self.__canvas = canvas
+        self.__valid = True
     
     def transform(self, m: np.array) -> list:
 
@@ -61,3 +62,9 @@ class CanvasObject(ABC):
             sum_y += y
         return (sum_x/n, sum_y/n)
         
+    @property    
+    def valid(self):
+        return self.__valid
+    
+    def __set_invalid(self):
+        self.__valid = False

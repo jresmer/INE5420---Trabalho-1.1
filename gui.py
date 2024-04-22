@@ -39,6 +39,8 @@ class GUI:
             self.notify_status(f"Object name: {name} successfully created")
         elif status == 2:
             self.notify_status(f"Name: {name} is already assigned")
+        elif status == 3:
+            self.notify_status(f"Input coordinates don't satisfy constricts to object creation")
 
     def translate_object(self, name: str, dx: int, dy: int):
 

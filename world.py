@@ -27,6 +27,8 @@ class World:
             return 2
 
         new_object = obj_type(coord, color, name, "", canvas)
+        if not new_object.valid:
+            return 3
         self.__object_list.append(new_object)
         self.__window.add_obj(new_object.get_name(), new_object.get_coord())
 

@@ -5,6 +5,8 @@ from utils import Clipping
 class Line(CanvasObject):
     #TODO: Passar os atributos para classe pai e requisitar o atributo
     def __init__(self, coord: tuple, color: str, name: str, tkinter_id: int, canvas) -> None:
+        if len(coord) > 2 or len(coord) < 0:
+            self.__set_invalid()
         super().__init__(coord, color, name, tkinter_id, canvas)
 
     def draw(self, viewport: tuple, window_coords: tuple, zoom: float) -> None:
