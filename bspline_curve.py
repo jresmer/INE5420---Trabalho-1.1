@@ -71,70 +71,33 @@ class BSplineCurve(CanvasObject):
             delta2_y = 6*ay*range_t_cub + 2*by*range_t_sqr
             delta3_y = 6*ay*range_t_cub
 
-            # t_intercept = [int(i*number_of_ts) for i in t_intercept]
-            # print(t_intercept)
-            # draw = False
-            # if vp_xmin <= p1[0] and p1[0] <= vp_xmax and vp_ymin <= p1[1] and p1[1] <= vp_ymax:
-            #     draw = True
+            t_intercept = [int(i*number_of_ts) for i in t_intercept]
 
-            # for i in range(len(t_intercept)-1):
-            #     lim_inf = t_intercept[i]
-            #     lim_sup = t_intercept[i+1]
+            draw = False
+            if vp_xmin <= dx and dx <= vp_xmax and vp_ymin <= dy and dy <= vp_ymax:
+                draw = True
+
+            for i in range(len(t_intercept)-1):
+                lim_inf = t_intercept[i]
+                lim_sup = t_intercept[i+1]
 
 
-                # for i in range(lim_inf,lim_sup + 1):
-            for i in range(number_of_ts):
-                x1 = x0 + delta_x
-                delta_x = delta_x + delta2_x
-                delta2_x = delta2_x + delta3_x
+                for i in range(lim_inf,lim_sup + 1):
 
-                y1 = y0 + delta_y
-                delta_y = delta_y + delta2_y
-                delta2_y = delta2_y + delta3_y
+                    x1 = x0 + delta_x
+                    delta_x = delta_x + delta2_x
+                    delta2_x = delta2_x + delta3_x
 
-                tk_id = self.get_canvas().create_line(x0, y0, x1, y1, fill=self.get_color())
-                tkinter_ids.append(tk_id)
-            
-                x0, y0 = x1,y1
-            # draw = not draw
+                    y1 = y0 + delta_y
+                    delta_y = delta_y + delta2_y
+                    delta2_y = delta2_y + delta3_y
 
-            #Checking if start drawing
-            # draw = False
-            # if vp_xmin <= p1[0] and p1[0] <= vp_xmax and vp_ymin <= p1[1] and p1[1] <= vp_ymax:
-            #     draw = True
-
-            #Calculate t for each segment
-            # coords = []
-
-            # for i in range(len(t_intercept)-1):
+                    if draw:
+                        tk_id = self.get_canvas().create_line(x0, y0, x1, y1, fill=self.get_color())
+                        tkinter_ids.append(tk_id)
                 
-            #     if draw:
-            #         segment_coords = []
-            #         lim_if = int(t_intercept[i]*number_of_ts) + 1
-            #         lim_sup = int(t_intercept[i+1]*number_of_ts) - 1
-            #         t_to_be_calculated = [t_intercept[i]] + [x*range_t for x in range(lim_if, lim_sup+1)] + [t_intercept[i+1]]
-
-            #         for t in t_to_be_calculated:
-
-            #             t_square = t*t
-            #             t_cubic = t_square*t
-            #             x = ax*t_cubic + bx*t_square + cx*t + dx
-            #             y = ay*t_cubic + by*t_square + cy*t + dy
-
-            #             segment_coords.append((x,y))
-            #         coords.append(segment_coords)
-            #     draw = not draw
-
-            # drawing curve
-            
-
-            # for segment in coords:
-            #     for i in range(0, len(segment) - 1):
-            #         x0, y0 = segment[i]
-            #         x1, y1 = segment[i+1]
-
-            #         tk_id = self.get_canvas().create_line(x0, y0, x1, y1, fill=self.get_color())
-            #         tkinter_ids.append(tk_id)
+                    x0, y0 = x1,y1
+                draw = not draw
 
         self.set_tkinter_id(tkinter_ids)
 
