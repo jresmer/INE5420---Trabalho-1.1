@@ -415,6 +415,16 @@ class Utils:
         
         p1, p2, p3, p4 = ps
         return np.matmul(m, [p1,p2,p3,p4])
+    
+    def get_bspline_coeficients(ps: list):
+        m = np.array([[-1, 3, -3, 1],
+                      [3, -6, 3, 0],
+                      [-3, 0, 3, 0],
+                      [1, 4, 1, 0]])
+        m = m/6
+        
+        p1, p2, p3, p4 = ps
+        return np.matmul(m, [p1,p2,p3,p4])
 
     @staticmethod
     def gen_simple_rotation_matrix(angle: float) -> np.array:

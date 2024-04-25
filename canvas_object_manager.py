@@ -4,6 +4,7 @@ from polygon import Polygon
 from point import Point
 from line import Line
 from bezier_curve import BezierCurve
+from bspline_curve import BSplineCurve
 
 class CanvasObjectManager:
 
