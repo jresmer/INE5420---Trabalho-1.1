@@ -419,7 +419,7 @@ class Utils:
     def get_bspline_coeficients(ps: list):
         m = np.array([[-1, 3, -3, 1],
                       [3, -6, 3, 0],
-                      [-3,0, 3, 0],
+                      [-3, 0, 3, 0],
                       [1, 4, 1, 0]])
         m = m/6
         
