@@ -2,6 +2,7 @@ import numpy as np
 import sympy as sp
 from copy import deepcopy
 from singleton_meta import SingletonMeta
+import CubicEquationSolver as ces
 
 
 class Clipping(SingletonMeta):
@@ -316,35 +317,35 @@ class Clipping(SingletonMeta):
         #If all points outside, dont have to draw
         if not any(casca_inside):
             return []
-    
+
         #Find intersections
-        t = sp.Symbol('t', real = True)
+        # t = sp.Symbol('t', real = True)
         t_intercept = set()
-        for i in sp.solveset(ax*t**3 + bx*t**2 + cx*t + dx - x_min,t):
+        for i in ces.solve(ax,bx,cx,dx-x_min):#sp.solveset(ax*t**3 + bx*t**2 + cx*t + dx - x_min,t):
             x = ax*i**3 + bx*i**2 + cx*i + dx
             y = ay*i**3 + by*i**2 + cy*i + dy
             
-            if i.is_real and i >= 0 and i <= 1 and y <= y_max and y >= y_min:
+            if i >= 0 and i <= 1 and y <= y_max and y >= y_min:
                 t_intercept.add(i)
 
-        for i in sp.solveset(ax*t**3 + bx*t**2 + cx*t + dx - x_max,t):
+        for i in ces.solve(ax,bx,cx,dx-x_max):
             x = ax*i**3 + bx*i**2 + cx*i + dx
             y = ay*i**3 + by*i**2 + cy*i + dy
             
-            if i.is_real and i >= 0 and i <= 1 and y <= y_max and y >= y_min:
+            if i >= 0 and i <= 1 and y <= y_max and y >= y_min:
                 t_intercept.add(i)
 
-        for i in sp.solveset(ay*t**3 + by*t**2 + cy*t + dy - y_min,t):
+        for i in ces.solve(ay,by,cy,dy-y_min):
             x = ax*i**3 + bx*i**2 + cx*i + dx
             y = ay*i**3 + by*i**2 + cy*i + dy
-            if i.is_real and i >= 0 and i <= 1 and x <= x_max and x >= x_min:
+            if i >= 0 and i <= 1 and x <= x_max and x >= x_min:
                 t_intercept.add(i)
         
-        for i in sp.solveset(ay*t**3 + by*t**2 + cy*t + dy - y_max,t):
+        for i in ces.solve(ay,by,cy,dy-y_max):
             x = ax*i**3 + bx*i**2 + cx*i + dx
             y = ay*i**3 + by*i**2 + cy*i + dy
             
-            if i.is_real and i >= 0 and i <= 1 and x <= x_max and x >= x_min:
+            if i >= 0 and i <= 1 and x <= x_max and x >= x_min:
                 t_intercept.add(i)
 
         t_intercept.add(0)
