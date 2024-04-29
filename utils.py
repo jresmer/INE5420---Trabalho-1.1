@@ -466,8 +466,189 @@ class Clipping(SingletonMeta):
 class Utils:
 
     @staticmethod
-    def gen_translation_matrix(dx: int, dy: int) -> np.array:
+    def get_angle(alpha: float, oppisite: float, adjacent: float):
+
+        if adjacent > 0 and oppisite == 0:
+            theta = np.pi/2
+        elif adjacent < 0 and oppisite == 0:
+            theta = 3*np.pi/2
+        elif adjacent == 0 and oppisite < 0:
+            theta = np.pi
+        elif adjacent == 0 and oppisite > 0:
+            theta = 0
+        elif adjacent > 0 and oppisite > 0:
+            theta = alpha
+        elif adjacent < 0 and oppisite > 0:
+            theta = -alpha
+        elif adjacent > 0 and oppisite < 0:
+            theta = np.pi - alpha
+        elif adjacent < 0 and oppisite < 0:
+            theta = np.pi + alpha
+
+        return theta    
+
+    @staticmethod
+    def gen_3d_translation_matrix(dx: int, dy: int, dz: int) -> np.array:
+
+        m = [[1, 0, 0, 0],
+             [0, 1, 0, 0],
+             [0, 0, 1, 0],
+             [dx, dy, dz, 1]]
+        
+        return np.array(m)
     
+    @staticmethod
+    def gen_3d_scaling_matrix(sx: int,
+                              sy: int, 
+                              sz: int, 
+                              cx: int, 
+                              cy: int, 
+                              cz: int) -> np.array:
+
+        m1 = np.array([[1, 0, 0, 0],
+                       [0, 1, 0, 0],
+                       [0, 0, 1, 0],
+                       [-cx, -cy, -cz, 1]])
+        m2 = np.array([[sx, 0, 0, 0],
+                       [0, sy, 0, 0],
+                       [0, 0, sz, 0],
+                       [0, 0, 0, 1]])
+        m3 = np.array([[1, 0, 0, 0],
+                       [0, 1, 0, 0],
+                       [0, 0, 1, 0],
+                       [cx, cy, cz, 1]])
+        
+        m = np.matmul(m1,m2)
+        m = np.matmul(m, m3)
+
+        return m
+    
+    @staticmethod
+    def gen_3d_rotation_matrix(angle: float, rotation_axis: tuple) -> np.array:
+
+        angle = np.radians(angle)
+        cos_angle = np.cos(angle)
+        sin_angle = np.sin(angle)
+        """
+        1. Translate the rotation axis a vectorial distance -D so that the
+        rotation axis touches the origin (0, 0, 0) at a point P
+        """
+        # finding vector D:
+        # rotation axis is defined by a point P and a vector A
+        p, a = rotation_axis
+        # second idea
+        # ax, ay, az = a
+        # # determine if there is a point Pi in the axis in which the x component is zero
+        # if ax != 0:
+        #     # find point Pi:
+        #     k = -p[0] / ax
+        #     pi = [0, p[1] + k*ay, p[2] + k*az]
+        #     # determine D
+        #     d = [0, pi[1], pi[2]]
+        #     dx, dy, dz  = d
+        dx, dy, dz  = p
+        m1 = np.array([[1, 0, 0, 0],
+                      [0, 1, 0, 0],
+                      [0, 0, 1, 0],
+                      [-dx, -dy, -dz, 1]])
+        """
+        2. Rotate the rotation axis around the x axis in an angle θx so that the 
+        rotation axis is on the xy plane
+        """
+        # find angle θx:
+        y_component_is_null = a[1] == 0
+        z_component_is_null = a[2] == 0
+        # if A is already on the xy plane
+        if z_component_is_null:
+
+            alpha = 0
+        # if A is on the xz plane
+        elif y_component_is_null:
+
+            alpha = np.pi/2
+        # if not calculate θx through the y, z components
+        else:
+
+            alpha = np.arctan(a[1]/a[2])
+        # determine in which quadrant of the yz plane P1 is
+        theta = Utils.get_angle(alpha, a[1], a[2])
+
+        sin = np.sin(theta)
+        cos = np.cos(theta)
+        m2 = np.array([[1, 0, 0, 0],
+                       [0, cos, sin, 0],
+                       [0, -sin, cos, 0],
+                       [0, 0, 0, 1]])
+        """"
+        3. Rotate the rotation axis around the z axis in an angle θz so that the 
+        rotation axis is aligned with the y axis
+        """
+        # find angle θz:
+        x_component_is_null = a[0] == 0
+        # if A is already on the y axis
+        if x_component_is_null:
+
+            alpha = 0
+        # if A is on the x axis
+        if y_component_is_null:
+
+            alpha = np.pi/2
+        # if not calculate θx through the y, z components
+        else:
+
+            alpha = np.arctan(a[0]/a[1])
+        
+        sin = np.sin(alpha)
+        cos = np.cos(alpha)
+        m3 = np.array([[cos, sin, 0, 0],
+                       [-sin, cos, 0, 0],
+                       [0, 0, 1, 0],
+                       [0, 0, 0, 1]])
+        """
+        4. Rotate the object around the y axis in the intended angle
+        """
+        m4 = np.array([[cos_angle, 0, -sin_angle, 0],
+                       [0, 1, 0, 0],
+                       [sin_angle, 0, cos_angle, 0],
+                       [0, 0, 0, 1]])
+        """"
+        5. Rotate the rotation axis around the z axis in an angle -θz so that 3 is undone
+        """
+        sin = np.sin(-alpha)
+        cos = np.cos(-alpha)
+        m5 = np.array([[cos, sin, 0, 0],
+                       [-sin, cos, 0, 0],
+                       [0, 0, 1, 0],
+                       [0, 0, 0, 1]])
+        """
+        6. Rotate the rotation axis around the x axis in an angle -θx so that 2 is undone
+        """
+        sin = np.sin(-theta)
+        cos = np.cos(-theta)
+        m6 = np.array([[1, 0, 0, 0],
+                       [0, cos, sin, 0],
+                       [0, -sin, cos, 0],
+                       [0, 0, 0, 1]])
+        """
+        7. Translate the rotation axis a vectorial distance D so that 1 is undone
+        """
+        m7 = np.array([[1, 0, 0, 0],
+                      [0, 1, 0, 0],
+                      [0, 0, 1, 0],
+                      [dx, dy, dz, 1]])
+        
+        m = np.matmul(m1,m2)
+        m = np.matmul(m, m3)
+        m = np.matmul(m, m4)
+        m = np.matmul(m, m5)
+        m = np.matmul(m, m6)
+        m = np.matmul(m, m7)
+
+        return m
+
+    @staticmethod
+    def gen_translation_matrix(dx: int, dy: int) -> np.array:
+
         m = [[1, 0, 0],
              [0, 1, 0],
              [dx, dy, 1]]
@@ -524,6 +705,7 @@ class Utils:
         p1, p2, p3, p4 = ps
         return np.matmul(m, [p1,p2,p3,p4])
     
+    @staticmethod
     def get_bspline_coeficients(ps: list):
         m = np.array([[-1, 3, -3, 1],
                       [3, -6, 3, 0],

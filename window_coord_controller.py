@@ -88,22 +88,7 @@ class WindowCoordController:
         else:
             alpha = 0
 
-        if x > 0 and y == 0:
-            theta = np.pi/2
-        elif x < 0 and y == 0:
-            theta = 3*np.pi/2
-        elif x == 0 and y < 0:
-            theta = np.pi
-        elif x == 0 and y > 0:
-            theta = 0
-        elif x > 0 and y > 0:
-            theta = alpha
-        elif x < 0 and y > 0:
-            theta = -alpha
-        elif x > 0 and y < 0:
-            theta = np.pi - alpha
-        elif x < 0 and y < 0:
-            theta = np.pi + alpha
+        theta = Utils.get_angle(alpha, y, x)
 
         return theta
     
