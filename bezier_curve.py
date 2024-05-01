@@ -5,6 +5,14 @@ import numpy as np
 class BezierCurve(CanvasObject):
 
     def __init__(self, coord: tuple, color: str, name: str, tkinter_id: int, canvas) -> None:
+
+        new_coords = []
+        for point in coord:
+            if len(point) != 2:
+                self.set_invalid()
+                return
+            new_coords.append(point+(0,))
+
         super().__init__(coord, color, name, tkinter_id, canvas)
         # length of coord list is not multiple of 4
         if len(coord) % 4 != 0:
@@ -24,7 +32,7 @@ class BezierCurve(CanvasObject):
             # verify condition: P3P4 = k.P4P5
             if (m1 % m0 and m0 % m1) or coord[i-1] != coord[i]:
                 self.set_invalid()
-                break
+                break     
 
     def draw(self, viewport: tuple, window_coords: tuple, zoom: float) -> None:
         

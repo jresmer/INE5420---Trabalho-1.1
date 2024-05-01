@@ -5,7 +5,15 @@ from utils import Clipping
 class Line(CanvasObject):
     #TODO: Passar os atributos para classe pai e requisitar o atributo
     def __init__(self, coord: tuple, color: str, name: str, tkinter_id: int, canvas) -> None:
+        new_coords = []
+        for point in coord:
+            if len(point) != 2:
+                self.set_invalid()
+                return
+            new_coords.append(point+(0,))
+
         super().__init__(coord, color, name, tkinter_id, canvas)
+
         if len(coord) > 2:
             self.set_invalid()
 
@@ -34,4 +42,3 @@ class Line(CanvasObject):
 
     def delete(self):
         self.get_canvas().delete(self.get_tkinter_id())
-

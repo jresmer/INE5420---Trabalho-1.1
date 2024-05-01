@@ -5,11 +5,18 @@ import numpy as np
 class BSplineCurve(CanvasObject):
 
     def __init__(self, coord: tuple, color: str, name: str, tkinter_id: int, canvas) -> None:
-        super().__init__(coord, color, name, tkinter_id, canvas)
+        #2D Object, adjusting to 3D adding z = 0. All points must have just (x,y)
+        new_coords = []
+        for point in coord:
+            if len(point) != 2:
+                self.set_invalid()
+                return
+            new_coords.append(point+(0,))
+
+        super().__init__(new_coords, color, name, tkinter_id, canvas)
         # length of coord list is not multiple of 4
         if len(coord) < 4:
             self.set_invalid()
-
 
     def draw(self, viewport: tuple, window_coords: tuple, zoom: float) -> None:
         

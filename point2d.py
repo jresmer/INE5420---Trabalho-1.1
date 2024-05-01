@@ -1,14 +1,13 @@
 from canvas_object import CanvasObject
 from utils import Clipping
 
-class Point(CanvasObject):
-    #TODO: Passar os atributos para classe pai e requisitar o atributo
+class Point2D(CanvasObject):
     def __init__(self, coord: tuple, color: str, name: str, tkinter_id: int, canvas) -> None:
-        coord = [(coord[0], coord[1])]
-        if len(coord) > 1 or len(coord) == 0:
+        if len(coord) != 2: #len([x,y]) == 2
             self.set_invalid()
         else:
-            super().__init__(coord, color, name, tkinter_id, canvas)
+            new_coord = [(coord[0], coord[1], 0)]
+            super().__init__(new_coord, color, name, tkinter_id, canvas)
 
 
     def draw(self, viewport: tuple, window_coords: tuple, zoom: float) -> None:

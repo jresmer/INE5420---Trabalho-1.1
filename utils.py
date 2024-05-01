@@ -657,8 +657,6 @@ class Utils:
         """
         2. Rotate the World in angle θx
         """
-
-        
         if  dx != 0 and dz != 0:
             alpha = np.arctan(abs(dx)/abs(dz))
         else:
