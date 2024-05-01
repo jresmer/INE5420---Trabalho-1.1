@@ -647,6 +647,57 @@ class Utils:
         return m
 
     @staticmethod
+    def get_ortogonal_projection_matrix(vrp: tuple):
+        """
+        1. Translate the VRP to the origin (0, 0, 0)
+        """
+        dx, dy, dz = vrp
+        m_og = Utils.gen_3d_rotation_matrix(-dx,-dy,-dz)
+
+        """
+        2. Rotate the World in angle θx
+        """
+
+        
+        if  dx != 0 and dz != 0:
+            alpha = np.arctan(abs(dx)/abs(dz))
+        else:
+            alpha = 0
+
+        theta = Utils.get_angle(alpha, dz, dx)
+
+        cos_theta = np.cos(theta)
+        sin_theta = np.sin(theta)
+
+        m_rx = [[1, 0,          0,         0],
+                [0, cos_theta,  sin_theta, 0],
+                [0, -sin_theta, cos_theta, 0],
+                [0, 0,          0,         1]]
+
+        """"
+        3. Rotate the World around the y axis in an angle θy so that the 
+        rotation axis is aligned with the z axis
+        """
+        if  dy != 0 and dz != 0:
+            alpha = np.arctan(abs(dy)/abs(dz))
+        else:
+            alpha = 0
+
+        theta = Utils.get_angle(alpha, dz, dy)
+
+        cos_theta = np.cos(theta)
+        sin_theta = np.sin(theta)
+
+        m_ry = [[cos_theta, 0, -sin_theta, 0],
+                [0,         1, 0,          0],
+                [sin_theta, 0, cos_theta,  0],
+                [0,         0, 0,          1]]
+        
+        m = np.matmul(m_og,m_rx)
+        m = np.matmul(m, m_ry)
+        return m
+
+    @staticmethod
     def gen_translation_matrix(dx: int, dy: int) -> np.array:
 
         m = [[1, 0, 0],
