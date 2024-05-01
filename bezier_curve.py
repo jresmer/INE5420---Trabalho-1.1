@@ -13,7 +13,7 @@ class BezierCurve(CanvasObject):
                 return
             new_coords.append(point+(0,))
 
-        super().__init__(coord, color, name, tkinter_id, canvas)
+        super().__init__(new_coords, color, name, tkinter_id, canvas)
         # length of coord list is not multiple of 4
         if len(coord) % 4 != 0:
             self.set_invalid()

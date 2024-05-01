@@ -12,7 +12,7 @@ class Line(CanvasObject):
                 return
             new_coords.append(point+(0,))
 
-        super().__init__(coord, color, name, tkinter_id, canvas)
+        super().__init__(new_coords, color, name, tkinter_id, canvas)
 
         if len(coord) > 2:
             self.set_invalid()

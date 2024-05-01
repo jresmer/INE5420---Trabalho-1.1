@@ -14,7 +14,6 @@ class Wireframe2D(CanvasObject):
 
         super().__init__(new_coords, color, name, tkinter_id, canvas)
 
-
     def draw(self, viewport: tuple, window_coords: tuple, zoom: float) -> None:
         
         self.delete()
