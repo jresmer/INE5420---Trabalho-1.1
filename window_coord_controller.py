@@ -54,9 +54,8 @@ class WindowCoordController:
             return True
 
         else:
-
             return False
-
+    
     def change_coords(self, name: str, coords: tuple) -> None:
         new_coords = list()
 
@@ -91,6 +90,14 @@ class WindowCoordController:
         theta = Utils.get_angle(alpha, y, x)
 
         return theta
+    
+    def ortogonal_projection(self, objs: dict):
+        m = Utils.get_ortogonal_projection_matrix(self.__origin)
+
+        for name,coords in objs.items():
+            new_coords = Utils.transform(coords, m)
+            self.change_coords(name, new_coords)
+
     
     def move(self, dx: int, dy: int, objs: dict) -> dict:
         #TESTE
