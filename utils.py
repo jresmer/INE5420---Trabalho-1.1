@@ -643,7 +643,7 @@ class Utils:
         1. Translate the VRP to the origin (0, 0, 0)
         """
         dx, dy, dz = vrp
-        m_og = Utils.gen_3d_rotation_matrix(-dx,-dy,-dz)
+        m_og = Utils.gen_3d_translation_matrix(-dx,-dy,-dz)
 
         """
         2. Rotate the World in angle θx
