@@ -58,10 +58,11 @@ class WindowCoordController:
     
     def change_coords(self, name: str, coords: tuple) -> None:
         new_coords = list()
-
-        # converts coordinates to the window appropriate format
+        proj_m = Utils.get_ortogonal_projection_matrix(self.__origin)
         for coord in coords:
-            new_coord = self.__world_to_normalized(coord)
+            if coord[2] != 0:
+                new_coord = Utils.transform(coord, proj_m)[:-1]
+            new_coord = self.__world_to_normalized(new_coord)
             new_coords.append(new_coord)
 
         self.__obj_coordinates[name] = new_coords

@@ -536,16 +536,6 @@ class Utils:
         # finding vector D:
         # rotation axis is defined by a point P and a vector A
         p, a = rotation_axis
-        # second idea
-        # ax, ay, az = a
-        # # determine if there is a point Pi in the axis in which the x component is zero
-        # if ax != 0:
-        #     # find point Pi:
-        #     k = -p[0] / ax
-        #     pi = [0, p[1] + k*ay, p[2] + k*az]
-        #     # determine D
-        #     d = [0, pi[1], pi[2]]
-        #     dx, dy, dz  = d
         dx, dy, dz  = p
         m1 = np.array([[1, 0, 0, 0],
                       [0, 1, 0, 0],
@@ -593,7 +583,7 @@ class Utils:
         if y_component_is_null:
 
             alpha = np.pi/2
-        # if not calculate θx through the y, z components
+        # if not calculate θx through the x, y components
         else:
 
             alpha = np.arctan(a[0]/a[1])
@@ -646,6 +636,7 @@ class Utils:
 
         return m
 
+    # TODO - conferir cálculos
     @staticmethod
     def get_ortogonal_projection_matrix(vrp: tuple):
         """
@@ -658,7 +649,7 @@ class Utils:
         2. Rotate the World in angle θx
         """
         if  dx != 0 and dz != 0:
-            alpha = np.arctan(abs(dx)/abs(dz))
+            alpha = np.arctan(abs(dy)/abs(dz))
         else:
             alpha = 0
 
@@ -677,7 +668,7 @@ class Utils:
         rotation axis is aligned with the z axis
         """
         if  dy != 0 and dz != 0:
-            alpha = np.arctan(abs(dy)/abs(dz))
+            alpha = np.arctan(abs(dx)/abs(dz))
         else:
             alpha = 0
 
@@ -694,6 +685,15 @@ class Utils:
         m = np.matmul(m_og,m_rx)
         m = np.matmul(m, m_ry)
         return m
+
+    @staticmethod
+    def gen_translation_matrix(dx: int, dy: int) -> np.array:
+
+        m = [[1, 0, 0],
+             [0, 1, 0],
+             [dx, dy, 1]]
+        
+        return np.array(m)
 
     @staticmethod
     def gen_translation_matrix(dx: int, dy: int) -> np.array:
