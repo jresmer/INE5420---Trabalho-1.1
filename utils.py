@@ -467,7 +467,7 @@ class Utils:
 
     @staticmethod
     def get_angle(alpha: float, oppisite: float, adjacent: float):
-
+        theta = 0
         if adjacent > 0 and oppisite == 0:
             theta = np.pi/2
         elif adjacent < 0 and oppisite == 0:
@@ -524,7 +524,7 @@ class Utils:
         return m
     
     @staticmethod
-    def rotation_to_y_axis_matrixes(axis: tuple, return_angles: bool=False) -> list:
+    def rotation_to_y_axis_matrix(axis: tuple, return_angles: bool=False) -> list:
 
         p, a = axis
 
@@ -575,7 +575,7 @@ class Utils:
                        [0, 0, 1, 0],
                        [0, 0, 0, 1]])
         
-        m = np.matmul(m, m1)
+        m = np.matmul(m1, m2)
 
         if return_angles:
 
@@ -609,7 +609,7 @@ class Utils:
         3. Rotate the rotation axis around the z axis in an angle θz so that the 
         rotation axis is aligned with the y axis
         """
-        m23, alpha, theta = Utils.rotation_to_y_axis_matrixes(rotation_axis, return_angles=True)
+        m23, alpha, theta = Utils.rotation_to_y_axis_matrix(rotation_axis, return_angles=True)
 
         """
         4. Rotate the object around the y axis in the intended angle
@@ -664,12 +664,12 @@ class Utils:
         """
         2. Rotate the World in angle θx
         """
-        if  dx != 0 and dz != 0:
-            alpha = np.arctan(abs(dy)/abs(dz))
+        if  dy != 0 and dz != 0:
+            alpha = np.arctan(abs(dz)/abs(dy))
         else:
             alpha = 0
 
-        theta = Utils.get_angle(alpha, dz, dx)
+        theta = Utils.get_angle(alpha, dy, dz)
 
         cos_theta = np.cos(theta)
         sin_theta = np.sin(theta)
@@ -683,12 +683,12 @@ class Utils:
         3. Rotate the World around the y axis in an angle θy so that the 
         rotation axis is aligned with the z axis
         """
-        if  dy != 0 and dz != 0:
-            alpha = np.arctan(abs(dx)/abs(dz))
+        if  dx != 0 and dz != 0:
+            alpha = np.arctan(abs(dz)/abs(dx))
         else:
             alpha = 0
 
-        theta = Utils.get_angle(alpha, dz, dy)
+        theta = Utils.get_angle(alpha, dx, dz)
 
         cos_theta = np.cos(theta)
         sin_theta = np.sin(theta)
@@ -701,15 +701,6 @@ class Utils:
         m = np.matmul(m_og,m_rx)
         m = np.matmul(m, m_ry)
         return m
-
-    @staticmethod
-    def gen_translation_matrix(dx: int, dy: int) -> np.array:
-
-        m = [[1, 0, 0],
-             [0, 1, 0],
-             [dx, dy, 1]]
-        
-        return np.array(m)
 
     @staticmethod
     def gen_translation_matrix(dx: int, dy: int) -> np.array:
@@ -796,7 +787,6 @@ class Utils:
     
     @staticmethod
     def transform(coord: tuple, m: np.array) -> list:
-
         coord = np.array(coord + (1,))
         coord = np.matmul(coord, m)
         coord.tolist()

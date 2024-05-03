@@ -26,22 +26,23 @@ class MainWindow(WindowGUI):
         self.init_widgets(world)
 
         #BIND PARA MOVER O CANVAS
-        self.__root.bind("<KeyPress-Left>", lambda _: self.__controller.move_canvas(-3, 0))
-        self.__root.bind("<KeyPress-Right>", lambda _: self.__controller.move_canvas(3, 0))
-        self.__root.bind("<KeyPress-Up>", lambda _: self.__controller.move_canvas(0, 3))
-        self.__root.bind("<KeyPress-Down>", lambda _: self.__controller.move_canvas(0, -3))
+        self.__root.bind("<KeyPress-Left>", lambda _: self.__controller.move_canvas(-3, 0,0))
+        self.__root.bind("<KeyPress-Right>", lambda _: self.__controller.move_canvas(3, 0,0))
+        self.__root.bind("<KeyPress-Up>", lambda _: self.__controller.move_canvas(0, 3,0))
+        self.__root.bind("<KeyPress-Down>", lambda _: self.__controller.move_canvas(0, -3,0))
         self.__root.bind("<Button-4>", lambda _: self.on_mousewheel(-1))
         self.__root.bind("<Button-5>", lambda _: self.on_mousewheel(1))
 
         self.__root.mainloop()
 
     def on_mousewheel(self, multiplier: int):
-        try:
-            pct = int(self.__widgets["zoom txt box"].get("1.0", "end-1c"))
-            multiplier *= pct/100
-            self.__controller.zoom_window(pct=multiplier)
-        except Exception as e:
-            self.notify_status("Value error for zoom functionality - value should be an integer")
+        # try:
+        pct = int(self.__widgets["zoom txt box"].get("1.0", "end-1c"))
+        multiplier *= pct/100
+        self.__controller.zoom_window(pct=multiplier)
+        # except Exception as e:
+        #     print(e)
+        #     self.notify_status("Value error for zoom functionality - value should be an integer")
 
     def save_file(self):
         try:

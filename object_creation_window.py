@@ -23,11 +23,11 @@ class ObjectCreationWindow(WindowGUI):
         self.init_widgets(world)  
 
         # TODO: deletar testes realizados depois
-        # self.__controller.create_object(list(eval("(50,50,1)")), "blue", "Arroz", self.__obj_man.get_object_type("Point2D"))
-        # self.__controller.create_object(list(eval("(0,0,1),(740,480,1)")), "green", "Feijão", self.__obj_man.get_object_type("Line"))
-        # self.__controller.create_object(list(eval("(200,100,1),(100,500,1),(300,300,1)")), "red", "Carne", self.__obj_man.get_object_type("Polygon2D"))
-        # self.__controller.create_object(list(eval("(100,100,1),(100,500),(400,300,1)")), "pink", "Moida", self.__obj_man.get_object_type("Wireframe2D"))
-        # self.__controller.create_object(list(eval("(0,0,1),(100,100,1),(100,500,1),(400,300,1)")), "dark blue", "Cabritinho", self.__obj_man.get_object_type("BezierCurve"))
+        # self.__controller.create_object(list(eval("(50,50)")), "blue", "Arroz", self.__obj_man.get_object_type("Point2D"))
+        # self.__controller.create_object(list(eval("(0,0),(740,480)")), "green", "Feijão", self.__obj_man.get_object_type("Line"))
+        # self.__controller.create_object(list(eval("(200,100),(100,500),(300,300)")), "red", "Carne", self.__obj_man.get_object_type("Polygon2D"))
+        # self.__controller.create_object(list(eval("(100,100),(100,500),(400,300)")), "pink", "Moida", self.__obj_man.get_object_type("Wireframe2D"))
+        # self.__controller.create_object(list(eval("(0,0),(100,100),(100,500),(400,300)")), "dark blue", "Cabritinho", self.__obj_man.get_object_type("BezierCurve"))
         
         self.__root.mainloop()
 

@@ -29,9 +29,10 @@ class WindowCoordController:
     # converts world coordinates (x, y) to normalized coordinates
     def __world_to_normalized(self, coord: tuple) -> tuple:
         # translate coord in (-Wcx, -Wcy)
-        dx, dy = self.__origin
-        m = Utils.gen_translation_matrix(-dx, -dy)
-        coord = tuple(Utils.transform(coord, m))
+        dx, dy, z = self.__origin
+        # m = Utils.gen_translation_matrix(0, 0)
+
+        # coord = tuple(Utils.transform(coord, m))
 
         # rotate coord in -θ(Y, vup)
         theta = self.get_angle(self.__vup)
@@ -68,7 +69,7 @@ class WindowCoordController:
     def change_coords(self, name: str, coords: tuple) -> None:
         new_coords = list()
         for coord in coords:
-            new_coord = Utils.transform(coord, self.__proj_m)[:-1]
+            new_coord = tuple(Utils.transform(coord, self.__proj_m)[:-1])
             new_coord = self.__world_to_normalized(new_coord)
             new_coords.append(new_coord)
 
@@ -97,15 +98,6 @@ class WindowCoordController:
 
         return theta
     
-    def ortogonal_projection(self, objs: dict):
-        m = Utils.get_ortogonal_projection_matrix(self.__origin)
-
-        for name,coords in objs.items():
-            new_coords = list()
-            for coord in coords:
-                new_coords.append(Utils.transform(coord, m))
-            self.change_coords(name, new_coords)
-
     def move(self, dx: int, dy: int, dz: int, objs: dict) -> dict:
 
         # rotate the translation vector to respect vup
@@ -129,7 +121,7 @@ class WindowCoordController:
     def rotate(self, angle: float, objs: dict) -> dict:
 
         # TODO - temporário
-        axis = "x"
+        axis = "y"
 
         if axis == "x":
             a = (1, 0, 0)
@@ -139,8 +131,8 @@ class WindowCoordController:
             a = (0, 0, 1)
 
         m = Utils.gen_3d_rotation_matrix(angle, (self.__origin, a))
-        self.__vup = Utils.transform(self.__vup, m)
-        self.__u = Utils.transform(self.__u, m)
+        self.__vup = tuple(Utils.transform(self.__vup, m))
+        self.__u = tuple(Utils.transform(self.__u, m))
 
         self.__recalculate_projection_matrix()
 
@@ -161,8 +153,8 @@ class WindowCoordController:
                                         self.__origin[0],
                                         self.__origin[1],
                                         self.__origin[2])
-        self.__vup = Utils.transform(self.__vup, m)
-        self.__u = Utils.transform(self.__u, m)
+        self.__vup = tuple(Utils.transform(self.__vup, m))
+        self.__u = tuple(Utils.transform(self.__u, m))
 
         self.__recalculate_projection_matrix()
 
