@@ -72,9 +72,7 @@ class WindowCoordController:
         if name not in self.__obj_coordinates.keys():
             self.change_coords(name, coords)
             return True
-
         else:
-
             return False
 
     def get_coords(self) -> dict:
@@ -96,10 +94,11 @@ class WindowCoordController:
         m = Utils.get_ortogonal_projection_matrix(self.__origin)
 
         for name,coords in objs.items():
-            new_coords = Utils.transform(coords, m)
+            new_coords = list()
+            for coord in coords:
+                new_coords.append(Utils.transform(coord, m))
             self.change_coords(name, new_coords)
 
-    
     def move(self, dx: int, dy: int, objs: dict) -> dict:
         #TESTE
         angle_vup = self.get_angle(self.__vup)
