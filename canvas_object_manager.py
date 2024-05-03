@@ -1,5 +1,5 @@
 from canvas_object import CanvasObject
-from wireframe2d import Wireframe2D
+from wireframe import Wireframe
 from polygon2d import Polygon2D
 from point2d import Point2D
 from line import Line

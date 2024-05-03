@@ -2,7 +2,7 @@ from canvas_object import CanvasObject
 from utils import Clipping
 
 class Polygon2D(CanvasObject):
-    #TODO: Passar os atributos para classe pai e requisitar o atributo
+
     def __init__(self, coord: tuple, color: str, name: str, tkinter_id: int, canvas) -> None:
         
         new_coords = []
