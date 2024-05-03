@@ -22,8 +22,8 @@ class GUI:
         self.current_window.init_window(1)
             
 
-    def move_canvas(self, dx, dy):
-        self.world.move_window(dx, dy)
+    def move_canvas(self, dx, dy,dz):
+        self.world.move_window(dx, dy,dz)
 
     def create_object(self, coord: tuple, color: str, name: str, obj_type) -> None:
 

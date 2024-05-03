@@ -9,9 +9,9 @@ class World:
         self.__object_list = []
         self.__viewport = [10,10,750,490]
         self.__window = WindowCoordController(
-            p=(370,240),
-            vup=(0,240),
-            u=(370, 0)
+            p=(370,240,0),
+            vup=(0,240,0),
+            u=(370, 0,0)
         )
         # self.__window = [0,0,500,500]
         self.__zoom = 1
@@ -127,10 +127,10 @@ class World:
 
             return True
     
-    def move_window(self, dx, dy):
+    def move_window(self, dx, dy,dz):
 
         objs = {obj.get_name(): obj.get_coord() for obj in self.__object_list}
-        self.__window.move(dx, dy, objs)
+        self.__window.move(dx, dy,dz, objs)
 
         for obj in self.__object_list:
             obj.draw(self.__viewport, self.__window.get_coords()[obj.get_name()], self.__zoom)
