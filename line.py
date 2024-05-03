@@ -3,7 +3,7 @@ from utils import Clipping
 
 
 class Line(CanvasObject):
-    #TODO: Passar os atributos para classe pai e requisitar o atributo
+
     def __init__(self, coord: tuple, color: str, name: str, tkinter_id: int, canvas) -> None:
         new_coords = []
         for point in coord:
