@@ -524,6 +524,66 @@ class Utils:
         return m
     
     @staticmethod
+    def rotation_to_y_axis_matrixes(axis: tuple, return_angles: bool=False) -> list:
+
+        p, a = axis
+
+        # find angle θx:
+        y_component_is_null = a[1] == 0
+        z_component_is_null = a[2] == 0
+        # if A is already on the xy plane
+        if z_component_is_null:
+
+            alpha = 0
+        # if A is on the xz plane
+        elif y_component_is_null:
+
+            alpha = np.pi/2
+        # if not calculate θx through the y, z components
+        else:
+
+            alpha = np.arctan(a[1]/a[2])
+        # determine in which quadrant of the yz plane P1 is
+        theta = Utils.get_angle(alpha, a[1], a[2])
+
+        sin = np.sin(theta)
+        cos = np.cos(theta)
+        m1 = np.array([[1, 0, 0, 0],
+                       [0, cos, sin, 0],
+                       [0, -sin, cos, 0],
+                       [0, 0, 0, 1]])
+        
+        # find angle θz:
+        x_component_is_null = a[0] == 0
+        # if A is already on the y axis
+        if x_component_is_null:
+
+            alpha = 0
+        # if A is on the x axis
+        if y_component_is_null:
+
+            alpha = np.pi/2
+        # if not calculate θx through the x, y components
+        else:
+
+            alpha = np.arctan(a[0]/a[1])
+        
+        sin = np.sin(alpha)
+        cos = np.cos(alpha)
+        m2 = np.array([[cos, sin, 0, 0],
+                       [-sin, cos, 0, 0],
+                       [0, 0, 1, 0],
+                       [0, 0, 0, 1]])
+        
+        m = np.matmul(m, m1)
+
+        if return_angles:
+
+            return m1, alpha, theta
+        
+        return m1
+    
+    @staticmethod
     def gen_3d_rotation_matrix(angle: float, rotation_axis: tuple) -> np.array:
 
         angle = np.radians(angle)
@@ -545,55 +605,12 @@ class Utils:
         2. Rotate the rotation axis around the x axis in an angle θx so that the 
         rotation axis is on the xy plane
         """
-        # find angle θx:
-        y_component_is_null = a[1] == 0
-        z_component_is_null = a[2] == 0
-        # if A is already on the xy plane
-        if z_component_is_null:
-
-            alpha = 0
-        # if A is on the xz plane
-        elif y_component_is_null:
-
-            alpha = np.pi/2
-        # if not calculate θx through the y, z components
-        else:
-
-            alpha = np.arctan(a[1]/a[2])
-        # determine in which quadrant of the yz plane P1 is
-        theta = Utils.get_angle(alpha, a[1], a[2])
-
-        sin = np.sin(theta)
-        cos = np.cos(theta)
-        m2 = np.array([[1, 0, 0, 0],
-                       [0, cos, sin, 0],
-                       [0, -sin, cos, 0],
-                       [0, 0, 0, 1]])
         """"
         3. Rotate the rotation axis around the z axis in an angle θz so that the 
         rotation axis is aligned with the y axis
         """
-        # find angle θz:
-        x_component_is_null = a[0] == 0
-        # if A is already on the y axis
-        if x_component_is_null:
+        m23, alpha, theta = Utils.rotation_to_y_axis_matrixes(rotation_axis, return_angles=True)
 
-            alpha = 0
-        # if A is on the x axis
-        if y_component_is_null:
-
-            alpha = np.pi/2
-        # if not calculate θx through the x, y components
-        else:
-
-            alpha = np.arctan(a[0]/a[1])
-        
-        sin = np.sin(alpha)
-        cos = np.cos(alpha)
-        m3 = np.array([[cos, sin, 0, 0],
-                       [-sin, cos, 0, 0],
-                       [0, 0, 1, 0],
-                       [0, 0, 0, 1]])
         """
         4. Rotate the object around the y axis in the intended angle
         """
@@ -627,8 +644,7 @@ class Utils:
                       [0, 0, 1, 0],
                       [dx, dy, dz, 1]])
         
-        m = np.matmul(m1,m2)
-        m = np.matmul(m, m3)
+        m = np.matmul(m1,m23)
         m = np.matmul(m, m4)
         m = np.matmul(m, m5)
         m = np.matmul(m, m6)
