@@ -121,7 +121,7 @@ class WindowCoordController:
     def rotate(self, angle: float, objs: dict) -> dict:
 
         # TODO - temporário
-        axis = "y"
+        axis = "z"
 
         if axis == "x":
             a = (1, 0, 0)

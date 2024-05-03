@@ -36,13 +36,12 @@ class MainWindow(WindowGUI):
         self.__root.mainloop()
 
     def on_mousewheel(self, multiplier: int):
-        # try:
-        pct = int(self.__widgets["zoom txt box"].get("1.0", "end-1c"))
-        multiplier *= pct/100
-        self.__controller.zoom_window(pct=multiplier)
-        # except Exception as e:
-        #     print(e)
-        #     self.notify_status("Value error for zoom functionality - value should be an integer")
+        try:
+            pct = int(self.__widgets["zoom txt box"].get("1.0", "end-1c"))
+            multiplier *= pct/100
+            self.__controller.zoom_window(pct=multiplier)
+        except Exception as e:
+            self.notify_status("Value error for zoom functionality - value should be an integer")
 
     def save_file(self):
         try:
