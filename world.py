@@ -96,7 +96,7 @@ class World:
 
             return True
     
-    def rotate_object(self, name: str, angle: float, arbitrary_point: tuple) -> bool:
+    def rotate_object(self, name: str, axis: str, angle: float, arbitrary_point: tuple) -> bool:
 
         obj_index = self.__find_object(name)
 
@@ -105,18 +105,25 @@ class World:
             return False
         
         else:
-
             obj = self.__object_list[obj_index]
+            (cx, cy,cz) = obj.get_center_coord()
 
-            if arbitrary_point == None:
-                (cx, cy) = obj.get_center_coord()
+            if arbitrary_point == (0,0,0) or arbitrary_point != None:
+                p = (0,0,0)
             else:
-                (cx, cy) = arbitrary_point
+                p = (cx, cy,cz)
 
-            m = Utils.gen_rotation_matrix(
-                angle=angle,
-                cx=cx,
-                cy=cy
+            if axis == "x":
+                a = (cx+1,cy,cz)
+            elif axis == "y":
+                a = (cx,cy+1,cz)
+            elif axis == "z":
+                a = (cx,cy,cz+1)
+            else:
+                a = arbitrary_point
+
+            m = Utils.gen_3d_rotation_matrix(
+                angle=angle, rotation_axis= ((p,a))
             )
             obj.transform(m)
             self.__window.att_obj(name, obj.get_coord())
@@ -139,9 +146,9 @@ class World:
         for obj in self.__object_list:
             obj.draw(self.__viewport, self.__window.get_coords()[obj.get_name()], self.__zoom)
 
-    def rotate_window(self, angle: float):
+    def rotate_window(self, axis, angle: float):
         objs = {obj.get_name(): obj.get_coord() for obj in self.__object_list}
-        self.__window.rotate(angle, objs)
+        self.__window.rotate(axis, angle, objs)
         # redraw canvas objects
         for obj in self.__object_list:
             obj.draw(self.__viewport, self.__window.get_coords()[obj.get_name()], self.__zoom)
@@ -155,8 +162,7 @@ class World:
         return True
     
     def load(self, filepath: str, canvas) -> bool:
-
-        # try:
+        try:
             for object_ in self.__object_list:
                 self.delete_object(object_)
             objs = OBJDescriptor.wavefront_to_obj(filepath, canvas)
@@ -170,6 +176,5 @@ class World:
                 object_.draw(self.__viewport, self.__window.get_coords()[object_.get_name()], self.__zoom)
 
             return names
-        # except Exception as e:
-        #     print(e)
-        #     return False
+        except:
+            return None

@@ -22,7 +22,7 @@ class GUI:
         self.current_window.init_window(1)
             
 
-    def move_canvas(self, dx, dy,dz):
+    def move_window(self, dx, dy,dz):
         self.world.move_window(dx, dy,dz)
 
     def create_object(self, coord: tuple, color: str, name: str, obj_type) -> None:
@@ -66,9 +66,9 @@ class GUI:
 
             self.notify_status("Unsucessfull transformation")
 
-    def rotate_object(self, name: str, angle: float, arbitrary: tuple):
+    def rotate_object(self, name: str, axis: str, angle: float, arbitrary: tuple):
 
-        success = self.world.rotate_object(name, angle, arbitrary)
+        success = self.world.rotate_object(name, axis, angle, arbitrary)
 
         if success:
 
@@ -85,8 +85,8 @@ class GUI:
         self.world.delete_object(name)
         self.notify_status(f"Object name: {name} deleted")
 
-    def rotate_window(self, angle: float):
-        self.world.rotate_window(angle)
+    def rotate_window(self, axis, angle: float):
+        self.world.rotate_window(axis, angle)
         self.windows[MainWindow.__name__].notify_status(f"")
 
     def zoom_window(self, pct: float):
