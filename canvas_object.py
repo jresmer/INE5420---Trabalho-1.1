@@ -59,10 +59,12 @@ class CanvasObject(ABC):
         n = len(self.__coord)
         sum_x = 0
         sum_y = 0
-        for (x,y) in self.__coord:
+        sum_z = 0
+        for (x,y,z) in self.__coord:
             sum_x += x
             sum_y += y
-        return (sum_x/n, sum_y/n)
+            sum_y += z
+        return (sum_x/n, sum_y/n, sum_z/n)
         
     @property    
     def valid(self):

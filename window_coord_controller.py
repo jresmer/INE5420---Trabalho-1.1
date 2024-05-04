@@ -146,9 +146,6 @@ class WindowCoordController:
 
     def scale(self, multiplier: float, objs: dict) -> dict:
 
-        print(f"multiplier={multiplier}")
-        print(f"before: Vup={self.__vup}, U={self.__u}")
-
         # calculate new vup and u values (rescaling them)
         multiplier = np.sqrt(1/(1 + multiplier)) if multiplier >= 0 else np.sqrt(1 + abs(multiplier))
         m = Utils.gen_3d_scaling_matrix(multiplier,
@@ -159,7 +156,6 @@ class WindowCoordController:
                                         0)
         self.__vup = tuple(Utils.transform(self.__vup, m))
         self.__u = tuple(Utils.transform(self.__u, m))
-        print(f"after: Vup={self.__vup}, U={self.__u}")
 
         self.__recalculate_projection_matrix()
 

@@ -42,9 +42,9 @@ class GUI:
         elif status == 3:
             self.notify_status(f"Input coordinates don't satisfy constricts to object creation")
 
-    def translate_object(self, name: str, dx: int, dy: int):
+    def translate_object(self, name: str, dx: int, dy: int, dz: int):
 
-        success = self.world.translate_object(name, dx, dy)
+        success = self.world.translate_object(name, dx, dy, dz)
 
         if success:
 
@@ -54,9 +54,9 @@ class GUI:
 
             self.notify_status("Unsucessfull transformation")
 
-    def scale_object(self, name: str, sx: int, sy: int):
+    def scale_object(self, name: str, sx: int, sy: int, sz: int):
 
-        success = self.world.scale_object(name, sx, sy)
+        success = self.world.scale_object(name, sx, sy, sz)
 
         if success:
 

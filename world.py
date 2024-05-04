@@ -13,7 +13,6 @@ class World:
             vup=(0,240,0),
             u=(370, 0,0)
         )
-        # self.__window = [0,0,500,500]
         self.__zoom = 1
 
     def search_object_by_name(self, name: str):
@@ -56,7 +55,7 @@ class World:
             self.__object_list.pop(obj_index)
             del obj
 
-    def translate_object(self, name: str, dx: int, dy: int) -> bool:
+    def translate_object(self, name: str, dx: int, dy: int, dz: int) -> bool:
 
         obj_index = self.__find_object(name)
 
@@ -67,14 +66,14 @@ class World:
         else:
 
             obj = self.__object_list[obj_index]
-            m = Utils.gen_translation_matrix(dx, dy)
+            m = Utils.gen_3d_translation_matrix(dx, dy, dz)
             obj.transform(m)
             self.__window.att_obj(name, obj.get_coord())
             obj.draw(self.__viewport, self.__window.get_coords()[name], self.__zoom)
 
             return True
 
-    def scale_object(self, name: str, sx: int, sy: int) -> bool:
+    def scale_object(self, name: str, sx: int, sy: int, sz: int) -> bool:
 
         obj_index = self.__find_object(name)
 
@@ -85,13 +84,11 @@ class World:
         else:
 
             obj = self.__object_list[obj_index]
-            (cx, cy) = obj.get_center_coord()
+            (cx,cy,cz) = obj.get_center_coord()
 
-            m = Utils.gen_scaling_matrix(
-                sx=sx,
-                sy=sy,
-                cx=cx, 
-                cy=cy
+            m = Utils.gen_3d_scaling_matrix(
+                sx=sx, sy=sy, sz=sz,
+                cx=cx, cy=cy, cz=cz
             )
             obj.transform(m)
             self.__window.att_obj(name, obj.get_coord())

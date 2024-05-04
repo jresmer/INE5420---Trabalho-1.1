@@ -41,6 +41,7 @@ class MainWindow(WindowGUI):
             multiplier *= pct/100
             self.__controller.zoom_window(pct=multiplier)
         except Exception as e:
+            print(e)
             self.notify_status("Value error for zoom functionality - value should be an integer")
 
     def save_file(self):
@@ -64,7 +65,8 @@ class MainWindow(WindowGUI):
             self.__controller.translate_object(
                 name=self.__widgets["list obj"].get(tk.ACTIVE),
                 dx=int(self.__widgets["move dx obj txt box"].get("1.0", "end-1c")),
-                dy=int(self.__widgets["move dy obj txt box"].get("1.0", "end-1c"))
+                dy=int(self.__widgets["move dy obj txt box"].get("1.0", "end-1c")),
+                dz=int(self.__widgets["move dz obj txt box"].get("1.0", "end-1c"))
             )
         except ValueError as e:
             self.notify_status("Error: the value to dx and dy has to be an integer number")
@@ -75,13 +77,15 @@ class MainWindow(WindowGUI):
                 self.__controller.scale_object(
                     name=self.__widgets["list obj"].get(tk.ACTIVE),
                     sx=float(self.__widgets["scale txt box"].get("1.0", "end-1c")),
-                    sy=float(self.__widgets["scale txt box"].get("1.0", "end-1c"))
+                    sy=float(self.__widgets["scale txt box"].get("1.0", "end-1c")),
+                    sz=float(self.__widgets["scale txt box"].get("1.0", "end-1c"))
                 )
             else:
                 self.__controller.scale_object(
                     name=self.__widgets["list obj"].get(tk.ACTIVE),
                     sx=1/float(self.__widgets["scale txt box"].get("1.0", "end-1c")),
-                    sy=1/float(self.__widgets["scale txt box"].get("1.0", "end-1c"))
+                    sy=1/float(self.__widgets["scale txt box"].get("1.0", "end-1c")),
+                    sz=1/float(self.__widgets["scale txt box"].get("1.0", "end-1c"))
                 )
         except ValueError as e:
             self.notify_status("Error: the value to scale has to be a float")
@@ -253,7 +257,7 @@ class MainWindow(WindowGUI):
 
     def init_operations_object(self):
                 
-        frame = tk.Frame(self.__root, height = 270, width = 250, relief="ridge", borderwidth=2)
+        frame = tk.Frame(self.__root, height = 280, width = 250, relief="ridge", borderwidth=2)
         frame.place(x=200, y = 220)
 
         label = tk.Label(frame, text = "Selected Object Operations")
@@ -331,6 +335,15 @@ class MainWindow(WindowGUI):
         text_box.place(x=140, y=220)
         self.__widgets["move dy obj txt box"] = text_box
 
+        #dz
+        label = tk.Label(frame, text = "dz")
+        label.place(x=90, y=250)
+        self.__widgets["move dz obj lbl"] = label
+
+        text_box = tk.Text(frame, height=1, width=4)
+        text_box.place(x=110, y=250)
+        self.__widgets["move dz obj txt box"] = text_box
+
         button = tk.Button(frame, text = "✓", command = lambda: self.translate())
         button.place(x=180, y=215)
         self.__widgets["move obj button"] = button
@@ -380,7 +393,7 @@ class MainWindow(WindowGUI):
 
     def init_operations_world(self):
         frame = tk.Frame(self.__root, height = 100, width = 250, relief="ridge", borderwidth=2)
-        frame.place(x=200, y = 505)
+        frame.place(x=200, y = 515)
 
         label = tk.Label(frame, text = "World Operations")
         label.place(x=0, y = 0)
