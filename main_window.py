@@ -231,7 +231,7 @@ class MainWindow(WindowGUI):
 
         v = tk.StringVar(frame, "x")
         self.__widgets["var axis rot window"] = v
-        (x,y) = 100,110
+        (x,y) = 110,110
         for axis in ["x","y","z"]: 
             tk.Radiobutton(master = frame, text = axis, variable = v, indicatoron=0,
                 value = axis, width=2).place(x=x,y=y)
