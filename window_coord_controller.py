@@ -130,9 +130,10 @@ class WindowCoordController:
         elif axis == "z":
             a = (0, 0, 1)
 
-        m = Utils.gen_3d_rotation_matrix(angle, (self.__origin, a))
+        m = Utils.gen_3d_rotation_matrix(angle, ((0,0,0), a))
         self.__vup = tuple(Utils.transform(self.__vup, m))
         self.__u = tuple(Utils.transform(self.__u, m))
+        print(f"Vup={self.__vup}, U={self.__u}")
 
         self.__recalculate_projection_matrix()
 
@@ -145,16 +146,20 @@ class WindowCoordController:
 
     def scale(self, multiplier: float, objs: dict) -> dict:
 
+        print(f"multiplier={multiplier}")
+        print(f"before: Vup={self.__vup}, U={self.__u}")
+
         # calculate new vup and u values (rescaling them)
         multiplier = np.sqrt(1/(1 + multiplier)) if multiplier >= 0 else np.sqrt(1 + abs(multiplier))
         m = Utils.gen_3d_scaling_matrix(multiplier,
                                         multiplier,
                                         multiplier,
-                                        self.__origin[0],
-                                        self.__origin[1],
-                                        self.__origin[2])
+                                        0,
+                                        0,
+                                        0)
         self.__vup = tuple(Utils.transform(self.__vup, m))
         self.__u = tuple(Utils.transform(self.__u, m))
+        print(f"after: Vup={self.__vup}, U={self.__u}")
 
         self.__recalculate_projection_matrix()
 
