@@ -28,11 +28,8 @@ class WindowCoordController:
     
     # converts world coordinates (x, y) to normalized coordinates
     def __world_to_normalized(self, coord: tuple) -> tuple:
-        # translate coord in (-Wcx, -Wcy)
-        dx, dy, z = self.__origin
-        # m = Utils.gen_translation_matrix(0, 0)
 
-        # coord = tuple(Utils.transform(coord, m))
+        dx, dy, _ = self.__origin
 
         # rotate coord in -θ(Y, vup)
         theta = self.get_angle(self.__vup)
@@ -117,11 +114,7 @@ class WindowCoordController:
         
         return self.__obj_coordinates
 
-    # TODO - add axis parameter
-    def rotate(self, angle: float, objs: dict) -> dict:
-
-        # TODO - temporário
-        axis = "z"
+    def rotate(self, axis: str, angle: float, objs: dict) -> dict:
 
         if axis == "x":
             a = (1, 0, 0)
@@ -133,7 +126,6 @@ class WindowCoordController:
         m = Utils.gen_3d_rotation_matrix(angle, ((0,0,0), a))
         self.__vup = tuple(Utils.transform(self.__vup, m))
         self.__u = tuple(Utils.transform(self.__u, m))
-        print(f"Vup={self.__vup}, U={self.__u}")
 
         self.__recalculate_projection_matrix()
 
@@ -146,20 +138,12 @@ class WindowCoordController:
 
     def scale(self, multiplier: float, objs: dict) -> dict:
 
-        print(f"multiplier={multiplier}")
-        print(f"before: Vup={self.__vup}, U={self.__u}")
-
         # calculate new vup and u values (rescaling them)
         multiplier = np.sqrt(1/(1 + multiplier)) if multiplier >= 0 else np.sqrt(1 + abs(multiplier))
-        m = Utils.gen_3d_scaling_matrix(multiplier,
-                                        multiplier,
-                                        multiplier,
-                                        0,
-                                        0,
-                                        0)
+        m = Utils.gen_3d_scaling_matrix(multiplier, multiplier, multiplier,
+                                        0,0,0)
         self.__vup = tuple(Utils.transform(self.__vup, m))
         self.__u = tuple(Utils.transform(self.__u, m))
-        print(f"after: Vup={self.__vup}, U={self.__u}")
 
         self.__recalculate_projection_matrix()
 

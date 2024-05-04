@@ -527,7 +527,7 @@ class Utils:
     def rotation_to_y_axis_matrix(axis: tuple, return_angles: bool=False) -> list:
 
         p, a = axis
-        print(f"a={a}")
+
         # find angle θx:
         y_component_is_null = a[1] == 0
         z_component_is_null = a[2] == 0
@@ -610,8 +610,6 @@ class Utils:
         rotation axis is aligned with the y axis
         """
         m23, alpha, theta = Utils.rotation_to_y_axis_matrix(rotation_axis, return_angles=True)
-
-        print(f"thetha: {np.degrees(theta)}, alpha: {np.degrees(alpha)}")
 
         """
         4. Rotate the object around the y axis in the intended angle
