@@ -596,7 +596,7 @@ class Utils:
         # finding vector D:
         # rotation axis is defined by a point P and a vector A
         p, a = rotation_axis
-        print(f"rotation axis={rotation_axis}")
+
         dx, dy, dz = p
         m1 = np.array([[1, 0, 0, 0],
                       [0, 1, 0, 0],
@@ -611,8 +611,6 @@ class Utils:
         rotation axis is aligned with the y axis
         """
         m23, alpha, theta = Utils.rotation_to_y_axis_matrix(rotation_axis, return_angles=True)
-
-        print(f"0x={np.degrees(theta)}, 0z={np.degrees(alpha)}")
 
         """
         4. Rotate the object around the y axis in the intended angle
@@ -668,7 +666,7 @@ class Utils:
         2. Rotate the World in angle θx
         """
         if  dy != 0 and dz != 0:
-            alpha = np.arctan(abs(dz)/abs(dy))
+            alpha = np.arctan(abs(dy)/abs(dz))
         else:
             alpha = 0
 
@@ -687,7 +685,7 @@ class Utils:
         rotation axis is aligned with the z axis
         """
         if  dx != 0 and dz != 0:
-            alpha = np.arctan(abs(dz)/abs(dx))
+            alpha = np.arctan(abs(dx)/abs(dz))
         else:
             alpha = 0
 
