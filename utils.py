@@ -655,7 +655,9 @@ class Utils:
 
     # TODO - conferir cálculos
     @staticmethod
-    def get_ortogonal_projection_matrix(vrp: tuple):
+    def get_ortogonal_projection_matrix(vrp: tuple, angleX, angleY):
+        angleX = np.radians(angleX)
+        angleY = np.radians(angleY)
         """
         1. Translate the VRP to the origin (0, 0, 0)
         """
@@ -665,15 +667,9 @@ class Utils:
         """
         2. Rotate the World in angle θx
         """
-        if  dy != 0 and dz != 0:
-            alpha = np.arctan(abs(dy)/abs(dz))
-        else:
-            alpha = 0
 
-        theta = Utils.get_angle(alpha, dy, dz)
-
-        cos_theta = np.cos(theta)
-        sin_theta = np.sin(theta)
+        cos_theta = np.cos(-angleX)
+        sin_theta = np.sin(-angleX)
 
         m_rx = [[1, 0,          0,         0],
                 [0, cos_theta,  sin_theta, 0],
@@ -684,15 +680,8 @@ class Utils:
         3. Rotate the World around the y axis in an angle θy so that the 
         rotation axis is aligned with the z axis
         """
-        if  dx != 0 and dz != 0:
-            alpha = np.arctan(abs(dx)/abs(dz))
-        else:
-            alpha = 0
-
-        theta = Utils.get_angle(alpha, dx, dz)
-
-        cos_theta = np.cos(theta)
-        sin_theta = np.sin(theta)
+        cos_theta = np.cos(-angleY)
+        sin_theta = np.sin(-angleY)
 
         m_ry = [[cos_theta, 0, -sin_theta, 0],
                 [0,         1, 0,          0],
