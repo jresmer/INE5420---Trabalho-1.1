@@ -118,31 +118,32 @@ class MainWindow(WindowGUI):
                     name=self.__widgets["list obj"].get(tk.ACTIVE),
                     axis = self.__widgets["var axis obj rotate"].get(),
                     angle=direction*float(self.__widgets["rotate obj txt box"].get("1.0", "end-1c")),
-                    arbitrary = None
+                    arb_axis = None, arb_point = None
                 )
             elif mode == "Object Axis":
                 self.__controller.rotate_object(
                     name=self.__widgets["list obj"].get(tk.ACTIVE),
                     axis = "object axis",
                     angle=direction*float(self.__widgets["rotate obj txt box"].get("1.0", "end-1c")),
-                    arbitrary = None
+                    arb_axis = None, arb_point = None
                 )
             elif mode == "World Origin":
                 self.__controller.rotate_object(
                     name=self.__widgets["list obj"].get(tk.ACTIVE),
                     axis = self.__widgets["var axis obj rotate"].get(),
                     angle=direction*float(self.__widgets["rotate obj txt box"].get("1.0", "end-1c")),
-                    arbitrary = (0,0,0)
+                    arb_axis = None, arb_point = (0,0,0)
                 )
             else:
                 x = int(self.__widgets["rotate arbitrary x obj txt box"].get("1.0", "end-1c"))
                 y = int(self.__widgets["rotate arbitrary y obj txt box"].get("1.0", "end-1c"))
                 z = int(self.__widgets["rotate arbitrary z obj txt box"].get("1.0", "end-1c"))
+                arb_point = list(eval(self.__widgets["rotate arbitrary point obj txt box"].get("1.0", "end-1c")))
                 self.__controller.rotate_object(
                     name=self.__widgets["list obj"].get(tk.ACTIVE),
                     axis = None,
                     angle=direction*float(self.__widgets["rotate obj txt box"].get("1.0", "end-1c")),
-                    arbitrary = (x,y,z)
+                    arb_axis = (x,y,z), arb_point = arb_point
                 )
         except ValueError as e:
             self.notify_status("Error: the value to rotate has to be a float (in degrees) and\nfor arbitrary point x,y has to be integers")
@@ -305,7 +306,7 @@ class MainWindow(WindowGUI):
 
     def init_operations_object(self):
                 
-        frame = tk.Frame(self.__root, height = 280, width = 250, relief="ridge", borderwidth=2)
+        frame = tk.Frame(self.__root, height = 310, width = 250, relief="ridge", borderwidth=2)
         self.__widgets["ops obj frame"] = frame
         frame.place(x=200, y = 220)
 
@@ -344,66 +345,66 @@ class MainWindow(WindowGUI):
     #Scale part
         button = tk.Button(frame, text="+",
                            command= lambda: self.scaletion(True))
-        button.place(x=180, y=180)
+        button.place(x=180, y=210)
         self.__widgets['scale up button'] = button
 
         button = tk.Button(frame, text="--", 
                            command= lambda: self.scaletion(False))
-        button.place(x=70, y=180)
+        button.place(x=70, y=210)
         self.__widgets['scale down button'] = button
 
         text_box = tk.Text(frame, height=1, width=4)
-        text_box.place(x=120, y=180)
+        text_box.place(x=120, y=210)
         self.__widgets["scale txt box"] = text_box
 
         label = tk.Label(frame, text = "x")
-        label.place(x=160, y=180)
+        label.place(x=160, y=210)
         self.__widgets["x simbol lbl"] = label
 
         label = tk.Label(frame, text = "Scale")
-        label.place(x=5, y=170)
+        label.place(x=5, y=200)
         self.__widgets["scale obj lbl"] = label
     
     #Move part
 
         #dx
         label = tk.Label(frame, text = "dx")
-        label.place(x=30, y=250)
+        label.place(x=30, y=280)
         self.__widgets["move dx obj lbl"] = label
 
         text_box = tk.Text(frame, height=1, width=3)
-        text_box.place(x=50, y=250)
+        text_box.place(x=50, y=280)
         self.__widgets["move dx obj txt box"] = text_box
 
         #dy
         label = tk.Label(frame, text = "dy")
-        label.place(x=90, y=250)
+        label.place(x=90, y=280)
         self.__widgets["move dy obj lbl"] = label
 
         text_box = tk.Text(frame, height=1, width=3)
-        text_box.place(x=110, y=250)
+        text_box.place(x=110, y=280)
         self.__widgets["move dy obj txt box"] = text_box
 
         #dz
         label = tk.Label(frame, text = "dz")
-        label.place(x=150, y=250)
+        label.place(x=150, y=280)
         self.__widgets["move dz obj lbl"] = label
 
         text_box = tk.Text(frame, height=1, width=3)
-        text_box.place(x=170, y=250)
+        text_box.place(x=170, y=280)
         self.__widgets["move dz obj txt box"] = text_box
 
         button = tk.Button(frame, text = "✓", command = lambda: self.translate())
-        button.place(x=200, y=245)
+        button.place(x=200, y=275)
         self.__widgets["move obj button"] = button
 
         label = tk.Label(frame, text = "Move")
-        label.place(x=5, y=220)
+        label.place(x=5, y=250)
         self.__widgets["move obj lbl"] = label
 
     def att_rotate_mode_object(self):
         root_frame = self.__widgets["ops obj frame"]
-        frame = tk.Frame(root_frame, height = 70, width = 240, relief="ridge")
+        frame = tk.Frame(root_frame, height = 120, width = 240, relief="ridge")
         self.__widgets["rotate obj frame"] = frame
         frame.place(x=0, y = 85)
 
@@ -451,6 +452,14 @@ class MainWindow(WindowGUI):
             text_box = tk.Text(frame, height=1, width=4)
             text_box.place(x=170, y=40)
             self.__widgets["rotate arbitrary z obj txt box"] = text_box
+
+            #P
+            label = tk.Label(frame, text = "P")
+            label.place(x=80, y=80)
+
+            text_box = tk.Text(frame, height=1, width=7)
+            text_box.place(x=100, y=80)
+            self.__widgets["rotate arbitrary point obj txt box"] = text_box
         
         elif mode == "Object Axis":
             pass
@@ -469,7 +478,7 @@ class MainWindow(WindowGUI):
 
     def init_operations_world(self):
         frame = tk.Frame(self.__root, height = 100, width = 250, relief="ridge", borderwidth=2)
-        frame.place(x=200, y = 515)
+        frame.place(x=200, y = 545)
 
         label = tk.Label(frame, text = "World Operations")
         label.place(x=0, y = 0)
