@@ -120,6 +120,13 @@ class MainWindow(WindowGUI):
                     angle=direction*float(self.__widgets["rotate obj txt box"].get("1.0", "end-1c")),
                     arbitrary = None
                 )
+            elif mode == "Object Axis":
+                self.__controller.rotate_object(
+                    name=self.__widgets["list obj"].get(tk.ACTIVE),
+                    axis = "object axis",
+                    angle=direction*float(self.__widgets["rotate obj txt box"].get("1.0", "end-1c")),
+                    arbitrary = None
+                )
             elif mode == "World Origin":
                 self.__controller.rotate_object(
                     name=self.__widgets["list obj"].get(tk.ACTIVE),
@@ -315,7 +322,7 @@ class MainWindow(WindowGUI):
         label = tk.Label(frame, text="Mode:")
         label.place(x=20, y= 50)
 
-        choices = ["Object Center", "World Origin", "Arbitrary Axis"]
+        choices = ["Object Center", "Object Axis", "World Origin", "Arbitrary Axis"]
         var_str = tk.StringVar(frame)
         var_str.set("Object Center")
         choice_box = tk.OptionMenu(frame, var_str, *choices)
@@ -444,7 +451,10 @@ class MainWindow(WindowGUI):
             text_box = tk.Text(frame, height=1, width=4)
             text_box.place(x=170, y=40)
             self.__widgets["rotate arbitrary z obj txt box"] = text_box
-
+        
+        elif mode == "Object Axis":
+            pass
+        
         else:
             label = tk.Label(frame, text = "Axis:")
             label.place(x=60, y=40)

@@ -11,12 +11,19 @@ class CanvasObject(ABC):
         if len(coord) == 0:
             self.set_invalid()
 
+        self.__obj_axis = (0,1,0)
         self.__coord = coord
         self.__color = color
         self.__name = name
         self.__tkinter_id = tkinter_id
         self.__canvas = canvas
         self.__valid = True
+
+    def get_obj_axis(self):
+        return self.__obj_axis
+
+    def att_obj_axis(self, m):
+        self.__obj_axis = tuple(Utils.transform(self.__obj_axis, m))
 
     def transform(self, m: np.array) -> list:
 

@@ -33,7 +33,9 @@ class World:
         self.__window.add_obj(new_object.get_name(), new_object.get_coord())
         window_coords = self.__window.get_coords()
 
-        new_object.draw(self.__viewport, window_coords[name], self.__zoom)
+        if len(window_coords[name]) > 0:
+            new_object.draw(self.__viewport, window_coords[name], self.__zoom)
+
         return 1
     
     def __find_object(self, name: str) -> int:
@@ -53,7 +55,7 @@ class World:
         for obj in self.__object_list:
 
             obj_window_coords = window_coords[obj.get_name()]
-            if obj_window_coords:
+            if len(obj_window_coords) > 0:
                 obj.delete()
                 obj.draw(self.__viewport, obj_window_coords, self.__zoom)
 
@@ -137,6 +139,8 @@ class World:
                 a = (0,1,0)
             elif axis == "z":
                 a = (0,0,1)
+            elif axis == "object axis":
+                a = obj.get_obj_axis()
             else:
                 a = arbitrary_axis
 
@@ -144,6 +148,10 @@ class World:
                 angle=angle, rotation_axis= ((p,a))
             )
             obj.transform(m)
+
+            if axis != "object axis":
+                obj.att_obj_axis(m)
+
             self.__window.att_obj(name, obj.get_coord())
             window_coords = self.__window.get_coords()
             obj.delete()
