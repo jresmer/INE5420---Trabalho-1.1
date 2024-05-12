@@ -11,7 +11,8 @@ class World:
         self.__window = WindowCoordController(
             p=(370,240,0),
             vup=(0,240,0),
-            u=(370, 0,0)
+            u=(370, 0,0),
+            vpn=(0, 0, 370)
         )
         self.__zoom = 1
 
@@ -30,8 +31,9 @@ class World:
             return 3
         self.__object_list.append(new_object)
         self.__window.add_obj(new_object.get_name(), new_object.get_coord())
+        window_coords = self.__window.get_coords()
 
-        new_object.draw(self.__viewport, self.__window.get_coords()[name], self.__zoom)
+        new_object.draw(self.__viewport, window_coords[name], self.__zoom)
         return 1
     
     def __find_object(self, name: str) -> int:
@@ -43,6 +45,16 @@ class World:
                 return i
             
         return None
+    
+    def __draw_all(self):
+
+        window_coords = self.__window.get_coords()
+        # redraw canvas objects
+        for obj in self.__object_list:
+
+            obj_window_coords = window_coords[obj.get_name()]
+            if obj_window_coords: 
+                obj.draw(self.__viewport, obj_window_coords, self.__zoom)
 
     def delete_object(self, name):
 
@@ -65,11 +77,12 @@ class World:
         
         else:
 
+            window_coords = self.__window.get_coords()
             obj = self.__object_list[obj_index]
             m = Utils.gen_3d_translation_matrix(dx, dy, dz)
             obj.transform(m)
             self.__window.att_obj(name, obj.get_coord())
-            obj.draw(self.__viewport, self.__window.get_coords()[name], self.__zoom)
+            obj.draw(self.__viewport, window_coords[name], self.__zoom)
 
             return True
 
@@ -82,7 +95,8 @@ class World:
             return False
         
         else:
-
+            
+            window_coords = self.__window.get_coords()
             obj = self.__object_list[obj_index]
             (cx,cy,cz) = obj.get_center_coord()
 
@@ -92,7 +106,7 @@ class World:
             )
             obj.transform(m)
             self.__window.att_obj(name, obj.get_coord())
-            obj.draw(self.__viewport, self.__window.get_coords()[name], self.__zoom)
+            obj.draw(self.__viewport, window_coords[name], self.__zoom)
 
             return True
     
@@ -107,6 +121,7 @@ class World:
         else:
             obj = self.__object_list[obj_index]
             (cx, cy,cz) = obj.get_center_coord()
+            window_coords = self.__window.get_coords()
 
             if arbitrary_point == (0,0,0) or arbitrary_point != None:
                 p = (0,0,0)
@@ -127,31 +142,21 @@ class World:
             )
             obj.transform(m)
             self.__window.att_obj(name, obj.get_coord())
-            obj.draw(self.__viewport, self.__window.get_coords()[name], self.__zoom)
+            obj.draw(self.__viewport, window_coords[name], self.__zoom)
 
             return True
     
     def move_window(self, dx, dy,dz):
-
-        objs = {obj.get_name(): obj.get_coord() for obj in self.__object_list}
-        self.__window.move(dx, dy,dz, objs)
-
-        for obj in self.__object_list:
-            obj.draw(self.__viewport, self.__window.get_coords()[obj.get_name()], self.__zoom)
+        self.__window.move(dx, dy,dz)
+        self.__draw_all()
 
     def zoom_window(self, pct):
-        objs = {obj.get_name(): obj.get_coord() for obj in self.__object_list}
-        self.__window.scale(pct, objs)
-        # redraw canvas objects
-        for obj in self.__object_list:
-            obj.draw(self.__viewport, self.__window.get_coords()[obj.get_name()], self.__zoom)
+        self.__window.scale(pct)
+        self.__draw_all()
 
     def rotate_window(self, axis, angle: float):
-        objs = {obj.get_name(): obj.get_coord() for obj in self.__object_list}
-        self.__window.rotate(axis, angle, objs)
-        # redraw canvas objects
-        for obj in self.__object_list:
-            obj.draw(self.__viewport, self.__window.get_coords()[obj.get_name()], self.__zoom)
+        self.__window.rotate(axis, angle)
+        self.__draw_all()
 
     def save(self, filepath: str) -> bool:
         if len(self.__object_list) == 0:
@@ -167,13 +172,13 @@ class World:
                 self.delete_object(object_)
             objs = OBJDescriptor.wavefront_to_obj(filepath, canvas)
             self.__object_list = objs
-
+            window_coords = self.__window.get_coords()
             names = list()
             for object_ in self.__object_list:
 
                 self.__window.add_obj(object_.get_name(), object_.get_coord())
                 names.append(object_.get_name())
-                object_.draw(self.__viewport, self.__window.get_coords()[object_.get_name()], self.__zoom)
+                object_.draw(self.__viewport, window_coords[object_.get_name()], self.__zoom)
 
             return names
         except:

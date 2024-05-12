@@ -4,11 +4,12 @@ import numpy as np
 
 class WindowCoordController:
 
-    def __init__(self, p: tuple=(250, 250), vup: tuple=(0, 250), u: tuple=(250, 0)) -> None:
+    def __init__(self, p: tuple=(250, 250, 0), vup: tuple=(0, 250, 0), u: tuple=(250, 0), vpn: tuple=(0, 0, 250)) -> None:
 
         self.__origin = p
         self.__vup = vup
         self.__u = u
+        self.__vpn = vpn
         self.__obj_coordinates = dict()
         self.angleX = 0
         self.angleY = 0
@@ -71,6 +72,14 @@ class WindowCoordController:
         for coord in coords:
             new_coord = tuple(Utils.transform(coord, self.__proj_m)[:-1])
             new_coord = self.__world_to_normalized(new_coord)
+
+            # check if out of field of vision
+            vpn_magnitude = self.__mag(self.__vpn)
+            if abs(new_coord[2]) > vpn_magnitude:
+
+                new_coords = []
+                break
+
             new_coords.append(new_coord)
 
         self.__obj_coordinates[name] = new_coords
@@ -98,7 +107,14 @@ class WindowCoordController:
 
         return theta
     
-    def move(self, dx: int, dy: int, dz: int, objs: dict) -> dict:
+    def update_coordinates(self):
+
+        for name in self.__obj_coordinates.keys():
+            
+            coords = self.__obj_coordinates[name]
+            self.change_coords(name, coords)
+    
+    def move(self, dx: int, dy: int, dz: int) -> dict:
 
         # rotate the translation vector to respect vup
         m = Utils.rotation_to_y_axis_matrix((self.__origin, self.__vup))
@@ -109,15 +125,11 @@ class WindowCoordController:
         self.__origin = tuple(Utils.transform(self.__origin, m))
 
         self.__recalculate_projection_matrix()
-
-        for name in objs.keys():
-
-            coords = objs[name]
-            self.change_coords(name, coords)
+        self.update_coordinates()
         
         return self.__obj_coordinates
 
-    def rotate(self, axis: str, angle: float, objs: dict) -> dict:
+    def rotate(self, axis: str, angle: float) -> dict:
 
         if axis == "x":
             a = (1, 0, 0)
@@ -132,30 +144,23 @@ class WindowCoordController:
         m = Utils.gen_3d_rotation_matrix(angle, ((0,0,0), a))
         self.__vup = tuple(Utils.transform(self.__vup, m))
         self.__u = tuple(Utils.transform(self.__u, m))
+        self.__vpn = tuple(Utils.transform(self.__vpn, m))
 
         self.__recalculate_projection_matrix()
-
-        for name in objs.keys():
-
-            coords = objs[name]
-            self.change_coords(name, coords)
+        self.update_coordinates()
         
         return self.__obj_coordinates
 
-    def scale(self, multiplier: float, objs: dict) -> dict:
+    def scale(self, multiplier: float) -> dict:
 
         # calculate new vup and u values (rescaling them)
         multiplier = np.sqrt(1/(1 + multiplier)) if multiplier >= 0 else np.sqrt(1 + abs(multiplier))
-        m = Utils.gen_3d_scaling_matrix(multiplier, multiplier, multiplier,
-                                        0,0,0)
+        m = Utils.gen_3d_scaling_matrix(multiplier, multiplier, multiplier,0,0,0)
         self.__vup = tuple(Utils.transform(self.__vup, m))
         self.__u = tuple(Utils.transform(self.__u, m))
+        self.__vpn = tuple(Utils.transform(self.__vpn, m))
 
         self.__recalculate_projection_matrix()
-
-        for name in objs.keys():
-
-            coords = objs[name]
-            self.change_coords(name, coords)
+        self.update_coordinates()
         
         return self.__obj_coordinates

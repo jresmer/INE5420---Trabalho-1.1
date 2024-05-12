@@ -655,7 +655,7 @@ class Utils:
 
     # TODO - conferir cálculos
     @staticmethod
-    def get_ortogonal_projection_matrix(vrp: tuple, angleX, angleY):
+    def get_ortogonal_projection_matrix(vrp: tuple, angleX: float, angleY: float):
         angleX = np.radians(angleX)
         angleY = np.radians(angleY)
         """
