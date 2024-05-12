@@ -114,11 +114,11 @@ class World:
                 p = (cx, cy,cz)
 
             if axis == "x":
-                a = (cx+1,cy,cz)
+                a = (1,0,0)
             elif axis == "y":
-                a = (cx,cy+1,cz)
+                a = (0,1,0)
             elif axis == "z":
-                a = (cx,cy,cz+1)
+                a = (0,0,1)
             else:
                 a = arbitrary_point
 

@@ -86,32 +86,36 @@ class ObjectCreationWindow(WindowGUI):
         text_box.place(x=100, y=35)
         self.__widgets["coord txt box"] = text_box
 
-        label = tk.Label(self.__root, text="(x1, y1),(x2, y2),...")
+        label = tk.Label(self.__root, text="2D: (x1, y1),(x2, y2),...")
         label.place(x=100, y= 60)
-        self.__widgets["coord form"] = label
+        self.__widgets["2d coord form"] = label
+
+        label = tk.Label(self.__root, text="Point 3D & Wireframe 3D: (x1, y1, z1),(x2, y2, z2),...")
+        label.place(x=100, y= 80)
+        self.__widgets["3d coord form"] = label
 
         #Object type choice
         label = tk.Label(self.__root, text="Object type:")
-        label.place(x=10, y= 95)
+        label.place(x=10, y= 110)
         self.__widgets["obj type lbl"] = label
 
         choices = self.__obj_man.get_all_object_types()
         var_str = tk.StringVar(self.__root)
         var_str.set("---")
         choice_box = tk.OptionMenu(self.__root, var_str, *choices)
-        choice_box.place(x=100, y=90)
+        choice_box.place(x=100, y=105)
         self.__widgets["type choice box txt"] = var_str
         self.__widgets["type choice box"] = choice_box
 
         #Object color choice
         label = tk.Label(self.__root, text="Object color:")
-        label.place(x=220, y= 95)
+        label.place(x=220, y= 110)
         self.__widgets["obj color lbl"] = label
 
         button = tk.Button(self.__root, text="Select Color", command= self.select_color)
-        button.place(x=310, y=90)
+        button.place(x=310, y=105)
         self.__widgets["color bt"] = button
 
         label = tk.Label(self.__root, background= "red", width=2)
-        label.place(x=420, y=95)
+        label.place(x=420, y=110)
         self.__widgets["selected color"] = label

@@ -10,7 +10,10 @@ class WindowCoordController:
         self.__vup = vup
         self.__u = u
         self.__obj_coordinates = dict()
-        self.__proj_m = Utils.get_ortogonal_projection_matrix(self.__origin)
+        self.angleX = 0
+        self.angleY = 0
+        self.angleZ = 0
+        self.__proj_m = Utils.get_ortogonal_projection_matrix(self.__origin, self.angleX, self.angleY)
 
     @staticmethod
     def __mag(v: tuple) -> float:
@@ -24,7 +27,7 @@ class WindowCoordController:
     
     def __recalculate_projection_matrix(self):
 
-        self.__proj_m = Utils.get_ortogonal_projection_matrix(self.__origin)
+        self.__proj_m = Utils.get_ortogonal_projection_matrix(self.__origin, self.angleX, self.angleY)
     
     # converts world coordinates (x, y) to normalized coordinates
     def __world_to_normalized(self, coord: tuple) -> tuple:
@@ -118,10 +121,13 @@ class WindowCoordController:
 
         if axis == "x":
             a = (1, 0, 0)
+            self.angleX = (self.angleX + angle) %360
         elif axis == "y": 
             a = (0, 1, 0)
+            self.angleY = (self.angleY + angle) %360
         elif axis == "z":
             a = (0, 0, 1)
+            self.angleZ = (self.angleZ + angle) %360
 
         m = Utils.gen_3d_rotation_matrix(angle, ((0,0,0), a))
         self.__vup = tuple(Utils.transform(self.__vup, m))
