@@ -17,7 +17,7 @@ class CanvasObject(ABC):
         self.__tkinter_id = tkinter_id
         self.__canvas = canvas
         self.__valid = True
-    
+
     def transform(self, m: np.array) -> list:
 
         new_coords = list()

@@ -315,7 +315,7 @@ class MainWindow(WindowGUI):
         label = tk.Label(frame, text="Mode:")
         label.place(x=20, y= 50)
 
-        choices = ["Object Center", "World Origin", "Arbitrary Point"]
+        choices = ["Object Center", "World Origin", "Arbitrary Axis"]
         var_str = tk.StringVar(frame)
         var_str.set("Object Center")
         choice_box = tk.OptionMenu(frame, var_str, *choices)
@@ -420,7 +420,7 @@ class MainWindow(WindowGUI):
 
         mode = self.__widgets["rotate obj mode choice box txt"].get()
 
-        if mode == "Arbitrary Point":
+        if mode == "Arbitrary Axis":
             #x
             label = tk.Label(frame, text = "x")
             label.place(x=30, y=40)
