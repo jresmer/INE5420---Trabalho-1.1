@@ -70,13 +70,12 @@ class WindowCoordController:
     def change_coords(self, name: str, coords: tuple) -> None:
         new_coords = list()
         for coord in coords:
-            new_coord = tuple(Utils.transform(coord, self.__proj_m)[:-1])
-            new_coord = self.__world_to_normalized(new_coord)
+            x,y,z = tuple(Utils.transform(coord, self.__proj_m))
+            new_coord = self.__world_to_normalized((x,y))
 
             # check if out of field of vision
             vpn_magnitude = self.__mag(self.__vpn)
-            if abs(coord[2]) > vpn_magnitude:
-
+            if abs(z) > vpn_magnitude:
                 new_coords = []
                 break
 
