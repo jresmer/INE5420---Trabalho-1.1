@@ -147,15 +147,18 @@ class World:
             return True
     
     def move_window(self, dx, dy,dz):
-        self.__window.move(dx, dy,dz)
+        objs = {obj.get_name(): obj.get_coord() for obj in self.__object_list}
+        self.__window.move(dx, dy,dz, objs)
         self.__draw_all()
 
     def zoom_window(self, pct):
-        self.__window.scale(pct)
+        objs = {obj.get_name(): obj.get_coord() for obj in self.__object_list}
+        self.__window.scale(pct, objs)
         self.__draw_all()
 
     def rotate_window(self, axis, angle: float):
-        self.__window.rotate(axis, angle)
+        objs = {obj.get_name(): obj.get_coord() for obj in self.__object_list}
+        self.__window.rotate(axis, angle, objs)
         self.__draw_all()
 
     def save(self, filepath: str) -> bool:

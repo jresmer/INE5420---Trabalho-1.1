@@ -75,7 +75,7 @@ class WindowCoordController:
 
             # check if out of field of vision
             vpn_magnitude = self.__mag(self.__vpn)
-            if abs(new_coord[2]) > vpn_magnitude:
+            if abs(coord[2]) > vpn_magnitude:
 
                 new_coords = []
                 break
@@ -107,14 +107,11 @@ class WindowCoordController:
 
         return theta
     
-    def update_coordinates(self):
-
-        for name in self.__obj_coordinates.keys():
-            
-            coords = self.__obj_coordinates[name]
+    def update_coordinates(self, objs: dict):
+        for name, coords in objs.items():
             self.change_coords(name, coords)
     
-    def move(self, dx: int, dy: int, dz: int) -> dict:
+    def move(self, dx: int, dy: int, dz: int, objs: dict) -> dict:
 
         # rotate the translation vector to respect vup
         m = Utils.rotation_to_y_axis_matrix((self.__origin, self.__vup))
@@ -125,11 +122,11 @@ class WindowCoordController:
         self.__origin = tuple(Utils.transform(self.__origin, m))
 
         self.__recalculate_projection_matrix()
-        self.update_coordinates()
+        self.update_coordinates(objs)
         
         return self.__obj_coordinates
 
-    def rotate(self, axis: str, angle: float) -> dict:
+    def rotate(self, axis: str, angle: float, objs: dict) -> dict:
 
         if axis == "x":
             a = (1, 0, 0)
@@ -147,11 +144,11 @@ class WindowCoordController:
         self.__vpn = tuple(Utils.transform(self.__vpn, m))
 
         self.__recalculate_projection_matrix()
-        self.update_coordinates()
+        self.update_coordinates(objs)
         
         return self.__obj_coordinates
 
-    def scale(self, multiplier: float) -> dict:
+    def scale(self, multiplier: float, objs: dict) -> dict:
 
         # calculate new vup and u values (rescaling them)
         multiplier = np.sqrt(1/(1 + multiplier)) if multiplier >= 0 else np.sqrt(1 + abs(multiplier))
@@ -161,6 +158,6 @@ class WindowCoordController:
         self.__vpn = tuple(Utils.transform(self.__vpn, m))
 
         self.__recalculate_projection_matrix()
-        self.update_coordinates()
+        self.update_coordinates(objs)
         
         return self.__obj_coordinates
