@@ -18,8 +18,6 @@ class Line(CanvasObject):
             self.set_invalid()
 
     def draw(self, viewport: tuple, window_coords: tuple, zoom: float) -> None:
-        
-        self.delete()
 
         window_xmin, window_ymin, window_xmax, window_ymax = [-1,-1,1,1]
         vp_xmin, vp_ymin, vp_xmax, vp_ymax = viewport

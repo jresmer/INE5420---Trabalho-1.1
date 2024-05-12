@@ -523,6 +523,7 @@ class Utils:
 
         return m
     
+    # TODO - consertar rotação em z invertida
     @staticmethod
     def rotation_to_y_axis_matrix(axis: tuple, return_angles: bool=False) -> list:
 
@@ -562,11 +563,14 @@ class Utils:
         # if A is on the x axis
         elif y_component_is_null:
 
-            alpha = np.pi/2
+            if a[0] > 0: alpha = np.pi/2
+            else: alpha = 3*np.pi/2
         # if not calculate θx through the x, y components
         else:
 
-            alpha = np.arctan(a[0]/a[1])
+            alpha = np.arctan(abs(a[0])/abs(a[1]))
+
+        # if a[1] < 0: alpha = -alpha
         
         sin = np.sin(alpha)
         cos = np.cos(alpha)
@@ -653,7 +657,6 @@ class Utils:
 
         return m
 
-    # TODO - conferir cálculos
     @staticmethod
     def get_ortogonal_projection_matrix(vrp: tuple, angleX: float, angleY: float):
         angleX = np.radians(angleX)

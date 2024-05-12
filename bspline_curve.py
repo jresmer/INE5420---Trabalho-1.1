@@ -19,9 +19,6 @@ class BSplineCurve(CanvasObject):
             self.set_invalid()
 
     def draw(self, viewport: tuple, window_coords: tuple, zoom: float) -> None:
-        
-        # delete all previously drawn lines
-        self.delete()
 
         #calculating viewport coordinates
         window_xmin, window_ymin, window_xmax, window_ymax = [-1,-1,1,1]

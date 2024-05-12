@@ -53,7 +53,8 @@ class World:
         for obj in self.__object_list:
 
             obj_window_coords = window_coords[obj.get_name()]
-            if obj_window_coords: 
+            if obj_window_coords:
+                obj.delete()
                 obj.draw(self.__viewport, obj_window_coords, self.__zoom)
 
     def delete_object(self, name):
@@ -77,12 +78,14 @@ class World:
         
         else:
 
-            window_coords = self.__window.get_coords()
             obj = self.__object_list[obj_index]
             m = Utils.gen_3d_translation_matrix(dx, dy, dz)
             obj.transform(m)
             self.__window.att_obj(name, obj.get_coord())
-            obj.draw(self.__viewport, window_coords[name], self.__zoom)
+            window_coords = self.__window.get_coords()
+            obj.delete()
+            if len(window_coords[name]) > 0:
+                obj.draw(self.__viewport, window_coords[name], self.__zoom)
 
             return True
 
@@ -96,7 +99,6 @@ class World:
         
         else:
             
-            window_coords = self.__window.get_coords()
             obj = self.__object_list[obj_index]
             (cx,cy,cz) = obj.get_center_coord()
 
@@ -106,7 +108,10 @@ class World:
             )
             obj.transform(m)
             self.__window.att_obj(name, obj.get_coord())
-            obj.draw(self.__viewport, window_coords[name], self.__zoom)
+            window_coords = self.__window.get_coords()
+            obj.delete()
+            if len(window_coords[name]) > 0:
+                obj.draw(self.__viewport, window_coords[name], self.__zoom)
 
             return True
     
@@ -121,7 +126,6 @@ class World:
         else:
             obj = self.__object_list[obj_index]
             (cx, cy,cz) = obj.get_center_coord()
-            window_coords = self.__window.get_coords()
 
             if arbitrary_point == (0,0,0) or arbitrary_point != None:
                 p = (0,0,0)
@@ -142,7 +146,10 @@ class World:
             )
             obj.transform(m)
             self.__window.att_obj(name, obj.get_coord())
-            obj.draw(self.__viewport, window_coords[name], self.__zoom)
+            window_coords = self.__window.get_coords()
+            obj.delete()
+            if len(window_coords[name]) > 0:
+                obj.draw(self.__viewport, window_coords[name], self.__zoom)
 
             return True
     
