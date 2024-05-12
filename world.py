@@ -55,8 +55,8 @@ class World:
         for obj in self.__object_list:
 
             obj_window_coords = window_coords[obj.get_name()]
+            obj.delete()
             if len(obj_window_coords) > 0:
-                obj.delete()
                 obj.draw(self.__viewport, obj_window_coords, self.__zoom)
 
     def delete_object(self, name):
