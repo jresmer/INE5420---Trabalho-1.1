@@ -24,6 +24,7 @@ class GUI:
 
     def move_window(self, dx, dy,dz):
         self.world.move_window(dx, dy,dz)
+        self.notify_status("Window successfully moved")
 
     def create_object(self, coord: tuple, color: str, name: str, obj_type) -> None:
 
@@ -87,11 +88,11 @@ class GUI:
 
     def rotate_window(self, axis, angle: float):
         self.world.rotate_window(axis, angle)
-        self.windows[MainWindow.__name__].notify_status(f"")
+        self.windows[MainWindow.__name__].notify_status(f"Window successfully rotated")
 
     def zoom_window(self, pct: float):
         self.world.zoom_window(pct)
-        self.windows[MainWindow.__name__].notify_status(f"")
+        self.windows[MainWindow.__name__].notify_status(f"Window successfully zommed")
 
     def save_world(self, filepath: str):
         if self.world.save(filepath):
