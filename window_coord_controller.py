@@ -14,7 +14,7 @@ class WindowCoordController:
         self.angleX = 0
         self.angleY = 0
         self.angleZ = 0
-        self.__proj_m = Utils.get_ortogonal_projection_matrix(self.__origin, self.angleX, self.angleY)
+        self.__proj_m = Utils.get_perspective_projection_matrix(self.__origin, self.angleX, self.angleY)
 
     @staticmethod
     def __mag(v: tuple) -> float:
@@ -28,7 +28,7 @@ class WindowCoordController:
     
     def __recalculate_projection_matrix(self):
 
-        self.__proj_m = Utils.get_ortogonal_projection_matrix(self.__origin, self.angleX, self.angleY)
+        self.__proj_m = Utils.get_perspective_projection_matrix(self.__origin, self.angleX, self.angleY)
     
     # converts world coordinates (x, y) to normalized coordinates
     def __world_to_normalized(self, coord: tuple) -> tuple:
@@ -70,15 +70,14 @@ class WindowCoordController:
     def change_coords(self, name: str, coords: tuple) -> None:
         new_coords = list()
         for coord in coords:
-            x,y,z = tuple(Utils.transform(coord, self.__proj_m))
+            x,y,z = coord
+            m = [[1/z, 0, 0, 0],
+                 [0, 1/z, 0, 0],
+                 [0, 0, 1/z, 0],
+                 [0, 0, 0, 1]]
+            m = np.matmul(self.__proj_m, m)
+            x, y, z = tuple(Utils.transform(coord, m))
             new_coord = self.__world_to_normalized((x,y))
-
-            # check if out of field of vision
-            vpn_magnitude = self.__mag(self.__vpn)
-            if (z >= 0 and z > 3*vpn_magnitude) or (z < 0 and abs(z) > vpn_magnitude):
-                new_coords = []
-                break
-
             new_coords.append(new_coord)
 
         self.__obj_coordinates[name] = new_coords
