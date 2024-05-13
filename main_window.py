@@ -26,10 +26,10 @@ class MainWindow(WindowGUI):
         self.init_widgets(world)
 
         #BIND PARA MOVER O CANVAS
-        self.__root.bind("<KeyPress-Left>", lambda _: self.__controller.move_canvas(-3, 0))
-        self.__root.bind("<KeyPress-Right>", lambda _: self.__controller.move_canvas(3, 0))
-        self.__root.bind("<KeyPress-Up>", lambda _: self.__controller.move_canvas(0, 3))
-        self.__root.bind("<KeyPress-Down>", lambda _: self.__controller.move_canvas(0, -3))
+        self.__root.bind("<KeyPress-Left>", lambda _: self.__controller.move_window(-3, 0,0))
+        self.__root.bind("<KeyPress-Right>", lambda _: self.__controller.move_window(3, 0,0))
+        self.__root.bind("<KeyPress-Up>", lambda _: self.__controller.move_window(0, 3,0))
+        self.__root.bind("<KeyPress-Down>", lambda _: self.__controller.move_window(0, -3,0))
         self.__root.bind("<Button-4>", lambda _: self.on_mousewheel(-1))
         self.__root.bind("<Button-5>", lambda _: self.on_mousewheel(1))
 
@@ -64,10 +64,11 @@ class MainWindow(WindowGUI):
             self.__controller.translate_object(
                 name=self.__widgets["list obj"].get(tk.ACTIVE),
                 dx=int(self.__widgets["move dx obj txt box"].get("1.0", "end-1c")),
-                dy=int(self.__widgets["move dy obj txt box"].get("1.0", "end-1c"))
+                dy=int(self.__widgets["move dy obj txt box"].get("1.0", "end-1c")),
+                dz=int(self.__widgets["move dz obj txt box"].get("1.0", "end-1c"))
             )
         except ValueError as e:
-            self.notify_status("Error: the value to dx and dy has to be an integer number")
+            self.notify_status("Error: the value to dx, dy and dz. Has to be an integer number")
     
     def scaletion(self, up: bool):
         try:
@@ -75,24 +76,38 @@ class MainWindow(WindowGUI):
                 self.__controller.scale_object(
                     name=self.__widgets["list obj"].get(tk.ACTIVE),
                     sx=float(self.__widgets["scale txt box"].get("1.0", "end-1c")),
-                    sy=float(self.__widgets["scale txt box"].get("1.0", "end-1c"))
+                    sy=float(self.__widgets["scale txt box"].get("1.0", "end-1c")),
+                    sz=float(self.__widgets["scale txt box"].get("1.0", "end-1c"))
                 )
             else:
                 self.__controller.scale_object(
                     name=self.__widgets["list obj"].get(tk.ACTIVE),
                     sx=1/float(self.__widgets["scale txt box"].get("1.0", "end-1c")),
-                    sy=1/float(self.__widgets["scale txt box"].get("1.0", "end-1c"))
+                    sy=1/float(self.__widgets["scale txt box"].get("1.0", "end-1c")),
+                    sz=1/float(self.__widgets["scale txt box"].get("1.0", "end-1c"))
                 )
         except ValueError as e:
             self.notify_status("Error: the value to scale has to be a float")
 
     def rotate_window(self, direction: int):
         try:
+            axis = self.__widgets["var axis rot window"].get()
             self.__controller.rotate_window(
+                axis = axis,
                 angle=direction*float(self.__widgets["rotate window txt box"].get("1.0", "end-1c"))
             )
         except ValueError as e:
             self.notify_status("Error: the value to rotate has to be a float (in degrees)")
+
+    def move_window(self):
+        try:
+            self.__controller.move_window(
+                dx=int(self.__widgets["move dx window txt box"].get("1.0", "end-1c")),
+                dy=int(self.__widgets["move dy window txt box"].get("1.0", "end-1c")),
+                dz=int(self.__widgets["move dz window txt box"].get("1.0", "end-1c"))
+            )
+        except ValueError as e:
+            self.notify_status("Error: the value to dx and dy has to be an integer number")
 
     def rotation(self, direction: int):
 
@@ -101,22 +116,34 @@ class MainWindow(WindowGUI):
             if mode == "Object Center":
                 self.__controller.rotate_object(
                     name=self.__widgets["list obj"].get(tk.ACTIVE),
+                    axis = self.__widgets["var axis obj rotate"].get(),
                     angle=direction*float(self.__widgets["rotate obj txt box"].get("1.0", "end-1c")),
-                    arbitrary = None
+                    arb_axis = None, arb_point = None
+                )
+            elif mode == "Object Axis":
+                self.__controller.rotate_object(
+                    name=self.__widgets["list obj"].get(tk.ACTIVE),
+                    axis = "object axis",
+                    angle=direction*float(self.__widgets["rotate obj txt box"].get("1.0", "end-1c")),
+                    arb_axis = None, arb_point = None
                 )
             elif mode == "World Origin":
                 self.__controller.rotate_object(
                     name=self.__widgets["list obj"].get(tk.ACTIVE),
+                    axis = self.__widgets["var axis obj rotate"].get(),
                     angle=direction*float(self.__widgets["rotate obj txt box"].get("1.0", "end-1c")),
-                    arbitrary = (0,0)
+                    arb_axis = None, arb_point = (0,0,0)
                 )
             else:
                 x = int(self.__widgets["rotate arbitrary x obj txt box"].get("1.0", "end-1c"))
                 y = int(self.__widgets["rotate arbitrary y obj txt box"].get("1.0", "end-1c"))
+                z = int(self.__widgets["rotate arbitrary z obj txt box"].get("1.0", "end-1c"))
+                arb_point = list(eval(self.__widgets["rotate arbitrary point obj txt box"].get("1.0", "end-1c")))
                 self.__controller.rotate_object(
                     name=self.__widgets["list obj"].get(tk.ACTIVE),
+                    axis = None,
                     angle=direction*float(self.__widgets["rotate obj txt box"].get("1.0", "end-1c")),
-                    arbitrary = (x,y)
+                    arb_axis = (x,y,z), arb_point = arb_point
                 )
         except ValueError as e:
             self.notify_status("Error: the value to rotate has to be a float (in degrees) and\nfor arbitrary point x,y has to be integers")
@@ -207,6 +234,17 @@ class MainWindow(WindowGUI):
         self.__widgets["zoom lbl"] = label
 
         #Rotate Window Part
+        label = tk.Label(frame, text = "Axis:")
+        label.place(x=70, y=115)
+
+        v = tk.StringVar(frame, "x")
+        self.__widgets["var axis rot window"] = v
+        (x,y) = 110,110
+        for axis in ["x","y","z"]: 
+            tk.Radiobutton(master = frame, text = axis, variable = v, indicatoron=0,
+                value = axis, width=2).place(x=x,y=y)
+            x += 25
+        
         button = tk.Button(frame, text="⟳",
                            command= lambda: self.rotate_window(1))
         button.place(x=180, y=75)
@@ -231,29 +269,45 @@ class MainWindow(WindowGUI):
 
 
         #Move Window Part
-        button = tk.Button(frame, text="↑", width= 2,  
-                           command= lambda : self.__controller.move_canvas(0, 3))
-        button.place(x=100, y=120)
-        self.__widgets['move window up button'] = button
+        #dx
+        label = tk.Label(frame, text = "dx")
+        label.place(x=30, y=170)
+        self.__widgets["move dx window lbl"] = label
 
-        button = tk.Button(frame, text="↓", width= 2, 
-                           command= lambda : self.__controller.move_canvas(0, -3))
-        button.place(x=100, y=150)
-        self.__widgets['move window down button'] = button
+        text_box = tk.Text(frame, height=1, width=3)
+        text_box.place(x=50, y=170)
+        self.__widgets["move dx window txt box"] = text_box
 
-        button = tk.Button(frame, text="←", width= 2, 
-                           command= lambda : self.__controller.move_canvas(-3, 0))
-        button.place(x=55, y=135)
-        self.__widgets['move window left button'] = button
+        #dy
+        label = tk.Label(frame, text = "dy")
+        label.place(x=90, y=170)
+        self.__widgets["move dy window lbl"] = label
 
-        button = tk.Button(frame, text="→", width= 2, 
-                           command= lambda : self.__controller.move_canvas(3, 0))
-        button.place(x=145, y=135)
-        self.__widgets['move window right button'] = button
+        text_box = tk.Text(frame, height=1, width=3)
+        text_box.place(x=110, y=170)
+        self.__widgets["move dy window txt box"] = text_box
+
+        #dz
+        label = tk.Label(frame, text = "dz")
+        label.place(x=150, y=170)
+        self.__widgets["move dz window lbl"] = label
+
+        text_box = tk.Text(frame, height=1, width=3)
+        text_box.place(x=170, y=170)
+        self.__widgets["move dz window txt box"] = text_box
+
+        button = tk.Button(frame, text = "✓", command = lambda: self.move_window())
+        button.place(x=205, y=165)
+        self.__widgets["move window button"] = button
+
+        label = tk.Label(frame, text = "Move")
+        label.place(x=5, y=140)
+        self.__widgets["move window lbl"] = label
 
     def init_operations_object(self):
                 
-        frame = tk.Frame(self.__root, height = 270, width = 250, relief="ridge", borderwidth=2)
+        frame = tk.Frame(self.__root, height = 310, width = 250, relief="ridge", borderwidth=2)
+        self.__widgets["ops obj frame"] = frame
         frame.place(x=200, y = 220)
 
         label = tk.Label(frame, text = "Selected Object Operations")
@@ -269,7 +323,7 @@ class MainWindow(WindowGUI):
         label = tk.Label(frame, text="Mode:")
         label.place(x=20, y= 50)
 
-        choices = ["Object Center", "World Origin", "Arbitrary Point"]
+        choices = ["Object Center", "Object Axis", "World Origin", "Arbitrary Axis"]
         var_str = tk.StringVar(frame)
         var_str.set("Object Center")
         choice_box = tk.OptionMenu(frame, var_str, *choices)
@@ -291,56 +345,69 @@ class MainWindow(WindowGUI):
     #Scale part
         button = tk.Button(frame, text="+",
                            command= lambda: self.scaletion(True))
-        button.place(x=180, y=175)
+        button.place(x=180, y=210)
         self.__widgets['scale up button'] = button
 
         button = tk.Button(frame, text="--", 
                            command= lambda: self.scaletion(False))
-        button.place(x=70, y=175)
+        button.place(x=70, y=210)
         self.__widgets['scale down button'] = button
 
         text_box = tk.Text(frame, height=1, width=4)
-        text_box.place(x=120, y=175)
+        text_box.place(x=120, y=210)
         self.__widgets["scale txt box"] = text_box
 
         label = tk.Label(frame, text = "x")
-        label.place(x=160, y=175)
+        label.place(x=160, y=210)
         self.__widgets["x simbol lbl"] = label
 
         label = tk.Label(frame, text = "Scale")
-        label.place(x=5, y=180)
+        label.place(x=5, y=200)
         self.__widgets["scale obj lbl"] = label
     
     #Move part
 
         #dx
         label = tk.Label(frame, text = "dx")
-        label.place(x=60, y=220)
+        label.place(x=30, y=280)
         self.__widgets["move dx obj lbl"] = label
 
-        text_box = tk.Text(frame, height=1, width=4)
-        text_box.place(x=80, y=220)
+        text_box = tk.Text(frame, height=1, width=3)
+        text_box.place(x=50, y=280)
         self.__widgets["move dx obj txt box"] = text_box
 
         #dy
         label = tk.Label(frame, text = "dy")
-        label.place(x=120, y=220)
+        label.place(x=90, y=280)
         self.__widgets["move dy obj lbl"] = label
 
-        text_box = tk.Text(frame, height=1, width=4)
-        text_box.place(x=140, y=220)
+        text_box = tk.Text(frame, height=1, width=3)
+        text_box.place(x=110, y=280)
         self.__widgets["move dy obj txt box"] = text_box
 
+        #dz
+        label = tk.Label(frame, text = "dz")
+        label.place(x=150, y=280)
+        self.__widgets["move dz obj lbl"] = label
+
+        text_box = tk.Text(frame, height=1, width=3)
+        text_box.place(x=170, y=280)
+        self.__widgets["move dz obj txt box"] = text_box
+
         button = tk.Button(frame, text = "✓", command = lambda: self.translate())
-        button.place(x=180, y=215)
+        button.place(x=200, y=275)
         self.__widgets["move obj button"] = button
 
         label = tk.Label(frame, text = "Move")
-        label.place(x=5, y=220)
+        label.place(x=5, y=250)
         self.__widgets["move obj lbl"] = label
 
     def att_rotate_mode_object(self):
-        frame = self.__widgets["rotate obj frame"]
+        root_frame = self.__widgets["ops obj frame"]
+        frame = tk.Frame(root_frame, height = 120, width = 240, relief="ridge")
+        self.__widgets["rotate obj frame"] = frame
+        frame.place(x=0, y = 85)
+
 
         text_box = tk.Text(frame, height=1, width=4)
         text_box.place(x=120, y=0)
@@ -361,26 +428,57 @@ class MainWindow(WindowGUI):
 
         mode = self.__widgets["rotate obj mode choice box txt"].get()
 
-        if mode == "Arbitrary Point":
+        if mode == "Arbitrary Axis":
             #x
             label = tk.Label(frame, text = "x")
-            label.place(x=70, y=40)
+            label.place(x=30, y=40)
 
             text_box = tk.Text(frame, height=1, width=4)
-            text_box.place(x=90, y=40)
+            text_box.place(x=50, y=40)
             self.__widgets["rotate arbitrary x obj txt box"] = text_box
 
             #y
             label = tk.Label(frame, text = "y")
-            label.place(x=130, y=40)
+            label.place(x=90, y=40)
 
             text_box = tk.Text(frame, height=1, width=4)
-            text_box.place(x=150, y=40)
+            text_box.place(x=110, y=40)
             self.__widgets["rotate arbitrary y obj txt box"] = text_box
+
+            #z
+            label = tk.Label(frame, text = "z")
+            label.place(x=150, y=40)
+
+            text_box = tk.Text(frame, height=1, width=4)
+            text_box.place(x=170, y=40)
+            self.__widgets["rotate arbitrary z obj txt box"] = text_box
+
+            #P
+            label = tk.Label(frame, text = "P")
+            label.place(x=80, y=80)
+
+            text_box = tk.Text(frame, height=1, width=7)
+            text_box.place(x=100, y=80)
+            self.__widgets["rotate arbitrary point obj txt box"] = text_box
+        
+        elif mode == "Object Axis":
+            pass
+        
+        else:
+            label = tk.Label(frame, text = "Axis:")
+            label.place(x=60, y=40)
+
+            v = tk.StringVar(frame, "x")
+            self.__widgets["var axis obj rotate"] = v
+            (x,y) = 100,35
+            for axis in ["x","y","z"]: 
+                tk.Radiobutton(master = frame, text = axis, variable = v, indicatoron=0,
+                    value = axis, width=2).place(x=x,y=y)
+                x += 25
 
     def init_operations_world(self):
         frame = tk.Frame(self.__root, height = 100, width = 250, relief="ridge", borderwidth=2)
-        frame.place(x=200, y = 505)
+        frame.place(x=200, y = 545)
 
         label = tk.Label(frame, text = "World Operations")
         label.place(x=0, y = 0)
@@ -399,7 +497,7 @@ class MainWindow(WindowGUI):
     def change_clipping(self):
         v = self.__widgets["var line clipping"]
         Clipping.instance().change_line_clipping(v.get())
-        self.__controller.move_canvas(0,0)
+        self.__controller.move_window(0,0,0)
 
     def init_change_clipping(self):
         clippings = Clipping.instance().get_all_line_clippings()

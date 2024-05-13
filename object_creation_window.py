@@ -23,11 +23,13 @@ class ObjectCreationWindow(WindowGUI):
         self.init_widgets(world)  
 
         # TODO: deletar testes realizados depois
-        # self.__controller.create_object(list(eval("(50,50,1)")), "blue", "Arroz", self.__obj_man.get_object_type("Point2D"))
-        # self.__controller.create_object(list(eval("(0,0,1),(740,480,1)")), "green", "Feijão", self.__obj_man.get_object_type("Line"))
-        # self.__controller.create_object(list(eval("(200,100,1),(100,500,1),(300,300,1)")), "red", "Carne", self.__obj_man.get_object_type("Polygon2D"))
-        # self.__controller.create_object(list(eval("(100,100,1),(100,500),(400,300,1)")), "pink", "Moida", self.__obj_man.get_object_type("Wireframe2D"))
-        # self.__controller.create_object(list(eval("(0,0,1),(100,100,1),(100,500,1),(400,300,1)")), "dark blue", "Cabritinho", self.__obj_man.get_object_type("BezierCurve"))
+        # self.__controller.create_object(list(eval("(50,50,10)")), "blue", "Arroz", self.__obj_man.get_object_type("Point"))
+        # self.__controller.create_object(list(eval("(0,0),(740,480)")), "green", "Feijão", self.__obj_man.get_object_type("Line"))
+        # self.__controller.create_object(list(eval("(0,0),(0,5000)")), "green", "EixoY", self.__obj_man.get_object_type("Line"))
+        # self.__controller.create_object(list(eval("(0,0),(5000,0)")), "green", "EixoX", self.__obj_man.get_object_type("Line"))
+        # self.__controller.create_object(list(eval("(200,100),(100,500),(300,300)")), "red", "Carne", self.__obj_man.get_object_type("Polygon2D"))
+        # self.__controller.create_object(list(eval("(100,100),(100,500),(400,300)")), "pink", "Moida", self.__obj_man.get_object_type("Wireframe"))
+        # self.__controller.create_object(list(eval("(0,0),(100,100),(100,500),(400,300)")), "dark blue", "Cabritinho", self.__obj_man.get_object_type("BezierCurve"))
         
         self.__root.mainloop()
 
@@ -84,32 +86,36 @@ class ObjectCreationWindow(WindowGUI):
         text_box.place(x=100, y=35)
         self.__widgets["coord txt box"] = text_box
 
-        label = tk.Label(self.__root, text="(x1, y1),(x2, y2),...")
+        label = tk.Label(self.__root, text="2D: (x1, y1),(x2, y2),...")
         label.place(x=100, y= 60)
-        self.__widgets["coord form"] = label
+        self.__widgets["2d coord form"] = label
+
+        label = tk.Label(self.__root, text="Point 3D & Wireframe 3D: (x1, y1, z1),(x2, y2, z2),...")
+        label.place(x=100, y= 80)
+        self.__widgets["3d coord form"] = label
 
         #Object type choice
         label = tk.Label(self.__root, text="Object type:")
-        label.place(x=10, y= 95)
+        label.place(x=10, y= 110)
         self.__widgets["obj type lbl"] = label
 
         choices = self.__obj_man.get_all_object_types()
         var_str = tk.StringVar(self.__root)
         var_str.set("---")
         choice_box = tk.OptionMenu(self.__root, var_str, *choices)
-        choice_box.place(x=100, y=90)
+        choice_box.place(x=100, y=105)
         self.__widgets["type choice box txt"] = var_str
         self.__widgets["type choice box"] = choice_box
 
         #Object color choice
         label = tk.Label(self.__root, text="Object color:")
-        label.place(x=220, y= 95)
+        label.place(x=220, y= 110)
         self.__widgets["obj color lbl"] = label
 
         button = tk.Button(self.__root, text="Select Color", command= self.select_color)
-        button.place(x=310, y=90)
+        button.place(x=310, y=105)
         self.__widgets["color bt"] = button
 
         label = tk.Label(self.__root, background= "red", width=2)
-        label.place(x=420, y=95)
+        label.place(x=420, y=110)
         self.__widgets["selected color"] = label

@@ -1,22 +1,24 @@
 from canvas_object import CanvasObject
 from utils import Clipping
 
-class Wireframe2D(CanvasObject):
-    #TODO: Passar os atributos para classe pai e requisitar o atributo
+class Wireframe(CanvasObject):
+
     def __init__(self, coord: tuple, color: str, name: str, tkinter_id: int, canvas) -> None:
-        
+
         new_coords = []
         for point in coord:
-            if len(point) != 2:
+            if len(point) > 3:
                 self.set_invalid()
                 return
-            new_coords.append(point+(0,))
+
+            if len(point) == 2:
+                new_coords.append(point+(0,))
+            else:
+                new_coords.append(point)
 
         super().__init__(new_coords, color, name, tkinter_id, canvas)
 
     def draw(self, viewport: tuple, window_coords: tuple, zoom: float) -> None:
-        
-        self.delete()
 
         window_xmin, window_ymin, window_xmax, window_ymax = [-1,-1,1,1]
         vp_xmin, vp_ymin, vp_xmax, vp_ymax = viewport

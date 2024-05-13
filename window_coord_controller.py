@@ -4,25 +4,36 @@ import numpy as np
 
 class WindowCoordController:
 
-    def __init__(self, p: tuple=(250, 250), vup: tuple=(0, 250), u: tuple=(250, 0)) -> None:
+    def __init__(self, p: tuple=(250, 250, 0), vup: tuple=(0, 250, 0), u: tuple=(250, 0), vpn: tuple=(0, 0, 250)) -> None:
 
         self.__origin = p
         self.__vup = vup
         self.__u = u
+        self.__vpn = vpn
         self.__obj_coordinates = dict()
+        self.angleX = 0
+        self.angleY = 0
+        self.angleZ = 0
+        self.__proj_m = Utils.get_ortogonal_projection_matrix(self.__origin, self.angleX, self.angleY)
 
     @staticmethod
     def __mag(v: tuple) -> float:
 
-        vx, vy = v
-        return np.sqrt(vx ** 2 + vy ** 2)
+        sum_ = 0
+        for comp in v:
+
+            sum_ += comp**2
+
+        return np.sqrt(sum_)
+    
+    def __recalculate_projection_matrix(self):
+
+        self.__proj_m = Utils.get_ortogonal_projection_matrix(self.__origin, self.angleX, self.angleY)
     
     # converts world coordinates (x, y) to normalized coordinates
     def __world_to_normalized(self, coord: tuple) -> tuple:
-        # translate coord in (-Wcx, -Wcy)
-        dx, dy = self.__origin
-        m = Utils.gen_translation_matrix(-dx, -dy)
-        coord = tuple(Utils.transform(coord, m))
+
+        dx, dy, _ = self.__origin
 
         # rotate coord in -θ(Y, vup)
         theta = self.get_angle(self.__vup)
@@ -58,11 +69,16 @@ class WindowCoordController:
     
     def change_coords(self, name: str, coords: tuple) -> None:
         new_coords = list()
-        proj_m = Utils.get_ortogonal_projection_matrix(self.__origin)
         for coord in coords:
-            if coord[2] != 0:
-                new_coord = Utils.transform(coord, proj_m)[:-1]
-            new_coord = self.__world_to_normalized(new_coord)
+            x,y,z = tuple(Utils.transform(coord, self.__proj_m))
+            new_coord = self.__world_to_normalized((x,y))
+
+            # check if out of field of vision
+            vpn_magnitude = self.__mag(self.__vpn)
+            if abs(z) > vpn_magnitude:
+                new_coords = []
+                break
+
             new_coords.append(new_coord)
 
         self.__obj_coordinates[name] = new_coords
@@ -80,7 +96,7 @@ class WindowCoordController:
         return self.__obj_coordinates
     
     def get_angle(self, vector: tuple) -> float:
-        x,y = vector
+        x,y,z = vector
         if x != 0 and y != 0:
             alpha = np.arctan(abs(x)/abs(y))
         else:
@@ -90,73 +106,44 @@ class WindowCoordController:
 
         return theta
     
-    def ortogonal_projection(self, objs: dict):
-        m = Utils.get_ortogonal_projection_matrix(self.__origin)
+    def update_coordinates(self, objs: dict):
+        for name, coords in objs.items():
+            self.change_coords(name, coords)
+    
+    def move(self, dx: int, dy: int, dz: int, objs: dict) -> dict:
 
-        for name,coords in objs.items():
-            new_coords = list()
-            for coord in coords:
-                new_coords.append(Utils.transform(coord, m))
-            self.change_coords(name, new_coords)
+        # rotate the translation vector to respect vup
+        m = Utils.rotation_to_y_axis_matrix((self.__origin, self.__vup))
+        dx, dy, dz = Utils.transform((dx, dy, dz), m)
 
-    def move(self, dx: int, dy: int, objs: dict) -> dict:
-        #TESTE
-        angle_vup = self.get_angle(self.__vup)
-        m = Utils.gen_rotation_matrix(np.degrees(angle_vup), 0, 0)
-        dx, dy = Utils.transform((dx,dy), m)
-        #FIM DO TESTE
-        m = Utils.gen_translation_matrix(dx, dy)
+        # translate the origin
+        m = Utils.gen_3d_translation_matrix(dx, dy, dz)
         self.__origin = tuple(Utils.transform(self.__origin, m))
 
-        for name in objs.keys():
-
-            coords = objs[name]
-            self.change_coords(name, coords)
+        self.__recalculate_projection_matrix()
+        self.update_coordinates(objs)
         
         return self.__obj_coordinates
 
-    def rotate(self, angle: float, objs: dict) -> dict:
+    def rotate(self, axis: str, angle: float, objs: dict) -> dict:
 
-        # calculate new vup and u values (rotating them)
-        angle = np.radians(angle)
-        magnitude_v = self.__mag(self.__vup)
-        magnitude_u = self.__mag(self.__u)
+        if axis == "x":
+            a = (1, 0, 0)
+            self.angleX = (self.angleX + angle) %360
+        elif axis == "y": 
+            a = (0, 1, 0)
+            self.angleY = (self.angleY + angle) %360
+        elif axis == "z":
+            a = (0, 0, 1)
+            self.angleZ = (self.angleZ + angle) %360
 
-        # print("magnitudes {}, {}\n".format(magnitude_v, magnitude_u))
-        
-        current_angle_v = self.get_angle(self.__vup)
-        current_angle_u = self.get_angle(self.__u)
+        m = Utils.gen_3d_rotation_matrix(angle, ((0,0,0), a))
+        self.__vup = tuple(Utils.transform(self.__vup, m))
+        self.__u = tuple(Utils.transform(self.__u, m))
+        self.__vpn = tuple(Utils.transform(self.__vpn, m))
 
-        # print("current angles: \n{}\n{}\n".format(np.degrees(current_angle_v), np.degrees(current_angle_u)))
-    
-        new_angle_v = current_angle_v + angle
-        new_angle_u = current_angle_u + angle
-
-        # print("new angles: \n{}\n{}\n".format(np.degrees(new_angle_v), np.degrees(new_angle_u)))
-
-        # print("vectors bfr: \n{}\n{}\n".format(self.__vup, self.__u))
-
-        vupx = np.sin(new_angle_v) * magnitude_v
-        if vupx - int(vupx) < 1E-1:
-            vupx = int(vupx)
-        vupy = np.cos(new_angle_v) * magnitude_v
-        if vupy - int(vupy) < 1E-1:
-            vupy = int(vupy)
-        self.__vup = (vupx,vupy)
-        ux = np.sin(new_angle_u) * magnitude_u
-        if ux - int(ux) < 1E-1:
-            ux = int(ux)
-        uy = np.cos(new_angle_u) * magnitude_u
-        if uy - int(uy) < 1E-1:
-            uy = int(uy)
-        self.__u = (ux, uy)
-        
-        # print("vectors after: \n{}\n{}\n".format(self.__vup, self.__u))
-
-        for name in objs.keys():
-
-            coords = objs[name]
-            self.change_coords(name, coords)
+        self.__recalculate_projection_matrix()
+        self.update_coordinates(objs)
         
         return self.__obj_coordinates
 
@@ -164,18 +151,12 @@ class WindowCoordController:
 
         # calculate new vup and u values (rescaling them)
         multiplier = np.sqrt(1/(1 + multiplier)) if multiplier >= 0 else np.sqrt(1 + abs(multiplier))
-        magnitude_v = self.__mag(self.__vup) * multiplier
-        magnitude_u = self.__mag(self.__u) * multiplier
-        angle_v = self.get_angle(self.__vup)
-        angle_u = self.get_angle(self.__vup)
-        self.__vup = (np.sin(angle_v) * magnitude_v,
-                      np.cos(angle_v) * magnitude_v)
-        self.__u = (np.sin(angle_u) * magnitude_u,
-                      np.cos(angle_u) * magnitude_u)
+        m = Utils.gen_3d_scaling_matrix(multiplier, multiplier, multiplier,0,0,0)
+        self.__vup = tuple(Utils.transform(self.__vup, m))
+        self.__u = tuple(Utils.transform(self.__u, m))
+        self.__vpn = tuple(Utils.transform(self.__vpn, m))
 
-        for name in objs.keys():
-
-            coords = objs[name]
-            self.change_coords(name, coords)
+        self.__recalculate_projection_matrix()
+        self.update_coordinates(objs)
         
         return self.__obj_coordinates

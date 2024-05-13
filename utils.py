@@ -467,7 +467,7 @@ class Utils:
 
     @staticmethod
     def get_angle(alpha: float, oppisite: float, adjacent: float):
-
+        theta = 0
         if adjacent > 0 and oppisite == 0:
             theta = np.pi/2
         elif adjacent < 0 and oppisite == 0:
@@ -523,28 +523,12 @@ class Utils:
 
         return m
     
+    # TODO - consertar rotação em z invertida
     @staticmethod
-    def gen_3d_rotation_matrix(angle: float, rotation_axis: tuple) -> np.array:
+    def rotation_to_y_axis_matrix(axis: tuple, return_angles: bool=False) -> list:
 
-        angle = np.radians(angle)
-        cos_angle = np.cos(angle)
-        sin_angle = np.sin(angle)
-        """
-        1. Translate the rotation axis a vectorial distance -D so that the
-        rotation axis touches the origin (0, 0, 0) at a point P
-        """
-        # finding vector D:
-        # rotation axis is defined by a point P and a vector A
-        p, a = rotation_axis
-        dx, dy, dz  = p
-        m1 = np.array([[1, 0, 0, 0],
-                      [0, 1, 0, 0],
-                      [0, 0, 1, 0],
-                      [-dx, -dy, -dz, 1]])
-        """
-        2. Rotate the rotation axis around the x axis in an angle θx so that the 
-        rotation axis is on the xy plane
-        """
+        p, a = axis
+
         # find angle θx:
         y_component_is_null = a[1] == 0
         z_component_is_null = a[2] == 0
@@ -565,14 +549,11 @@ class Utils:
 
         sin = np.sin(theta)
         cos = np.cos(theta)
-        m2 = np.array([[1, 0, 0, 0],
+        m1 = np.array([[1, 0, 0, 0],
                        [0, cos, sin, 0],
                        [0, -sin, cos, 0],
                        [0, 0, 0, 1]])
-        """"
-        3. Rotate the rotation axis around the z axis in an angle θz so that the 
-        rotation axis is aligned with the y axis
-        """
+        
         # find angle θz:
         x_component_is_null = a[0] == 0
         # if A is already on the y axis
@@ -580,20 +561,61 @@ class Utils:
 
             alpha = 0
         # if A is on the x axis
-        if y_component_is_null:
+        elif y_component_is_null:
 
-            alpha = np.pi/2
+            if a[0] > 0: alpha = np.pi/2
+            else: alpha = 3*np.pi/2
         # if not calculate θx through the x, y components
         else:
 
-            alpha = np.arctan(a[0]/a[1])
+            alpha = np.arctan(abs(a[0])/abs(a[1]))
+
+        # if a[1] < 0: alpha = -alpha
         
         sin = np.sin(alpha)
         cos = np.cos(alpha)
-        m3 = np.array([[cos, sin, 0, 0],
+        m2 = np.array([[cos, sin, 0, 0],
                        [-sin, cos, 0, 0],
                        [0, 0, 1, 0],
                        [0, 0, 0, 1]])
+        
+        m = np.matmul(m1, m2)
+
+        if return_angles:
+
+            return m, alpha, theta
+        
+        return m
+    
+    @staticmethod
+    def gen_3d_rotation_matrix(angle: float, rotation_axis: tuple) -> np.array:
+
+        angle = np.radians(angle)
+        cos_angle = np.cos(angle)
+        sin_angle = np.sin(angle)
+        """
+        1. Translate the rotation axis a vectorial distance -D so that the
+        rotation axis touches the origin (0, 0, 0) at a point P
+        """
+        # finding vector D:
+        # rotation axis is defined by a point P and a vector A
+        p, a = rotation_axis
+
+        dx, dy, dz = p
+        m1 = np.array([[1, 0, 0, 0],
+                      [0, 1, 0, 0],
+                      [0, 0, 1, 0],
+                      [-dx, -dy, -dz, 1]])
+        """
+        2. Rotate the rotation axis around the x axis in an angle θx so that the 
+        rotation axis is on the xy plane
+        """
+        """"
+        3. Rotate the rotation axis around the z axis in an angle θz so that the 
+        rotation axis is aligned with the y axis
+        """
+        m23, alpha, theta = Utils.rotation_to_y_axis_matrix(rotation_axis, return_angles=True)
+
         """
         4. Rotate the object around the y axis in the intended angle
         """
@@ -627,8 +649,7 @@ class Utils:
                       [0, 0, 1, 0],
                       [dx, dy, dz, 1]])
         
-        m = np.matmul(m1,m2)
-        m = np.matmul(m, m3)
+        m = np.matmul(m1,m23)
         m = np.matmul(m, m4)
         m = np.matmul(m, m5)
         m = np.matmul(m, m6)
@@ -636,9 +657,10 @@ class Utils:
 
         return m
 
-    # TODO - conferir cálculos
     @staticmethod
-    def get_ortogonal_projection_matrix(vrp: tuple):
+    def get_ortogonal_projection_matrix(vrp: tuple, angleX: float, angleY: float):
+        angleX = np.radians(angleX)
+        angleY = np.radians(angleY)
         """
         1. Translate the VRP to the origin (0, 0, 0)
         """
@@ -648,15 +670,9 @@ class Utils:
         """
         2. Rotate the World in angle θx
         """
-        if  dx != 0 and dz != 0:
-            alpha = np.arctan(abs(dy)/abs(dz))
-        else:
-            alpha = 0
 
-        theta = Utils.get_angle(alpha, dz, dx)
-
-        cos_theta = np.cos(theta)
-        sin_theta = np.sin(theta)
+        cos_theta = np.cos(-angleX)
+        sin_theta = np.sin(-angleX)
 
         m_rx = [[1, 0,          0,         0],
                 [0, cos_theta,  sin_theta, 0],
@@ -667,15 +683,8 @@ class Utils:
         3. Rotate the World around the y axis in an angle θy so that the 
         rotation axis is aligned with the z axis
         """
-        if  dy != 0 and dz != 0:
-            alpha = np.arctan(abs(dx)/abs(dz))
-        else:
-            alpha = 0
-
-        theta = Utils.get_angle(alpha, dz, dy)
-
-        cos_theta = np.cos(theta)
-        sin_theta = np.sin(theta)
+        cos_theta = np.cos(-angleY)
+        sin_theta = np.sin(-angleY)
 
         m_ry = [[cos_theta, 0, -sin_theta, 0],
                 [0,         1, 0,          0],
@@ -685,15 +694,6 @@ class Utils:
         m = np.matmul(m_og,m_rx)
         m = np.matmul(m, m_ry)
         return m
-
-    @staticmethod
-    def gen_translation_matrix(dx: int, dy: int) -> np.array:
-
-        m = [[1, 0, 0],
-             [0, 1, 0],
-             [dx, dy, 1]]
-        
-        return np.array(m)
 
     @staticmethod
     def gen_translation_matrix(dx: int, dy: int) -> np.array:
@@ -780,7 +780,6 @@ class Utils:
     
     @staticmethod
     def transform(coord: tuple, m: np.array) -> list:
-
         coord = np.array(coord + (1,))
         coord = np.matmul(coord, m)
         coord.tolist()
