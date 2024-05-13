@@ -694,55 +694,6 @@ class Utils:
         m = np.matmul(m_og,m_rx)
         m = np.matmul(m, m_ry)
         return m
-    
-    @staticmethod
-    def get_perspective_projection_matrix(cop: tuple, angleX: float, angleY: float):
-        angleX = np.radians(angleX)
-        angleY = np.radians(angleY)
-        """
-        1. Translate the COP to the origin (0, 0, 0)
-        """
-        dx, dy, dz = cop
-        m_og = Utils.gen_3d_translation_matrix(-dx,-dy,-dz)
-
-        """
-        2. Rotate the World in angle θx
-        """
-
-        cos_theta = np.cos(-angleX)
-        sin_theta = np.sin(-angleX)
-
-        m_rx = [[1, 0,          0,         0],
-                [0, cos_theta,  sin_theta, 0],
-                [0, -sin_theta, cos_theta, 0],
-                [0, 0,          0,         1]]
-
-        """"
-        3. Rotate the World around the y axis in an angle θy so that the 
-        rotation axis is aligned with the z axis
-        """
-        cos_theta = np.cos(-angleY)
-        sin_theta = np.sin(-angleY)
-
-        m_ry = [[cos_theta, 0, -sin_theta, 0],
-                [0,         1, 0,          0],
-                [sin_theta, 0, cos_theta,  0],
-                [0,         0, 0,          1]]
-        
-        """
-        4. Calculate d = distance from COP to the projection plane
-        """
-        d = np.sqrt(np.power(dx, 2) + np.power(dy, 2) + np.power(dz, 2))
-        m_d = [[d, 0, 0, 0],
-               [0, d, 0, 0],
-               [0, 0, d, 0],
-               [0, 0, 0, 1]]
-        
-        m = np.matmul(m_og,m_rx)
-        m = np.matmul(m, m_ry)
-        m = np.matmul(m, m_d)
-
-        return m
 
     @staticmethod
     def gen_translation_matrix(dx: int, dy: int) -> np.array:
