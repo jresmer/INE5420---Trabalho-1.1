@@ -75,7 +75,7 @@ class WindowCoordController:
 
             # check if out of field of vision
             vpn_magnitude = self.__mag(self.__vpn)
-            if abs(z) > vpn_magnitude:
+            if (z >= 0 and z > 3*vpn_magnitude) or (z < 0 and abs(z) > vpn_magnitude):
                 new_coords = []
                 break
 
