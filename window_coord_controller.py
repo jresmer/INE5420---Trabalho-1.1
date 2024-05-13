@@ -72,16 +72,8 @@ class WindowCoordController:
         for coord in coords:
             x,y,z = coord
 
-            if z == 0:
-                dx, dy, dz = self.__origin
-                m = Utils.gen_3d_translation_matrix(-dx,-dy,-dz)
-            else:
-                m = [[1/z, 0, 0, 0],
-                    [0, 1/z, 0, 0],
-                    [0, 0, 1/z, 0],
-                    [0, 0, 0, 1]]
-                m = np.matmul(self.__proj_m, m)
-            x, y, z = tuple(Utils.transform(coord, m))
+
+            x, y, z = tuple(Utils.transform(coord, self.__proj_m))
             new_coord = self.__world_to_normalized((x,y))
             new_coords.append(new_coord)
 

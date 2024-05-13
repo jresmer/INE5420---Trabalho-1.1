@@ -733,10 +733,10 @@ class Utils:
         4. Calculate d = distance from COP to the projection plane
         """
         d = np.sqrt(np.power(dx, 2) + np.power(dy, 2) + np.power(dz, 2))
-        m_d = [[d, 0, 0, 0],
-               [0, d, 0, 0],
-               [0, 0, d, 0],
-               [0, 0, 0, 1]]
+        m_d = [[1, 0, 0, 0],
+               [0, 1, 0, 0],
+               [0, 0, 1, 0],
+               [0, 0, 1/d, 1]]
         
         m = np.matmul(m_og,m_rx)
         m = np.matmul(m, m_ry)

@@ -29,7 +29,7 @@ class ObjectCreationWindow(WindowGUI):
         # self.__controller.create_object(list(eval("(0,0),(5000,0)")), "green", "EixoX", self.__obj_man.get_object_type("Line"))
         # self.__controller.create_object(list(eval("(200,100),(100,500),(300,300)")), "red", "Carne", self.__obj_man.get_object_type("Polygon2D"))
         # self.__controller.create_object(list(eval("(100,100),(100,500),(400,300)")), "pink", "Moida", self.__obj_man.get_object_type("Wireframe"))
-        # self.__controller.create_object(list(eval("(420,200,0),(320,200,0),(370,300,0),(370,300,50),(420,200,50),(320,200,50)")), "red", "Prisma", self.__obj_man.get_object_type("Wireframe"))
+        # self.__controller.create_object(list(eval("(420,200,0),(320,200,0),(370,300,0),(370,300,50),(420,200,50),(320,200,50),(320,200,0),(420,200,0),(420,200,50),(370,300,50),(370,300,0),(420,200,0)")), "red", "Prisma", self.__obj_man.get_object_type("Wireframe"))
         # self.__controller.create_object(list(eval("(0,0),(100,100),(100,500),(400,300)")), "dark blue", "Cabritinho", self.__obj_man.get_object_type("BezierCurve"))
         
         self.__root.mainloop()
