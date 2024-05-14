@@ -5,14 +5,12 @@ class Polygon2D(CanvasObject):
 
     def __init__(self, coord: tuple, color: str, name: str, tkinter_id: int, canvas) -> None:
         
-        new_coords = []
         for point in coord:
-            if len(point) != 2:
+            if len(point) != 3:
                 self.set_invalid()
                 return
-            new_coords.append(point+(0,))
 
-        super().__init__(new_coords, color, name, tkinter_id, canvas)
+        super().__init__(coord, color, name, tkinter_id, canvas)
 
     def draw(self, viewport: tuple, window_coords: tuple, zoom: float) -> None:
 

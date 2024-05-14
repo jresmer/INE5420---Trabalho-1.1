@@ -234,6 +234,168 @@ class Clipping(SingletonMeta):
         return (x1_clip, y1_clip), (x2_clip, y2_clip)
     
     @staticmethod
+    def adapted_weiler_atherton(boundaries: tuple, coordinates: tuple) -> tuple:
+    
+        x_min, y_min, x_max, y_max = boundaries
+        clipping_pol = [("p", (x_min, y_min)), ("p", (x_min, y_max)),
+                        ("p", (x_max, y_max)), ("p", (x_max, y_min))]
+        clipped_pol = list()
+        coord_inside_pol = [False] * len(coordinates)
+
+        # 1. List intersection points i1, i2...
+        # 2. Label intersections as entering and exiting
+        # 3. Create clipped polygon and clipping polygon lists
+        intersections = list()
+        for i in range(len(coordinates)):
+
+            clipped_pol.append(("p", coordinates[i]))
+            j = i+1 if i+1 < len(coordinates) else 0
+            coord_pair = [coordinates[i], coordinates[j]]
+            checking_coord_pair = deepcopy(coord_pair)
+            possible_intersections = Clipping.cohen_sutherland(boundaries, coord_pair)
+
+            if possible_intersections is None:
+                possible_intersections = []
+
+            elif possible_intersections == checking_coord_pair:
+                coord_inside_pol[i] = True
+                continue
+
+            first = True
+            # checks if coordinate is an intersection
+            for x1, y1 in possible_intersections:
+                if (x1,y1) in checking_coord_pair:
+                    continue
+                # if (x1, y1) is an intersections
+                if x1 == x_min or x1 == x_max \
+                    or y1 == y_min or y1 == y_max:
+
+                    # if p1 is out of vision
+                    x, y = coordinates[i]
+                    if x < x_min or x > x_max \
+                        or y < y_min or y > y_max:
+                        # if (x1, y1) is the first found intersection for this line
+                        if first:
+                            # (x1, y1) is an entering intersection
+                            intersections.append(("entering", (x1, y1)))
+                            clipped_pol.append(("entering", (x1, y1)))
+                            first = False
+                        # (x1, y1) is an exiting intersection
+                        else:
+                            
+                            intersections.append(("exiting", (x1, y1)))
+                            clipped_pol.append(("exiting", (x1, y1)))
+                    # if p1 is in vision
+                    else:
+
+                        intersections.append(("exiting", (x1, y1)))
+                        clipped_pol.append(("exiting", (x1, y1)))
+
+        if all(coord_inside_pol):
+            return coordinates + [coordinates[0]]
+
+        # 3. Create clipped polygon and clipping polygon lists
+        for type_, coord in intersections:
+
+            x, y = coord
+
+            # intersection between (x_max, y_max) and (x_min, y_max)
+            if y == y_max:
+
+                i = clipping_pol.index(("p", (x_max, y_max)))
+            # intersection between
+            elif y == y_min:
+
+                i = len(clipping_pol)
+            # intersection between
+            elif x == x_min:
+                
+                i = clipping_pol.index(("p", (x_min, y_max)))
+            # intersection between
+            elif x == x_max:
+
+                i = clipping_pol.index(("p", (x_max, y_min)))
+
+            clipping_pol = clipping_pol[:i] + [(type_, (x, y))] + clipping_pol[i:]
+
+        visited = {intersection: False for intersection in intersections}
+        v = list()
+        i = 0
+        j = 0
+        entering_point = None
+        exiting_point = None
+        first_exiting = None
+        # find an initial exiting point
+        while intersections:
+
+            type_, c = clipped_pol[i]
+
+            if type_ == "exiting":
+                
+                exiting_point = (type_, c)
+                first_exiting = exiting_point[:]
+                break
+                
+            i = i + 1 if i + 1 < len(clipped_pol) else 0
+        for _ in range(len(visited.keys())):
+            # find the exiting point in the clipping polygon list
+
+            while True:
+
+                type_, c = clipping_pol[j]
+                if (type_, c) == exiting_point:
+
+                    visited[(type_, c)] = True
+                    break
+            
+                j = j + 1 if j + 1 < len(clipping_pol) else 0
+            # iterate through clipping plygon list untill an entering point is found
+            while True:
+
+                type_, c = clipping_pol[j]
+
+                if type_ == "entering":
+
+                    entering_point = clipping_pol[j]
+                    break
+
+                v.append(c)
+                j = j + 1 if j + 1 < len(clipping_pol) else 0
+            # find the entering point in the clipped polygon list
+            while True:
+
+                type_, c = clipped_pol[i]
+
+                if (type_, c) == entering_point:
+                    visited[(type_, c)] = True
+                    break
+
+                i = i + 1 if i + 1 < len(clipped_pol) else 0
+            # iterate through clipped plygon list untill an exiting point is found
+            while True:
+
+                type_, c = clipped_pol[i]
+
+                if type_ == "exiting":
+                    
+                    exiting_point = (type_, c)
+                    if not first_exiting: first_exiting = exiting_point[:]
+                    break
+                
+                v.append(c)
+                i = i + 1 if i + 1 < len(clipped_pol) else 0
+
+            all_exiting_visited = []
+            for type_, c in visited.keys():
+                if type_ == "exiting":
+                    all_exiting_visited.append(visited[(type_, c)])
+
+            if exiting_point == first_exiting and all(all_exiting_visited):
+               break
+        
+        return v + [v[0]]
+
+    @staticmethod
     def pol_clipping(boundaries: tuple, coordinates: tuple) -> tuple:
 
         """

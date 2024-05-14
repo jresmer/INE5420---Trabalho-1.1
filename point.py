@@ -3,11 +3,9 @@ from utils import Clipping
 
 class Point(CanvasObject):
     def __init__(self, coord: tuple, color: str, name: str, tkinter_id: int, canvas) -> None:
-        if len(coord) > 3: #len([x,y,z]) > 2
+        
+        if len(coord) != 3: #len([x,y,z]) > 3
             self.set_invalid()
-        elif len(coord) == 2:
-            new_coord = [(coord[0], coord[1], 0)]
-            super().__init__(new_coord, color, name, tkinter_id, canvas)
         else:
             new_coord = [(coord[0], coord[1], coord[2])]
             super().__init__(new_coord, color, name, tkinter_id, canvas)
