@@ -9,11 +9,11 @@ class World:
         self.__object_list = []
         self.__viewport = [10,10,750,490]
         self.__window = WindowCoordController(
-            p=(370,240,0),
+            p=(370,240,-50),
             vup=(0,240,0),
             u=(370, 0,0),
             vpn=(0, 0, 370),
-            cop= (370,240,-2)
+            cop= (370,240,-350)
         )
         self.__zoom = 1
 

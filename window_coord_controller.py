@@ -16,7 +16,7 @@ class WindowCoordController:
         self.angleY = 0
         self.angleZ = 0
         self.__proj_m = Utils.get_perspective_projection_matrix(self.__cop, self.angleX, self.angleY)
-        self.__z_window_projected = Utils.transform(self.__origin, self.__proj_m)[-1]
+        self.__zw_projected = abs(p[2] - cop[2])
 
     @staticmethod
     def __mag(v: tuple) -> float:
@@ -29,9 +29,7 @@ class WindowCoordController:
         return np.sqrt(sum_)
     
     def __recalculate_projection_matrix(self):
-
         self.__proj_m = Utils.get_perspective_projection_matrix(self.__cop, self.angleX, self.angleY)
-        self.__z_window_projected = Utils.transform(self.__origin, self.__proj_m)[-1]
     
     # converts world coordinates (x, y) to normalized coordinates
     def __world_to_normalized(self, coord: tuple) -> tuple:
@@ -76,9 +74,14 @@ class WindowCoordController:
         for coord in coords:          
             x, y, z = tuple(Utils.transform(coord, self.__proj_m))
 
-            if z < self.__z_window_projected:
+            d = self.__zw_projected
+
+            if z < d:
                 new_coords = []
                 break
+
+            x = x/(z/d)
+            y = y/(z/d)
 
             new_coord = self.__world_to_normalized((x,y))
             new_coords.append(new_coord)
