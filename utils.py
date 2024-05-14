@@ -337,7 +337,7 @@ class Clipping(SingletonMeta):
                 break
                 
             i = i + 1 if i + 1 < len(clipped_pol) else 0
-        for _ in range(len(visited.keys())):
+        while not all(list(visited.values())):
             # find the exiting point in the clipping polygon list
 
             while True:
