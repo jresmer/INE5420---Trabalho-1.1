@@ -4,17 +4,19 @@ import numpy as np
 
 class WindowCoordController:
 
-    def __init__(self, p: tuple=(250, 250, 0), vup: tuple=(0, 250, 0), u: tuple=(250, 0), vpn: tuple=(0, 0, 250)) -> None:
+    def __init__(self, p: tuple=(250, 250, 0), vup: tuple=(0, 250, 0), u: tuple=(250, 0, 0), cop: tuple = (250, 250, -10), vpn: tuple=(0, 0, 250)) -> None:
 
         self.__origin = p
         self.__vup = vup
         self.__u = u
         self.__vpn = vpn
+        self.__cop = cop
         self.__obj_coordinates = dict()
         self.angleX = 0
         self.angleY = 0
         self.angleZ = 0
-        self.__proj_m = Utils.get_perspective_projection_matrix(self.__origin, self.angleX, self.angleY)
+        self.__proj_m = Utils.get_perspective_projection_matrix(self.__cop, self.angleX, self.angleY)
+        self.__z_window_projected = Utils.transform(self.__origin, self.__proj_m)[-1]
 
     @staticmethod
     def __mag(v: tuple) -> float:
@@ -28,7 +30,8 @@ class WindowCoordController:
     
     def __recalculate_projection_matrix(self):
 
-        self.__proj_m = Utils.get_perspective_projection_matrix(self.__origin, self.angleX, self.angleY)
+        self.__proj_m = Utils.get_perspective_projection_matrix(self.__cop, self.angleX, self.angleY)
+        self.__z_window_projected = Utils.transform(self.__origin, self.__proj_m)[-1]
     
     # converts world coordinates (x, y) to normalized coordinates
     def __world_to_normalized(self, coord: tuple) -> tuple:
@@ -69,11 +72,14 @@ class WindowCoordController:
     
     def change_coords(self, name: str, coords: tuple) -> None:
         new_coords = list()
-        for coord in coords:
-            x,y,z = coord
 
-
+        for coord in coords:          
             x, y, z = tuple(Utils.transform(coord, self.__proj_m))
+
+            if z < self.__z_window_projected:
+                new_coords = []
+                break
+
             new_coord = self.__world_to_normalized((x,y))
             new_coords.append(new_coord)
 
@@ -115,6 +121,7 @@ class WindowCoordController:
         # translate the origin
         m = Utils.gen_3d_translation_matrix(dx, dy, dz)
         self.__origin = tuple(Utils.transform(self.__origin, m))
+        self.__cop = tuple(Utils.transform(self.__cop, m))
 
         self.__recalculate_projection_matrix()
         self.update_coordinates(objs)
@@ -137,6 +144,8 @@ class WindowCoordController:
         self.__vup = tuple(Utils.transform(self.__vup, m))
         self.__u = tuple(Utils.transform(self.__u, m))
         self.__vpn = tuple(Utils.transform(self.__vpn, m))
+        m = Utils.gen_3d_rotation_matrix(angle, (self.__origin, a))
+        self.__cop = tuple(Utils.transform(self.__cop, m))
 
         self.__recalculate_projection_matrix()
         self.update_coordinates(objs)
