@@ -116,7 +116,7 @@ class Clipping(SingletonMeta):
     def __init__(self):
         self.__point_clipping = self.point_clipping
         self.__line_clipping = self.liang_barsky
-        self.__polygon_clipping = self.adapted_weiler_atherton
+        self.__polygon_clipping = self.pol_clipping
 
     def get_all_line_clippings(self):
         return {"Liang-Barsky": "Liang-Barsky", "Cohen-Sutherland": "Cohen-Sutherland"}
@@ -234,17 +234,19 @@ class Clipping(SingletonMeta):
         return (x1_clip, y1_clip), (x2_clip, y2_clip)
     
     @staticmethod
-    def adapted_weiler_atherton(boundaries: tuple, coordinates: tuple) -> tuple:
-    
+    def pol_clipping(boundaries: tuple, coordinates: tuple) -> tuple:
+
+        """
+        (420,200,0),(320,200,0),(370,300,0),(370,300,50),(420,200,50),(320,200,50),(320,200,0),(420,200,0),(420,200,50),(370,300,50),(370,300,0),(420,200,0)
+        """
         x_min, y_min, x_max, y_max = boundaries
-        clipping_pol = [("p", (x_min, y_min)), ("p", (x_min, y_max)),
-                        ("p", (x_max, y_max)), ("p", (x_max, y_min))]
         clipped_pol = list()
         coord_inside_pol = [False] * len(coordinates)
 
         # 1. List intersection points i1, i2...
         # 2. Label intersections as entering and exiting
         # 3. Create clipped polygon and clipping polygon lists
+        pol = list()
         intersections = list()
         for i in range(len(coordinates)):
 
@@ -258,6 +260,7 @@ class Clipping(SingletonMeta):
                 possible_intersections = []
 
             elif possible_intersections == checking_coord_pair:
+                pol.append(coordinates[i])
                 coord_inside_pol[i] = True
                 continue
 
@@ -276,113 +279,29 @@ class Clipping(SingletonMeta):
                         or y < y_min or y > y_max:
                         # if (x1, y1) is the first found intersection for this line
                         if first:
+                            pol.append((x1, y1))
+                            pol.append(coordinates[j])
                             # (x1, y1) is an entering intersection
                             intersections.append(("entering", (x1, y1)))
                             clipped_pol.append(("entering", (x1, y1)))
                             first = False
                         # (x1, y1) is an exiting intersection
                         else:
-                            
+                            pol.append(coordinates[i])
+                            pol.append((x1, y1))
                             intersections.append(("exiting", (x1, y1)))
                             clipped_pol.append(("exiting", (x1, y1)))
                     # if p1 is in vision
                     else:
-
+                        pol.append(coordinates[i])
+                        pol.append((x1, y1))
                         intersections.append(("exiting", (x1, y1)))
                         clipped_pol.append(("exiting", (x1, y1)))
 
         if all(coord_inside_pol):
             return coordinates
-
-        # 3. Create clipped polygon and clipping polygon lists
-        for type_, coord in intersections:
-
-            x, y = coord
-
-            # intersection between (x_max, y_max) and (x_min, y_max)
-            if y == y_max:
-
-                i = clipping_pol.index(("p", (x_max, y_max)))
-            # intersection between
-            elif y == y_min:
-
-                i = len(clipping_pol)
-            # intersection between
-            elif x == x_min:
-                
-                i = clipping_pol.index(("p", (x_min, y_max)))
-            # intersection between
-            elif x == x_max:
-
-                i = clipping_pol.index(("p", (x_max, y_min)))
-
-            clipping_pol = clipping_pol[:i] + [(type_, (x, y))] + clipping_pol[i:]
-
-        visited = {intersection: intersection[0] == 'entering' for intersection in intersections}
-        v = list()
-        i = 0
-        j = 0
-        entering_point = None
-        exiting_point = None
-        # find an initial exiting point
-        while intersections:
-
-            type_, c = clipped_pol[i]
-
-            if type_ == "exiting":
-                
-                exiting_point = (type_, c)
-                break
-                
-            i = i + 1 if i + 1 < len(clipped_pol) else 0
-
-        while not all(list(visited.values())):
-            # find the exiting point in the clipping polygon list
-            while True:
-
-                type_, c = clipping_pol[j]
-                if (type_, c) == exiting_point:
-
-                    visited[(type_, c)] = True
-                    break
-            
-                j = j + 1 if j + 1 < len(clipping_pol) else 0
-            # iterate through clipping plygon list untill an entering point is found
-            while True:
-
-                type_, c = clipping_pol[j]
-
-                if type_ == "entering":
-
-                    entering_point = clipping_pol[j]
-                    break
-
-                v.append(c)
-                j = j + 1 if j + 1 < len(clipping_pol) else 0
-            # find the entering point in the clipped polygon list
-            while True:
-
-                type_, c = clipped_pol[i]
-
-                if (type_, c) == entering_point:
-
-                    break
-
-                i = i + 1 if i + 1 < len(clipped_pol) else 0
-            # iterate through clipped plygon list untill an exiting point is found
-            while True:
-
-                type_, c = clipped_pol[i]
-
-                if type_ == "exiting":
-                    
-                    exiting_point = (type_, c)
-                    break
-                
-                v.append(c)
-                i = i + 1 if i + 1 < len(clipped_pol) else 0
-        
-        return v
+        else:
+            return pol
     
     @staticmethod
     def curve_clipping(boundaries: tuple, coordinates: tuple, coeficients_x, coeficients_y) -> tuple:
