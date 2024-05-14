@@ -88,13 +88,10 @@ class ObjectCreationWindow(WindowGUI):
         text_box.place(x=100, y=35)
         self.__widgets["coord txt box"] = text_box
 
-        label = tk.Label(self.__root, text="2D: (x1, y1),(x2, y2),...")
+        label = tk.Label(self.__root, text="(x1, y1, z1),(x2, y2, z2),...")
         label.place(x=100, y= 60)
-        self.__widgets["2d coord form"] = label
+        self.__widgets["coord form"] = label
 
-        label = tk.Label(self.__root, text="Point 3D & Wireframe 3D: (x1, y1, z1),(x2, y2, z2),...")
-        label.place(x=100, y= 80)
-        self.__widgets["3d coord form"] = label
 
         #Object type choice
         label = tk.Label(self.__root, text="Object type:")
