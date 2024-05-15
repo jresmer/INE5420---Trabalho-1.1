@@ -97,7 +97,7 @@ class OBJDescriptor:
 
                     x, y, z = row[2:].split(" ")
                     x, y = int(x), int(y)
-                    coord = "({}, {}),".format(x, y)
+                    coord = "({}, {}, {}),".format(x, y, z)
 
                     obj_coords += coord
 
