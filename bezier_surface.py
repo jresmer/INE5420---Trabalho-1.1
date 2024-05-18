@@ -7,10 +7,14 @@ class BezierSurface(CanvasObject):
 
     def __init__(self, coord: tuple, color: str, name: str, tkinter_id: int, canvas) -> None:
 
-        coord = [(0,0,0),(100,100,0),(100,500,0),(400,300,0),
-                 (0,0,10),(100,100,10),(100,500,10),(400,300,10),
-                 (0,0,20),(100,100,20),(100,500,20),(400,300,20),
-                 (0,0,30),(100,100,30),(100,500,30),(400,300,30)]
+        coord = []
+        for i in range(24):
+            if i % 4 == 0 and i > 0:
+                line = [(0,0,(i-1)*10),(100,100,(i-1)*10),(100,500,(i-1)*10),(400,300,(i-1)*10)]
+            else: 
+                line = [(0,0,i*10),(100,100,i*10),(100,500,i*10),(400,300,i*10)]
+            print(line)
+            coord += line
         
         for point in coord:
             if len(point) != 3:
@@ -76,45 +80,50 @@ class BezierSurface(CanvasObject):
             y = vp_ymin + (1 - (y - window_ymin)/(window_ymax - window_ymin)) * (vp_ymax - vp_ymin)
             window_coords[i] = (x, y)
 
-        # define geometry matrix
-        Gx = []
-        Gy = []
-        for i in range(4):
-            Gx.append([None,None,None,None])
-            Gy.append([None,None,None,None])
-            for j in range(4):
-                Gx[i][j] = window_coords[i*4+j][0]
-                Gy[i][j] = window_coords[i*4+j][1]
-
-        values = [0, 0.2, 0.4, 0.6, 0.8, 1] # TODO - melhorar
         tk_ids = []
+        for i in range(len(window_coords)//16):
 
-        # Q(s, t) = S . M . G . Mt . Tt
-        MGx = Utils.get_bezier_coeficients(Gx)
-        MGy = Utils.get_bezier_coeficients(Gy)
-        MGxMt = np.matmul(MGx, Utils.get_m_bezier())
-        MGyMt = np.matmul(MGy, Utils.get_m_bezier())
+            retalho = window_coords[i*16:(i+1)*16]
 
-        for t in values:
-            T = [np.power(t, 3), np.power(t, 2), t, 1]
+            # define geometry matrix
+            Gx = []
+            Gy = []
+            for i in range(4):
+                Gx.append([None,None,None,None])
+                Gy.append([None,None,None,None])
+                for j in range(4):
+                    Gx[i][j] = retalho[i*4+j][0]
+                    Gy[i][j] = retalho[i*4+j][1]
+
+            values = [0, 0.2, 0.4, 0.6, 0.8, 1] # TODO - melhorar
             
-            Px = np.matmul(MGxMt, T)
-            Py = np.matmul(MGyMt, T)
 
-            # TODO - revisar se faz sentido
-            intercept = Clipping.curve_clipping(viewport, window_coords, Px, Py)
-            aux(intercept, viewport, Px, Py, self.__n_vars, self.__range, tk_ids)
+            # Q(s, t) = S . M . G . Mt . Tt
+            MGx = Utils.get_bezier_coeficients(Gx)
+            MGy = Utils.get_bezier_coeficients(Gy)
+            MGxMt = np.matmul(MGx, Utils.get_m_bezier())
+            MGyMt = np.matmul(MGy, Utils.get_m_bezier())
 
-        for s in values:
+            for t in values:
+                T = [np.power(t, 3), np.power(t, 2), t, 1]
+                
+                Px = np.matmul(MGxMt, T)
+                Py = np.matmul(MGyMt, T)
 
-            S = [np.power(s, 3), np.power(s, 2), s, 1]
-            
-            Px = np.matmul(S, MGxMt)
-            Py = np.matmul(S, MGyMt)
+                # TODO - revisar se faz sentido
+                intercept = Clipping.curve_clipping(viewport, retalho, Px, Py)
+                aux(intercept, viewport, Px, Py, self.__n_vars, self.__range, tk_ids)
 
-            # TODO - revisar se faz sentido
-            intercept = Clipping.curve_clipping(viewport, window_coords, Px, Py)
-            aux(intercept, viewport, Px, Py, self.__n_vars, self.__range, tk_ids)
+            for s in values:
+
+                S = [np.power(s, 3), np.power(s, 2), s, 1]
+                
+                Px = np.matmul(S, MGxMt)
+                Py = np.matmul(S, MGyMt)
+
+                # TODO - revisar se faz sentido
+                intercept = Clipping.curve_clipping(viewport, retalho, Px, Py)
+                aux(intercept, viewport, Px, Py, self.__n_vars, self.__range, tk_ids)
 
         self.set_tkinter_id(tk_ids)
 
