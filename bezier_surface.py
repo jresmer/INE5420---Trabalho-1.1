@@ -7,8 +7,14 @@ class BezierSurface(CanvasObject):
 
     def __init__(self, coord: tuple, color: str, name: str, tkinter_id: int, canvas) -> None:
 
+        coord = [(0,0,0),(100,100,0),(100,500,0),(400,300,0),
+                 (0,0,10),(100,100,10),(100,500,10),(400,300,10),
+                 (0,0,20),(100,100,20),(100,500,20),(400,300,20),
+                 (0,0,30),(100,100,30),(100,500,30),(400,300,30)]
+        
         for point in coord:
             if len(point) != 3:
+                print(point)
                 self.set_invalid()
                 return
             
@@ -59,12 +65,23 @@ class BezierSurface(CanvasObject):
                     tk_id = self.get_canvas().create_line(x0, y0, x1, y1, fill=self.get_color())
                     tk_ids.append(tk_id)
         
+        #calculating viewport coordinates
+        window_xmin, window_ymin, window_xmax, window_ymax = [-1,-1,1,1]
+        vp_xmin, vp_ymin, vp_xmax, vp_ymax = viewport
+        for i in range(len(window_coords)):
+            
+            x, y = window_coords[i]
+
+            x = vp_xmin + (x - window_xmin) * (vp_xmax - vp_xmin) / (window_xmax - window_xmin)
+            y = vp_ymin + (1 - (y - window_ymin)/(window_ymax - window_ymin)) * (vp_ymax - vp_ymin)
+            window_coords[i] = (x, y)
+
         # define geometry matrix
         Gx = []
         Gy = []
         for i in range(4):
-            Gx.append([])
-            Gy.append([])
+            Gx.append([None,None,None,None])
+            Gy.append([None,None,None,None])
             for j in range(4):
                 Gx[i][j] = window_coords[i*4+j][0]
                 Gy[i][j] = window_coords[i*4+j][1]

@@ -32,7 +32,8 @@ class ObjectCreationWindow(WindowGUI):
         # self.__controller.create_object(list(eval("(420,200,0),(320,200,0),(370,300,0),(370,300,50),(420,200,50),(320,200,50),(320,200,0),(420,200,0),(420,200,50),(370,300,50),(370,300,0),(420,200,0)")), "red", "Prisma", self.__obj_man.get_object_type("Wireframe"))
         # self.__controller.create_object(list(eval("(0,0,0),(100,100,0),(100,500,0),(400,300,0)")), "dark blue", "Cabritinho", self.__obj_man.get_object_type("BezierCurve"))
         # self.__controller.create_object(list(eval("(0,0,0),(0,0,0),(100,100,0),(300,100,0),(500,300,0),(500,300,0)")), "dark blue", "Cabrio", self.__obj_man.get_object_type("BSplineCurve"))
-        
+        # self.__controller.create_object(list(eval("(0,0,0),(5000,0,0)")), "green", "EixoX", self.__obj_man.get_object_type("BezierSurface"))
+
         self.__root.mainloop()
 
     def select_color(self):
