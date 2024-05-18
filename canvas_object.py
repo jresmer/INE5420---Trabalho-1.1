@@ -37,7 +37,7 @@ class CanvasObject(ABC):
         self.__coord = new_coords
     
     @abstractmethod
-    def draw(self, viewport: tuple, window: tuple) -> None:
+    def draw(self, viewport: tuple, window_coords: tuple, zoom: float) -> None:
         pass
 
     @abstractmethod

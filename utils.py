@@ -508,7 +508,6 @@ class Clipping(SingletonMeta):
     
     @staticmethod
     def curve_clipping(boundaries: tuple, coordinates: tuple, coeficients_x, coeficients_y) -> tuple:
-        p1,p2,p3,p4 = coordinates
         ax,bx,cx,dx = coeficients_x
         ay,by,cy,dy = coeficients_y
         x_min, y_min, x_max, y_max = boundaries
@@ -519,7 +518,7 @@ class Clipping(SingletonMeta):
         max_y = y_min - 1
         min_x = x_max + 1
         max_x = x_min - 1
-        for (x,y) in [p1,p2,p3,p4]:
+        for (x,y) in coordinates:
             if x < min_x:
                 min_x = x
             elif x > max_x:
@@ -922,8 +921,16 @@ class Utils:
                       [-3, 3, 0, 0],
                       [1, 0, 0, 0]])
         
-        p1, p2, p3, p4 = ps
-        return np.matmul(m, [p1,p2,p3,p4])
+        return np.matmul(m, ps)
+    
+    @staticmethod
+    def get_m_bezier():
+        m = np.array([[-1, 3, -3, 1],
+                      [3, -6, 3, 0],
+                      [-3, 3, 0, 0],
+                      [1, 0, 0, 0]])
+
+        return m
     
     @staticmethod
     def get_bspline_coeficients(ps: list):
@@ -933,8 +940,7 @@ class Utils:
                       [1, 4, 1, 0]])
         m = m/6
         
-        p1, p2, p3, p4 = ps
-        return np.matmul(m, [p1,p2,p3,p4])
+        return np.matmul(m, ps)
 
     @staticmethod
     def gen_simple_rotation_matrix(angle: float) -> np.array:

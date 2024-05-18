@@ -100,8 +100,6 @@ class BezierCurve(CanvasObject):
                 draw = not draw
 
             # drawing curve
-            
-
             for segment in coords:
                 for i in range(0, len(segment) - 1):
                     x0, y0 = segment[i]

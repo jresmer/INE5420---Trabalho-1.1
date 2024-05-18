@@ -27,7 +27,7 @@ class World:
         if self.search_object_by_name(name) != None:
             return 2
 
-        new_object = obj_type(coord, color, name, "", canvas)
+        new_object = obj_type(coord, color, name, [], canvas)
         if not new_object.valid:
             return 3
         self.__object_list.append(new_object)
