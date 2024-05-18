@@ -8,11 +8,11 @@ class WindowGUI(ABC, ):
         self.__controller = controller
 
     @abstractmethod
-    def init_window(self,world) -> None:
+    def init_window(self) -> None:
 
         pass
     
     @abstractmethod
-    def init_widgets(self, world) -> None:
+    def init_widgets(self) -> None:
 
         pass

@@ -2,6 +2,7 @@ from window_gui import WindowGUI
 import tkinter as tk
 from tkinter.colorchooser import askcolor
 from canvas_object_manager import CanvasObjectManager
+from table_window import TableWindow
 
 
 class ObjectCreationWindow(WindowGUI):
@@ -10,17 +11,18 @@ class ObjectCreationWindow(WindowGUI):
         self.__controller = controller
         
         self.__obj_man = CanvasObjectManager()
+        self.__table_window = TableWindow(self)
 
         # create empty widget list
         self.__widgets = dict()
 
-    def init_window(self, world) -> None:
+    def init_window(self) -> None:
         # instanciate Tk object and set the window's title and geometry
         self.__root = tk.Tk()
         self.__root.title("Sistema Gráfico")
         self.__root.geometry("500x200") 
 
-        self.init_widgets(world)  
+        self.init_widgets()  
 
         # TODO: deletar testes realizados depois
         # self.__controller.create_object(list(eval("(50,50,10)")), "blue", "Arroz", self.__obj_man.get_object_type("Point"))
@@ -63,9 +65,9 @@ class ObjectCreationWindow(WindowGUI):
         except:
             self.__controller.notify_status("Coordenadas digitadas incorretamente. Reveja o formato e tipo utilizado")
 
-    def init_widgets(self, world) -> None:
+    def init_widgets(self) -> None:
 
-        button = tk.Button(self.__root, text="Create", command= self.create)
+        button = tk.Button(self.__root, text="Create", command = self.create)
         button.place(x=185, y=150)
         self.__widgets["create bt"] = button
 
@@ -92,7 +94,6 @@ class ObjectCreationWindow(WindowGUI):
         label = tk.Label(self.__root, text="(x1, y1, z1),(x2, y2, z2),...")
         label.place(x=100, y= 60)
         self.__widgets["coord form"] = label
-
 
         #Object type choice
         label = tk.Label(self.__root, text="Object type:")

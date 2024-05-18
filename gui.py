@@ -14,12 +14,12 @@ class GUI:
         self.windows[ObjectCreationWindow.__name__] = ObjectCreationWindow(self)
         self.current_window = self.windows[MainWindow.__name__]
         
-        self.current_window.init_window(1)
+        self.current_window.init_window()
         
     def open_creation_window(self):
         self.windows[ObjectCreationWindow.__name__] = ObjectCreationWindow(self)
         self.current_window = self.windows[ObjectCreationWindow.__name__]
-        self.current_window.init_window(1)
+        self.current_window.init_window()
             
 
     def move_window(self, dx, dy,dz):

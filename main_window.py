@@ -18,12 +18,12 @@ class MainWindow(WindowGUI):
     def get_canvas(self):
         return self.__widgets['canvas']
 
-    def init_window(self,world) -> None:
+    def init_window(self) -> None:
         # instanciate Tk object and set the window's title and geometry
         self.__root = tk.Tk()
         self.__root.title("Sistema Gráfico")
         self.__root.geometry("1280x900")
-        self.init_widgets(world)
+        self.init_widgets()
 
         #BIND PARA MOVER O CANVAS
         self.__root.bind("<KeyPress-Left>", lambda _: self.__controller.move_window(-3, 0,0))
@@ -156,7 +156,7 @@ class MainWindow(WindowGUI):
     def notify_status(self, text: str):
         self.__widgets['error msg box'].config(text=text)
 
-    def init_widgets(self, world) -> None:
+    def init_widgets(self) -> None:
         
         canvas = tk.Canvas(master=self.__root, height=500, width=760, bg="white",relief="ridge")
         canvas.create_line(10,10,10,490)
