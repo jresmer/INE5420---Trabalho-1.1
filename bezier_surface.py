@@ -34,7 +34,6 @@ class BezierSurface(CanvasObject):
                 return
             
         super().__init__(coord, color, name, tkinter_id, canvas)   
-        # TODO - calculating number of ts
         self.__n_vars = 100
         self.__range = 1/100
 
@@ -90,6 +89,26 @@ class BezierSurface(CanvasObject):
             x = vp_xmin + (x - window_xmin) * (vp_xmax - vp_xmin) / (window_xmax - window_xmin)
             y = vp_ymin + (1 - (y - window_ymin)/(window_ymax - window_ymin)) * (vp_ymax - vp_ymin)
             window_coords[i] = (x, y)
+        """
+        Uses points p11, p14, p44 to compare the size of the surface to the size of the viewport
+        Then uses the ratio Asurface / Avp to calculate the step of the [0, 1] interval
+        """
+        # Asurface
+        p11, p14, p44 = window_coords[0], window_coords[3], window_coords[15]
+        x, y = abs(p14[0] - p11[0]), abs(p14[1] - p11[1])
+        left = np.sqrt(np.power(x, 2) + np.power(y, 2))
+        x, y = abs(p44[0] - p14[0]), abs(p44[1] - p14[1])
+        bottom = np.sqrt(np.power(x, 2) + np.power(y, 2))
+        a_surface = left * bottom
+        # Avp
+        left = vp_ymax - vp_ymin
+        bottom = vp_xmax - vp_xmin
+        a_vp = bottom * left
+        # ratio
+        ratio = a_surface / a_vp
+
+        self.__n_vars = 100 + int(400 * ratio)
+        self.__range = 1 / self.__n_vars
 
         tk_ids = []
         for i in range(len(window_coords)//16):
