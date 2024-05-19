@@ -14,9 +14,12 @@ class TableWindow(WindowGUI):
         for i in range(self.__n):
             matrix.append([None]*self.__n)
             for j in range(self.__n):
-                matrix[i][j] = self.__widgets["matrix coords"][i][j].get()
+                try:
+                    matrix[i][j] = eval(self.__widgets["matrix coords"][i][j].get())
+                except:
+                    pass
 
-        print(matrix)
+        return matrix
 
     def set_n(self, new_n):
         self.__n = new_n

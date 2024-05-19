@@ -38,6 +38,30 @@ class ObjectCreationWindow(WindowGUI):
 
         self.__root.mainloop()
 
+    def att_coords_form(self, *args):
+        if "coord txt box" in self.__widgets.keys():
+            self.__widgets["coord txt box"].destroy()
+        if "create table bt" in self.__widgets.keys():
+            self.__widgets["create table bt"].destroy()
+
+        if self.__widgets["type choice box txt"].get() not in ["BezierSurface"]:
+            text_box = tk.Text(self.__root, height=1, width=40)
+            text_box.place(x=100, y=35)
+            self.__widgets["coord txt box"] = text_box
+        else:   
+            button = tk.Button(self.__root, text="Call table", command = self.create_table)
+            button.place(x=100, y=35)
+            self.__widgets["create table bt"] = button
+
+    def get_coords(self):
+        if self.__widgets["type choice box txt"].get() not in ["BezierSurface"]:
+            return self.__widgets["type choice box txt"].get() not in ["BezierSurface"]
+        else:
+            self.__table_window.get_table_values()
+
+    def create_table(self):
+        self.__table_window.init_window()
+
     def select_color(self):
         color = askcolor(title="Object Color Selection")
         self.__widgets["selected color"].config(background = color[1])
@@ -46,7 +70,7 @@ class ObjectCreationWindow(WindowGUI):
 
         name = self.__widgets["name txt box"].get("1.0", "end-1c")
         try:
-            coords = list(eval(self.__widgets["coord txt box"].get("1.0", "end-1c")))
+            coords = self.get_coords()
 
             type_ = self.__widgets["type choice box txt"].get()
             tk_color = self.__widgets["selected color"].cget('background')
@@ -107,6 +131,7 @@ class ObjectCreationWindow(WindowGUI):
         choice_box.place(x=100, y=105)
         self.__widgets["type choice box txt"] = var_str
         self.__widgets["type choice box"] = choice_box
+        var_str.trace_add("write", self.att_coords_form)
 
         #Object color choice
         label = tk.Label(self.__root, text="Object color:")

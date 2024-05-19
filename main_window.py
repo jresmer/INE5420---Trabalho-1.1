@@ -326,14 +326,11 @@ class MainWindow(WindowGUI):
         choices = ["Object Center", "Object Axis", "World Origin", "Arbitrary Axis"]
         var_str = tk.StringVar(frame)
         var_str.set("Object Center")
+        var_str.trace_add("write", callback = self.att_rotate_mode_object)
         choice_box = tk.OptionMenu(frame, var_str, *choices)
         choice_box.place(x=60, y=45)
         self.__widgets["rotate obj mode choice box txt"] = var_str
         self.__widgets["rotate obj mode choice box"] = choice_box
-
-        button = tk.Button(frame, text="✓",
-                           command= lambda: self.att_rotate_mode_object())
-        button.place(x=200, y=45)
 
         rotate_frame = tk.Frame(frame, height = 70, width = 240, relief="ridge")
         self.__widgets["rotate obj frame"] = rotate_frame
@@ -402,7 +399,7 @@ class MainWindow(WindowGUI):
         label.place(x=5, y=250)
         self.__widgets["move obj lbl"] = label
 
-    def att_rotate_mode_object(self):
+    def att_rotate_mode_object(self, *args):
         root_frame = self.__widgets["ops obj frame"]
         frame = tk.Frame(root_frame, height = 120, width = 240, relief="ridge")
         self.__widgets["rotate obj frame"] = frame
