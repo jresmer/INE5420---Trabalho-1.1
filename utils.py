@@ -114,9 +114,7 @@ class CubicEquationSolver:
 
 class Clipping(SingletonMeta):
     def __init__(self):
-        self.__point_clipping = self.point_clipping
         self.__line_clipping = self.liang_barsky
-        self.__polygon_clipping = self.pol_clipping
 
     def get_all_line_clippings(self):
         return {"Liang-Barsky": "Liang-Barsky", "Cohen-Sutherland": "Cohen-Sutherland"}
@@ -444,9 +442,8 @@ class Clipping(SingletonMeta):
             return []
 
         #Find intersections
-        # t = sp.Symbol('t', real = True)
         t_intercept = set()
-        for i in CubicEquationSolver.solve(ax,bx,cx,dx-x_min):#sp.solveset(ax*t**3 + bx*t**2 + cx*t + dx - x_min,t):
+        for i in CubicEquationSolver.solve(ax,bx,cx,dx-x_min):
             x = ax*i**3 + bx*i**2 + cx*i + dx
             y = ay*i**3 + by*i**2 + cy*i + dy
             

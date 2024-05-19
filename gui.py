@@ -14,12 +14,12 @@ class GUI:
         self.windows[ObjectCreationWindow.__name__] = ObjectCreationWindow(self)
         self.current_window = self.windows[MainWindow.__name__]
         
-        self.current_window.init_window(1)
+        self.current_window.init_window()
         
     def open_creation_window(self):
         self.windows[ObjectCreationWindow.__name__] = ObjectCreationWindow(self)
         self.current_window = self.windows[ObjectCreationWindow.__name__]
-        self.current_window.init_window(1)
+        self.current_window.init_window()
             
 
     def move_window(self, dx, dy,dz):
@@ -38,10 +38,13 @@ class GUI:
         if status == 1:
             self.windows[MainWindow.__name__].add_to_listbox(name)
             self.notify_status(f"Object name: {name} successfully created")
+            return True
         elif status == 2:
             self.notify_status(f"Name: {name} is already assigned")
+            return False
         elif status == 3:
             self.notify_status(f"Input coordinates don't satisfy constricts to object creation")
+            return False
 
     def translate_object(self, name: str, dx: int, dy: int, dz: int):
 

@@ -18,12 +18,12 @@ class MainWindow(WindowGUI):
     def get_canvas(self):
         return self.__widgets['canvas']
 
-    def init_window(self,world) -> None:
+    def init_window(self) -> None:
         # instanciate Tk object and set the window's title and geometry
         self.__root = tk.Tk()
         self.__root.title("Sistema Gráfico")
         self.__root.geometry("1280x900")
-        self.init_widgets(world)
+        self.init_widgets()
 
         #BIND PARA MOVER O CANVAS
         self.__root.bind("<KeyPress-Left>", lambda _: self.__controller.move_window(-3, 0,0))
@@ -156,7 +156,7 @@ class MainWindow(WindowGUI):
     def notify_status(self, text: str):
         self.__widgets['error msg box'].config(text=text)
 
-    def init_widgets(self, world) -> None:
+    def init_widgets(self) -> None:
         
         canvas = tk.Canvas(master=self.__root, height=500, width=760, bg="white",relief="ridge")
         canvas.create_line(10,10,10,490)
@@ -326,14 +326,11 @@ class MainWindow(WindowGUI):
         choices = ["Object Center", "Object Axis", "World Origin", "Arbitrary Axis"]
         var_str = tk.StringVar(frame)
         var_str.set("Object Center")
+        var_str.trace_add("write", callback = self.att_rotate_mode_object)
         choice_box = tk.OptionMenu(frame, var_str, *choices)
         choice_box.place(x=60, y=45)
         self.__widgets["rotate obj mode choice box txt"] = var_str
         self.__widgets["rotate obj mode choice box"] = choice_box
-
-        button = tk.Button(frame, text="✓",
-                           command= lambda: self.att_rotate_mode_object())
-        button.place(x=200, y=45)
 
         rotate_frame = tk.Frame(frame, height = 70, width = 240, relief="ridge")
         self.__widgets["rotate obj frame"] = rotate_frame
@@ -402,7 +399,7 @@ class MainWindow(WindowGUI):
         label.place(x=5, y=250)
         self.__widgets["move obj lbl"] = label
 
-    def att_rotate_mode_object(self):
+    def att_rotate_mode_object(self, *args):
         root_frame = self.__widgets["ops obj frame"]
         frame = tk.Frame(root_frame, height = 120, width = 240, relief="ridge")
         self.__widgets["rotate obj frame"] = frame
