@@ -6,6 +6,17 @@ import numpy as np
 class BezierSurface(CanvasObject):
 
     def __init__(self, coord: tuple, color: str, name: str, tkinter_id: int, canvas) -> None:
+        print(coord)
+
+        new_coords = []
+        for i in range(4):
+            for j in range(4):
+                line1 = coord[i*4    ][j*4:(j+1)*4]
+                line2 = coord[i*4 + 1][j*4:(j+1)*4]
+                line3 = coord[i*4 + 2][j*4:(j+1)*4]
+                line4 = coord[i*4 + 3][j*4:(j+1)*4]
+                matrix = line1+line2+line3+line4
+                print(matrix)
 
         coord = []
         for i in range(24):
@@ -13,7 +24,7 @@ class BezierSurface(CanvasObject):
                 line = [(0,0,(i-1)*10),(100,100,(i-1)*10),(100,500,(i-1)*10),(400,300,(i-1)*10)]
             else: 
                 line = [(0,0,i*10),(100,100,i*10),(100,500,i*10),(400,300,i*10)]
-            print(line)
+            # print(line)
             coord += line
         
         for point in coord:

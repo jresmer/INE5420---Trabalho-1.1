@@ -43,6 +43,7 @@ class ObjectCreationWindow(WindowGUI):
             self.__widgets["coord txt box"].destroy()
         if "create table bt" in self.__widgets.keys():
             self.__widgets["create table bt"].destroy()
+            self.__table_window.destroy()
 
         if self.__widgets["type choice box txt"].get() not in ["BezierSurface"]:
             text_box = tk.Text(self.__root, height=1, width=40)
@@ -57,7 +58,7 @@ class ObjectCreationWindow(WindowGUI):
         if self.__widgets["type choice box txt"].get() not in ["BezierSurface"]:
             return self.__widgets["type choice box txt"].get() not in ["BezierSurface"]
         else:
-            self.__table_window.get_table_values()
+            return self.__table_window.get_table_values()
 
     def create_table(self):
         self.__table_window.init_window()
@@ -77,16 +78,17 @@ class ObjectCreationWindow(WindowGUI):
             
             obj_type = self.__obj_man.get_object_type(type_)
             
-            self.__controller.create_object(
-                coords,
-                tk_color,
-                name,
-                obj_type
-            )
+            if self.__controller.create_object(
+                                                coords,
+                                                tk_color,
+                                                name,
+                                                obj_type
+                                            ):
+            
+                self.__root.destroy()
+                self.__table_window.destroy()
 
-            self.__root.destroy()
-
-        except:
+        except Exception as e:
             self.__controller.notify_status("Coordenadas digitadas incorretamente. Reveja o formato e tipo utilizado")
 
     def init_widgets(self) -> None:

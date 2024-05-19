@@ -38,10 +38,13 @@ class GUI:
         if status == 1:
             self.windows[MainWindow.__name__].add_to_listbox(name)
             self.notify_status(f"Object name: {name} successfully created")
+            return True
         elif status == 2:
             self.notify_status(f"Name: {name} is already assigned")
+            return False
         elif status == 3:
             self.notify_status(f"Input coordinates don't satisfy constricts to object creation")
+            return False
 
     def translate_object(self, name: str, dx: int, dy: int, dz: int):
 
