@@ -6,9 +6,13 @@ import numpy as np
 class BezierSurface(CanvasObject):
 
     def __init__(self, coord: tuple, color: str, name: str, tkinter_id: int, canvas) -> None:
-
+        
         new_coords = []
+
+        matrix_created = []
+        #Linearizando a matriz e tratando encontro de retalhos
         for i in range(4):
+            matrix_created.append([False,False,False,False])
             for j in range(4):
                 line1 = coord[i*4    ][j*4:(j+1)*4]
                 line2 = coord[i*4 + 1][j*4:(j+1)*4]
@@ -23,16 +27,18 @@ class BezierSurface(CanvasObject):
                     self.set_invalid()
                     return
                 else:
-                    if i > 0:
-                        line1 = coord[(i-1)*4    ][j*4:(j+1)*4]
-                    if j > 0: 
+
+                    if i > 0 and matrix_created[i-1][j]:
+                        line1 = coord[i*4-1][j*4:(j+1)*4]
+                    if j > 0 and matrix_created[i][j-1]: 
                         line1[0] = coord[i*4][j*4-1]
                         line2[0] = coord[i*4 + 1][j*4-1]
                         line3[0] = coord[i*4 + 2][j*4-1]
                         line4[0] = coord[i*4 + 3][j*4-1]
-                    matrix = line1 + line2 + line3 + line4
-                                        
+
+                    matrix = line1 + line2 + line3 + line4          
                     new_coords += matrix
+                    matrix_created[i][j] = True
         
         for point in new_coords:
             if len(point) != 3:
