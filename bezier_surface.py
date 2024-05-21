@@ -6,34 +6,46 @@ import numpy as np
 class BezierSurface(CanvasObject):
 
     def __init__(self, coord: tuple, color: str, name: str, tkinter_id: int, canvas) -> None:
-        print(coord)
-
+        
         new_coords = []
+
+        matrix_created = []
+        #Linearizando a matriz e tratando encontro de retalhos
         for i in range(4):
+            matrix_created.append([False,False,False,False])
             for j in range(4):
                 line1 = coord[i*4    ][j*4:(j+1)*4]
                 line2 = coord[i*4 + 1][j*4:(j+1)*4]
                 line3 = coord[i*4 + 2][j*4:(j+1)*4]
                 line4 = coord[i*4 + 3][j*4:(j+1)*4]
                 matrix = line1+line2+line3+line4
-                print(matrix)
+                
+                if all([a == None for a in matrix]):
+                    continue
 
-        coord = []
-        for i in range(24):
-            if i % 4 == 0 and i > 0:
-                line = [(0,0,(i-1)*10),(100,100,(i-1)*10),(100,500,(i-1)*10),(400,300,(i-1)*10)]
-            else: 
-                line = [(0,0,i*10),(100,100,i*10),(100,500,i*10),(400,300,i*10)]
-            # print(line)
-            coord += line
+                if None in matrix:
+                    self.set_invalid()
+                    return
+                else:
+
+                    if i > 0 and matrix_created[i-1][j]:
+                        line1 = coord[i*4-1][j*4:(j+1)*4]
+                    if j > 0 and matrix_created[i][j-1]: 
+                        line1[0] = coord[i*4][j*4-1]
+                        line2[0] = coord[i*4 + 1][j*4-1]
+                        line3[0] = coord[i*4 + 2][j*4-1]
+                        line4[0] = coord[i*4 + 3][j*4-1]
+
+                    matrix = line1 + line2 + line3 + line4          
+                    new_coords += matrix
+                    matrix_created[i][j] = True
         
-        for point in coord:
+        for point in new_coords:
             if len(point) != 3:
-                print(point)
                 self.set_invalid()
                 return
             
-        super().__init__(coord, color, name, tkinter_id, canvas)   
+        super().__init__(new_coords, color, name, tkinter_id, canvas)   
         self.__n_vars = 100
         self.__range = 1/100
 
