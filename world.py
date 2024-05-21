@@ -65,7 +65,6 @@ class World:
         obj_index = self.__find_object(name)
 
         if obj_index is not None:
-
             obj = self.__object_list[obj_index]
             obj.delete()
             self.__object_list.pop(obj_index)
@@ -186,8 +185,8 @@ class World:
     
     def load(self, filepath: str, canvas) -> bool:
         try:
-            for object_ in self.__object_list:
-                self.delete_object(object_)
+            for object_ in self.__object_list[:]:
+                self.delete_object(object_.get_name())
             objs = OBJDescriptor.wavefront_to_obj(filepath, canvas)
             self.__object_list = objs
             window_coords = self.__window.get_coords()
@@ -199,5 +198,5 @@ class World:
                 object_.draw(self.__viewport, window_coords[object_.get_name()], self.__zoom)
 
             return names
-        except:
+        except Exception as e:
             return None

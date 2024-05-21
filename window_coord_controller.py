@@ -67,6 +67,13 @@ class WindowCoordController:
 
         else:
             return False
+        
+    def del_obj(self, name: str):
+        if name in self.__obj_coordinates.keys():
+            self.__obj_coordinates.pop(name)
+            return True
+        else:
+            return False
     
     def change_coords(self, name: str, coords: tuple) -> None:
         new_coords = list()

@@ -48,7 +48,7 @@ class TableWindow(WindowGUI):
             self.__widgets["matrix coords"].append([None]*self.__n)
             for j in range(self.__n):
                 e_value = tk.StringVar(frame_table)
-                e = tk.Entry(frame_table, textvariable= e_value, width=12, font=('Arial', 9))
+                e = tk.Entry(frame_table, textvariable= e_value, width=12, font=('Arial', 8))
                 self.__widgets["matrix coords"][i][j] = e_value
                 e.grid(row=i, column=j)
                 e.insert(tk.END, "")

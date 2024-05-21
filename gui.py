@@ -106,6 +106,7 @@ class GUI:
     def load_world(self, filepath: str):
         names = self.world.load(filepath, self.windows[MainWindow.__name__].get_canvas())
         if names:
+            self.windows[MainWindow.__name__].reset_listbox()
             self.notify_status(f"World {filepath} loaded")
             for name in names:
                 self.windows[MainWindow.__name__].add_to_listbox(name)

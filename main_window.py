@@ -15,6 +15,9 @@ class MainWindow(WindowGUI):
     def add_to_listbox(self, name):
         self.__widgets['list obj'].insert(tk.END,name)
 
+    def reset_listbox(self):
+        self.__widgets['list obj'].delete(0,tk.END)
+
     def get_canvas(self):
         return self.__widgets['canvas']
 
