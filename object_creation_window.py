@@ -44,8 +44,6 @@ class ObjectCreationWindow(WindowGUI):
         #     # print(line)
         #     coord.append(line)
 
-        # for line in coord:
-        #     print(line)
         # self.__controller.create_object(coord, "green", "EixoX", self.__obj_man.get_object_type("BezierSurface"))
 
         self.__root.mainloop()
@@ -68,7 +66,7 @@ class ObjectCreationWindow(WindowGUI):
 
     def get_coords(self):
         if self.__widgets["type choice box txt"].get() not in ["BezierSurface"]:
-            return self.__widgets["type choice box txt"].get() not in ["BezierSurface"]
+            return list(eval(self.__widgets["coord txt box"].get("1.0", "end-1c")))
         else:
             return self.__table_window.get_table_values()
 
