@@ -1,5 +1,6 @@
 from canvas_object import CanvasObject
-from utils import Clipping
+from utils import Clipping, Utils
+from test import suthHodgClip
 
 class Polygon2D(CanvasObject):
 
@@ -17,9 +18,10 @@ class Polygon2D(CanvasObject):
         window_xmin, window_ymin, window_xmax, window_ymax = [-1,-1,1,1]
         vp_xmin, vp_ymin, vp_xmax, vp_ymax = viewport
 
-        outside_points = []
+        # new_window_coords = Utils.toClockwise(window_coords)
 
-        new_window_coords = Clipping.adapted_weiler_atherton([-1,-1,1,1], window_coords)
+        new_window_coords = suthHodgClip(window_coords,[(-1,-1),(-1,1),(1,1),(1,-1)])
+
         coords_vp = []
         tkinter_ids = []
 

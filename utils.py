@@ -855,3 +855,30 @@ class Utils:
         coord = np.matmul(coord, m)
         coord.tolist()
         return coord[:-1]
+    
+    def toClockwise(coords):
+        crossPr = []
+        maxX = -1
+        mark_i = -1
+
+        for i in range(len(coords)):
+            if coords[i][0] > maxX:
+                maxX = coords[i][0]
+                mark_i = i
+        v1x = coords[mark_i][0] - coords[mark_i - 1][0] 
+        v1y = coords[mark_i][1] - coords[mark_i - 1][1]
+        v2x = coords[(mark_i + 1) % len(coords)][0] - coords[mark_i][0]
+        v2y = coords[(mark_i + 1) % len(coords)][1] - coords[mark_i][1]
+        
+        crossPr = v1x * v2y - v2x * v1y
+        while abs(crossPr) < 1e-5:
+            mark_i += 1
+            v2x = coords[(mark_i + 1) % len(coords)][0] - coords[mark_i % len(coords)][0]
+            v2y = coords[(mark_i + 1) % len(coords)][1] - coords[mark_i % len(coords)][1]
+            crossPr = v1x * v2y - v2x * v1y
+        assert not abs(crossPr) < 1e-5
+        if crossPr < 0:
+            coords.reverse()
+            return coords
+        else:
+            return coords

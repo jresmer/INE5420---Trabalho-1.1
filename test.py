@@ -106,18 +106,19 @@ def suthHodgClip(clipped_polygon, clipper_polygon):
                                clipper_polygon[k][1])
 
     # Printing vertices of clipped polygon
-    for i in range(len(clipped_polygon)):
-        print('(', (clipped_polygon[i][0]), ', ', clipped_polygon[i][1], ')')
+    # for i in range(len(clipped_polygon)):
+    #     print('(', (clipped_polygon[i][0]), ', ', clipped_polygon[i][1], ')')
+    return clipped_polygon
 
 
-poly_points = [(10,20),
-               (32,70),
-               (58, 40),
-               (60,80),
-               (90,80),
-               (110,200),
-               (98, 10),
-               (21, 10),
-               (10,20)]
-clipper_points = [(40,8), (40,70), (90,70), (90,8)]
-suthHodgClip(poly_points, clipper_points)
+# poly_points = [(10,20),
+#                (32,70),
+#                (58, 40),
+#                (60,80),
+#                (90,80),
+#                (110,200),
+#                (98, 10),
+#                (21, 10),
+#                (10,20)]
+# clipper_points = [(40,8), (40,70), (90,70), (90,8)]
+# suthHodgClip(poly_points, clipper_points)
