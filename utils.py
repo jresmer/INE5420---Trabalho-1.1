@@ -537,8 +537,7 @@ class Utils:
         m = np.matmul(m, m3)
 
         return m
-    
-    # TODO - consertar rotação em z invertida
+
     @staticmethod
     def rotation_to_y_axis_matrix(axis: tuple, return_angles: bool=False) -> list:
 
@@ -818,12 +817,21 @@ class Utils:
         return np.matmul(m, ps)
     
     @staticmethod
-    def get_m_bezier():
+    def get_m_bezier() -> np.array:
         m = np.array([[-1, 3, -3, 1],
                       [3, -6, 3, 0],
                       [-3, 3, 0, 0],
                       [1, 0, 0, 0]])
 
+        return m
+    
+    @staticmethod
+    def get_m_bspline() -> np.array:
+        m = np.array([[-1, 3, -3, 1],
+                      [3, -6, 3, 0],
+                      [-3, 0, 3, 0],
+                      [1, 4, 1, 0]])
+        
         return m
     
     @staticmethod

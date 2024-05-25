@@ -140,8 +140,7 @@ class BezierSurface(CanvasObject):
                     Gx[i][j] = retalho[i*4+j][0]
                     Gy[i][j] = retalho[i*4+j][1]
 
-            values = [0, 0.2, 0.4, 0.6, 0.8, 1] # TODO - melhorar
-            
+            values = [0, 0.2, 0.4, 0.6, 0.8, 1]
 
             # Q(s, t) = S . M . G . Mt . Tt
             MGx = Utils.get_bezier_coeficients(Gx)
@@ -155,7 +154,6 @@ class BezierSurface(CanvasObject):
                 Px = np.matmul(MGxMt, T)
                 Py = np.matmul(MGyMt, T)
 
-                # TODO - revisar se faz sentido
                 intercept = Clipping.curve_clipping(viewport, retalho, Px, Py)
                 aux(intercept, viewport, Px, Py, self.__n_vars, self.__range, tk_ids)
 
@@ -166,7 +164,6 @@ class BezierSurface(CanvasObject):
                 Px = np.matmul(S, MGxMt)
                 Py = np.matmul(S, MGyMt)
 
-                # TODO - revisar se faz sentido
                 intercept = Clipping.curve_clipping(viewport, retalho, Px, Py)
                 aux(intercept, viewport, Px, Py, self.__n_vars, self.__range, tk_ids)
 
