@@ -62,7 +62,7 @@ class BsplineSurface(CanvasObject):
             x0, delta_x, delta_x2, delta_x3 = DDx_row
             y0, delta_y, delta_y2, delta_y3 = DDy_row
 
-            intercept = Clipping.curve_clipping(viewport, coords, ,)
+            intercept = Clipping.curve_clipping(viewport, coords, , )
             draw = False
             if vp_xmin <= x0 and x0 <= vp_xmax and vp_ymin <= y0 and y0 <= vp_ymax:
                 draw = True
