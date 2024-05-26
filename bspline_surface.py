@@ -55,14 +55,14 @@ class BsplineSurface(CanvasObject):
 
     def draw(self, viewport: tuple, window_coords: tuple, zoom: float) -> None:
 
-        def aux(viewport, n, DDx_row, DDy_row, Cx, Cy, ids, coords):    
+        def aux(viewport, n, DDx_row, DDy_row, vx, vy, ids, coords):    
 
             vp_xmin, vp_ymin, vp_xmax, vp_ymax = viewport
 
             x0, delta_x, delta_x2, delta_x3 = DDx_row
             y0, delta_y, delta_y2, delta_y3 = DDy_row
 
-            intercept = Clipping.curve_clipping(viewport, coords, , )
+            intercept = Clipping.curve_clipping(viewport, coords, vx, vy)
             draw = False
             if vp_xmin <= x0 and x0 <= vp_xmax and vp_ymin <= y0 and y0 <= vp_ymax:
                 draw = True
@@ -163,9 +163,16 @@ class BsplineSurface(CanvasObject):
         """
         5. Draw the curve family in t
         """
+        range_ = 1/self.__steps
         for i in range(self.__steps):
             
-            aux(viewport, self.__steps, DDx[0], DDy[0], Cx, Cy, tk_ids, window_coords)
+            s = range_*i
+            s2 = s*s
+            s3 = s2*s
+            vx = np.matmul([s3,s2,s,1], Cx)
+            vy = np.matmul([s3,s2,s,1], Cy)
+
+            aux(viewport, self.__steps, DDx[0], DDy[0], vx, vy, tk_ids, window_coords)
             for j in range(len(DDx)-1):
                 DDx[j] = np.array(DDx[j]) + np.array(DDx[j+1])
         
@@ -174,7 +181,13 @@ class BsplineSurface(CanvasObject):
         """
         for i in range(self.__steps):
 
-            aux(viewport, self.__steps, DDx_[0], DDy_[0], Cx, Cy, tk_ids, window_coords)
+            t = range_*i
+            t2 = t*t
+            t3 = t2*t
+            vx = np.matmul([t3,t2,t,1], Cx)
+            vy = np.matmul([t3,t2,t,1], Cy)
+
+            aux(viewport, self.__steps, DDx_[0], DDy_[0], vx, vy, tk_ids, window_coords)
             for j in range(len(DDx_)-1):
                 DDx_[j] = np.array(DDx_[j]) + np.array(DDx_[j+1])
     
