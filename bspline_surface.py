@@ -4,7 +4,7 @@ from copy import deepcopy
 import numpy as np
 
 
-class BsplineSurface(CanvasObject):
+class BSplineSurface(CanvasObject):
 
     def __init__(self, coord: tuple, color: str, name: str, tkinter_id: int, canvas) -> None:
 

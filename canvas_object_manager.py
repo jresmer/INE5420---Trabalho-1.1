@@ -6,6 +6,7 @@ from line import Line
 from bezier_curve import BezierCurve
 from bspline_curve import BSplineCurve
 from bezier_surface import BezierSurface
+from bspline_surface import BSplineSurface
 
 class CanvasObjectManager:
 

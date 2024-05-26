@@ -55,7 +55,7 @@ class ObjectCreationWindow(WindowGUI):
             self.__widgets["create table bt"].destroy()
             self.__table_window.destroy()
 
-        if self.__widgets["type choice box txt"].get() not in ["BezierSurface"]:
+        if self.__widgets["type choice box txt"].get() not in ["BezierSurface", "BSplineSurface"]:
             text_box = tk.Text(self.__root, height=1, width=40)
             text_box.place(x=100, y=35)
             self.__widgets["coord txt box"] = text_box
@@ -65,12 +65,16 @@ class ObjectCreationWindow(WindowGUI):
             self.__widgets["create table bt"] = button
 
     def get_coords(self):
-        if self.__widgets["type choice box txt"].get() not in ["BezierSurface"]:
+        if self.__widgets["type choice box txt"].get() not in ["BezierSurface", "BSplineSurface"]:
             return list(eval(self.__widgets["coord txt box"].get("1.0", "end-1c")))
         else:
             return self.__table_window.get_table_values()
 
     def create_table(self):
+        if self.__widgets["type choice box txt"].get() == "BezierSurface":
+            self.__table_window.set_n(16)
+        else:
+            self.__table_window.set_n(20)
         self.__table_window.init_window()
 
     def select_color(self):
