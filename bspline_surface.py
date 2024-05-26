@@ -9,41 +9,10 @@ class BSplineSurface(CanvasObject):
     def __init__(self, coord: tuple, color: str, name: str, tkinter_id: int, canvas) -> None:
 
         new_coords = []
-        if len(coord) > 0 and type(coord[0]) == list:
 
-            matrix_created = []
-            #Linearizando a matriz e tratando encontro de retalhos
-            for i in range(4):
-                matrix_created.append([False,False,False,False])
-                for j in range(4):
-                    line1 = coord[i*4    ][j*4:(j+1)*4]
-                    line2 = coord[i*4 + 1][j*4:(j+1)*4]
-                    line3 = coord[i*4 + 2][j*4:(j+1)*4]
-                    line4 = coord[i*4 + 3][j*4:(j+1)*4]
-                    matrix = line1+line2+line3+line4
-                    
-                    if all([a == None for a in matrix]):
-                        continue
+        for i in range(4):
+            new_coords += [(0,0,i*10),(100,100,i*10),(100,500,i*10),(400,300,i*10)]
 
-                    if None in matrix:
-                        self.set_invalid()
-                        return
-                    else:
-
-                        if i > 0 and matrix_created[i-1][j]:
-                            line1 = coord[i*4-1][j*4:(j+1)*4]
-                        if j > 0 and matrix_created[i][j-1]: 
-                            line1[0] = coord[i*4][j*4-1]
-                            line2[0] = coord[i*4 + 1][j*4-1]
-                            line3[0] = coord[i*4 + 2][j*4-1]
-                            line4[0] = coord[i*4 + 3][j*4-1]
-
-                        matrix = line1 + line2 + line3 + line4          
-                        new_coords += matrix
-                        matrix_created[i][j] = True
-        else:
-            new_coords = coord[:]
-            
         for point in new_coords:
             if len(point) != 3:
                 self.set_invalid()
@@ -51,7 +20,7 @@ class BSplineSurface(CanvasObject):
         
         super().__init__(new_coords, color, name, tkinter_id, canvas)   
 
-        self.__steps = 100
+        self.__steps = 10
 
     def draw(self, viewport: tuple, window_coords: tuple, zoom: float) -> None:
 
@@ -62,7 +31,9 @@ class BSplineSurface(CanvasObject):
             x0, delta_x, delta_x2, delta_x3 = DDx_row
             y0, delta_y, delta_y2, delta_y3 = DDy_row
 
-            intercept = Clipping.curve_clipping(viewport, coords, vx, vy)
+            # intercept = Clipping.curve_clipping(viewport, coords, vx, vy)
+            intercept = [0,1]
+
             draw = False
             if vp_xmin <= x0 and x0 <= vp_xmax and vp_ymin <= y0 and y0 <= vp_ymax:
                 draw = True
@@ -73,7 +44,7 @@ class BSplineSurface(CanvasObject):
                 lim_inf = intercept[i]
                 lim_sup = intercept[i+1]
 
-                for i in range(lim_inf,lim_sup + 1):
+                for _ in range(lim_inf,lim_sup + 1):
 
                     x1 = x0 + delta_x
                     delta_x = delta_x + delta_x2
@@ -149,7 +120,7 @@ class BSplineSurface(CanvasObject):
                [0, delta_t2, 2*delta_t2, 0],
                [0, delta_t, 0, 0],
                [1, 0, 0, 0]]
-        
+
         """
         4. Calculate starting conditions:
         DDx = Eds * Cx * EdtT
@@ -175,6 +146,7 @@ class BSplineSurface(CanvasObject):
             aux(viewport, self.__steps, DDx[0], DDy[0], vx, vy, tk_ids, window_coords)
             for j in range(len(DDx)-1):
                 DDx[j] = np.array(DDx[j]) + np.array(DDx[j+1])
+                DDy[j] = np.array(DDy[j]) + np.array(DDy[j+1])
         
         """
         6. Draw the curve family in s
@@ -190,6 +162,7 @@ class BSplineSurface(CanvasObject):
             aux(viewport, self.__steps, DDx_[0], DDy_[0], vx, vy, tk_ids, window_coords)
             for j in range(len(DDx_)-1):
                 DDx_[j] = np.array(DDx_[j]) + np.array(DDx_[j+1])
+                DDy_[j] = np.array(DDy_[j]) + np.array(DDy_[j+1])
     
         self.set_tkinter_id(tk_ids)
 
