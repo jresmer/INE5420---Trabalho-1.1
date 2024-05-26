@@ -55,10 +55,55 @@ class BsplineSurface(CanvasObject):
 
     def draw(self, viewport: tuple, window_coords: tuple, zoom: float) -> None:
 
-        def aux(n, DDx_row, DDy):
+        def aux(viewport, n, DDx_row, DDy_row, Cx, Cy, ids, coords):    
 
-            ...
+            vp_xmin, vp_ymin, vp_xmax, vp_ymax = viewport
+
+            x0, delta_x, delta_x2, delta_x3 = DDx_row
+            y0, delta_y, delta_y2, delta_y3 = DDy_row
+
+            intercept = Clipping.curve_clipping(viewport, coords, ,)
+            draw = False
+            if vp_xmin <= x0 and x0 <= vp_xmax and vp_ymin <= y0 and y0 <= vp_ymax:
+                draw = True
+
+            intercept = [int(i*n) for i in intercept]
+
+            for i in range(len(intercept)-1):
+                lim_inf = intercept[i]
+                lim_sup = intercept[i+1]
+
+                for i in range(lim_inf,lim_sup + 1):
+
+                    x1 = x0 + delta_x
+                    delta_x = delta_x + delta_x2
+                    delta_x2 = delta_x2 + delta_x3
+
+                    y1 = y0 + delta_y
+                    delta_y = delta_y + delta_y2
+                    delta_y2 = delta_y2 + delta_y3
+
+                    if draw:
+                        tk_id = self.get_canvas().create_line(x0, y0, x1, y1, fill=self.get_color())
+                        ids.append(tk_id)
+                
+                    x0, y0 = x1,y1
+                draw = not draw
+
+        # initializing ids list
+        tk_ids = list()
+        # calculating viewport coordinates
+        window_xmin, window_ymin, window_xmax, window_ymax = [-1,-1,1,1]
+        vp_xmin, vp_ymin, vp_xmax, vp_ymax = viewport
+        for i in range(len(window_coords)):
+            
+            x, y = window_coords[i]
+
+            x = vp_xmin + (x - window_xmin) * (vp_xmax - vp_xmin) / (window_xmax - window_xmin)
+            y = vp_ymin + (1 - (y - window_ymin)/(window_ymax - window_ymin)) * (vp_ymax - vp_ymin)
+            window_coords[i] = (x, y)
         
+        # plotting a submatrix
         """
         1. Calculate coeficients Cx, Cy, Cz:
         Cx = M * Gx * Mt
@@ -72,16 +117,13 @@ class BsplineSurface(CanvasObject):
             Gx.append([None,None,None,None])
             Gy.append([None,None,None,None])
             for j in range(4):
-                Gx[i][j] = self.get_coord()[i*4+j][0]
-                Gy[i][j] = self.get_coord()[i*4+j][1]
+                Gx[i][j] = window_coords[i*4+j][0]
+                Gy[i][j] = window_coords[i*4+j][1]
 
         m = Utils.get_m_bspline()
         mt = np.transpose(m)
         Cx = np.matmul(m, np.matmul(Gx, mt))
         Cy = np.matmul(m, np.matmul(Gy, mt))
-
-        # clipping
-        t_intercept = Clipping.curve_clipping(viewport, self.get_coord(), Cx, Cy)
 
         """
         2. Calculate deltas for ni steps:
@@ -115,13 +157,30 @@ class BsplineSurface(CanvasObject):
         """
         DDx = np.matmul(Eds, np.matmul(Cx, EdtT))
         DDy = np.matmul(Eds, np.matmul(Cy, EdtT))
-        DDx_, DDy_ = deepcopy(DDx), deepcopy(DDy)
+        # starting conditions for the curves in s (6, 7)
+        DDx_, DDy_ = np.transpose(DDx), np.transpose(DDy)
 
         """
         5. Draw the curve family in t
         """
+        for i in range(self.__steps):
+            
+            aux(viewport, self.__steps, DDx[0], DDy[0], Cx, Cy, tk_ids, window_coords)
+            for j in range(len(DDx)-1):
+                DDx[j] = np.array(DDx[j]) + np.array(DDx[j+1])
+        
+        """
+        6. Draw the curve family in s
+        """
+        for i in range(self.__steps):
 
+            aux(viewport, self.__steps, DDx_[0], DDy_[0], Cx, Cy, tk_ids, window_coords)
+            for j in range(len(DDx_)-1):
+                DDx_[j] = np.array(DDx_[j]) + np.array(DDx_[j+1])
     
+        self.set_tkinter_id(tk_ids)
+
     def delete(self):
+
         for line in self.get_tkinter_id():
             self.get_canvas().delete(line)
