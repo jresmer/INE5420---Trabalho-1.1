@@ -832,7 +832,7 @@ class Utils:
                       [-3, 0, 3, 0],
                       [1, 4, 1, 0]])
         
-        return m
+        return m/6
     
     @staticmethod
     def get_bspline_coeficients(ps: list):

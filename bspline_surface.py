@@ -11,7 +11,7 @@ class BSplineSurface(CanvasObject):
         new_coords = []
 
         for i in range(4):
-            new_coords += [(0,0,i*10),(100,100,i*10),(100,500,i*10),(400,300,i*10)]
+            new_coords += [(0,0,i*100),(100,100,i*100),(100,500,i*100),(400,300,i*100)]
 
         for point in new_coords:
             if len(point) != 3:
@@ -20,7 +20,7 @@ class BSplineSurface(CanvasObject):
         
         super().__init__(new_coords, color, name, tkinter_id, canvas)   
 
-        self.__steps = 10
+        self.__steps = 5
 
     def draw(self, viewport: tuple, window_coords: tuple, zoom: float) -> None:
 
@@ -31,8 +31,7 @@ class BSplineSurface(CanvasObject):
             x0, delta_x, delta_x2, delta_x3 = DDx_row
             y0, delta_y, delta_y2, delta_y3 = DDy_row
 
-            # intercept = Clipping.curve_clipping(viewport, coords, vx, vy)
-            intercept = [0,1]
+            intercept = Clipping.curve_clipping(viewport, coords, vx, vy)
 
             draw = False
             if vp_xmin <= x0 and x0 <= vp_xmax and vp_ymin <= y0 and y0 <= vp_ymax:
@@ -91,10 +90,11 @@ class BSplineSurface(CanvasObject):
                 Gx[i][j] = window_coords[i*4+j][0]
                 Gy[i][j] = window_coords[i*4+j][1]
 
+
         m = Utils.get_m_bspline()
         mt = np.transpose(m)
-        Cx = np.matmul(m, np.matmul(Gx, mt))
-        Cy = np.matmul(m, np.matmul(Gy, mt))
+        Cx = np.matmul(np.matmul(m, Gx), mt)
+        Cy = np.matmul(np.matmul(m, Gy), mt)
 
         """
         2. Calculate deltas for ni steps:
@@ -129,13 +129,15 @@ class BSplineSurface(CanvasObject):
         DDx = np.matmul(Eds, np.matmul(Cx, EdtT))
         DDy = np.matmul(Eds, np.matmul(Cy, EdtT))
         # starting conditions for the curves in s (6, 7)
-        DDx_, DDy_ = np.transpose(DDx), np.transpose(DDy)
+        DDx_, DDy_ = deepcopy(np.transpose(DDx)), deepcopy(np.transpose(DDy))
+
+
 
         """
         5. Draw the curve family in t
         """
         range_ = 1/self.__steps
-        for i in range(self.__steps):
+        for i in range(self.__steps+1):
             
             s = range_*i
             s2 = s*s
@@ -151,7 +153,7 @@ class BSplineSurface(CanvasObject):
         """
         6. Draw the curve family in s
         """
-        for i in range(self.__steps):
+        for i in range(self.__steps+1):
 
             t = range_*i
             t2 = t*t
