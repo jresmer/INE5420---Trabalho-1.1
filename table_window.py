@@ -18,7 +18,6 @@ class TableWindow(WindowGUI):
                     matrix[i][j] = eval(self.__widgets["matrix coords"][i][j].get())
                 except Exception as e:
                     pass
-        # print(matrix)
         return matrix
 
     def destroy(self):

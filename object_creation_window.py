@@ -36,15 +36,15 @@ class ObjectCreationWindow(WindowGUI):
         # self.__controller.create_object(list(eval("(0,0,0),(0,0,0),(100,100,0),(300,100,0),(500,300,0),(500,300,0)")), "dark blue", "Cabrio", self.__obj_man.get_object_type("BSplineCurve"))
         # coord = []
         # for i in range(16):
-        #     if i < 12:
-        #         line = [(0,0,i*10),(100,100,i*10),(100,500,i*10),(400,300,i*10)] + [(400,300,i*10),(600,100,i*10),(600,500,i*10),(900,300,i*10)] + [None]*8
-        #     else:
-        #         line = [None]*4 + [(400,300,i*10),(600,100,i*10),(600,500,i*10),(900,300,i*10)] + [None]*8
+        #     if i < 4:
+        #         line = [(0,0,i*100),(100,100,i*100),(100,500,i*100),(400,300,i*100)] + [(400,500,i*100),(600,100,i*100),(600,500,i*100),(900,300,i*100)] + [None]*12
+        #     # else:
+        #     #     line = [(400,300,i*10),(600,100,i*10),(600,500,i*10),(900,300,i*10)] + [None]*12
             
         #     # print(line)
-        #     coord.append(line)
+        #         coord.append(line)
 
-        # self.__controller.create_object(coord, "green", "EixoX", self.__obj_man.get_object_type("BezierSurface"))
+        # self.__controller.create_object(coord, "green", "EixoX", self.__obj_man.get_object_type("BSplineSurface"))
 
         self.__root.mainloop()
 
@@ -103,6 +103,7 @@ class ObjectCreationWindow(WindowGUI):
                 self.__table_window.destroy()
 
         except Exception as e:
+            # print(e)
             self.__controller.notify_status("Coordenadas digitadas incorretamente. Reveja o formato e tipo utilizado")
 
     def init_widgets(self) -> None:
